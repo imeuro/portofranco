@@ -23,7 +23,7 @@ php_errorlog
 
 wp-content/plugins/*
 !wp-content/plugins/temporary-static-page
-!wp-content/plugins/mrc
+!wp-content/plugins/portofranco
 
 /wp-content/themes/index.php
 /wp-content/themes/twenty*/
