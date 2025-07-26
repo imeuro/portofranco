@@ -83,7 +83,7 @@ class PF_Plugin {
      */
     private function load_modules() {
         // Load Custom Post Types module
-        //$this->load_module('cpt');
+        $this->load_module('cpt');
         
         // Load Pages module
         //$this->load_module('pages');
@@ -101,6 +101,11 @@ class PF_Plugin {
         if (file_exists($module_file)) {
             require_once $module_file;
             $class_name = 'PF_' . strtoupper($module_name) . '_Manager';
+            
+            // Correzione per il modulo CPT
+            if ($module_name === 'cpt') {
+                $class_name = 'PF_CPT_Manager';
+            }
             
             if (class_exists($class_name)) {
                 $this->modules[$module_name] = new $class_name();

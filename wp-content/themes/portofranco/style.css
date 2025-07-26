@@ -1,0 +1,219 @@
+/*
+Theme Name: portofranco
+Theme URI: https://portofranco.local/
+Author: portofranco
+Author URI: https://portofranco.local/
+Description: Tema ispirato a underscores, mobile-first, per il progetto portofranco
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: portofranco
+Tags: custom-background, custom-logo, custom-menu, featured-images, theme-options, translation-ready
+*/
+
+/*
+---------------------------------------------
+  BASE - Mobile First (tutto parte da qui)
+---------------------------------------------
+*/
+
+/*
+---------------------------------------------
+  RESET
+---------------------------------------------
+*/
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+/* Reset minimo mobile-first */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+input, textarea {
+  border: none;
+  font: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #222;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/*
+---------------------------------------------
+  TIPOGRAFIA - Font Inter (alternativa Helvetica Neue)
+---------------------------------------------
+*/
+
+/* Pesi del font disponibili */
+.font-light {
+    font-weight: 300;
+}
+
+.font-regular {
+    font-weight: 400;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+/* Miglioramenti tipografici */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 1rem 0;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+p {
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #666;
+}
+
+
+/*
+---------------------------------------------
+  HEADER
+---------------------------------------------
+*/
+header#masthead {
+    position: fixed;
+    z-index: 10;
+    top: 20px;
+    left: 20px;
+}
+
+nav#site-navigation {
+    position: fixed;
+    width: calc(100vw - 400px);
+    top: 36px;
+    left: 380px;
+    border-bottom: 1px solid #000;
+    margin-right: 20px;
+}
+.home nav#site-navigation {
+    border-bottom: 1px solid #FFF;
+}
+
+nav#site-navigation #primary-menu {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 80px;
+}
+
+
+/*
+---------------------------------------------
+  CONTENUTO PAGINA
+---------------------------------------------
+*/
+
+/*
+---------------------------------------------
+  FOOTER
+---------------------------------------------
+*/
+footer#colophon {
+    background: #000;
+    color: #fff;
+    padding: 80px 0;
+}
+/*
+---------------------------------------------
+  MEDIA QUERIES
+---------------------------------------------
+*/
+@media (min-width: 768px) {
+  /* Tablet */
+}
+@media (min-width: 1000px) {
+  /* Desktop */
+}
+@media (min-width: 1200px) {
+  /* Desktop Large */
+} 
