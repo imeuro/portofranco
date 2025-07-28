@@ -17,7 +17,7 @@ if ( ! function_exists( 'portofranco_setup' ) ) {
 }
 add_action( 'after_setup_theme', 'portofranco_setup' );
 
-// Riga X: Includo CSS custom portofranco
+// Riga 20: Includo CSS custom portofranco
 function portofranco_enqueue_styles() {
   // Carica Google Fonts (Inter)
   wp_enqueue_style( 'google-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap', array(), null );
@@ -28,6 +28,13 @@ function portofranco_enqueue_styles() {
   wp_enqueue_style( 'portofranco-custom', get_template_directory_uri() . '/assets/css/portofranco.css', array('portofranco-style'), null );
 }
 add_action( 'wp_enqueue_scripts', 'portofranco_enqueue_styles' );
+
+// Riga 30: Includo JavaScript custom portofranco
+function portofranco_enqueue_scripts() {
+  // Carica il JavaScript per la gestione dello scroll dell'header
+  wp_enqueue_script( 'portofranco-header-scroll', get_template_directory_uri() . '/assets/js/header-scroll.js', array(), null, true );
+}
+add_action( 'wp_enqueue_scripts', 'portofranco_enqueue_scripts' );
 
 // Forza l'uso dei template specifici per i custom post types
 function portofranco_custom_archive_template( $template ) {
