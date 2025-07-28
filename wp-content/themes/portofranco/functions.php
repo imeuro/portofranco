@@ -27,4 +27,26 @@ function portofranco_enqueue_styles() {
   // Carica il CSS custom
   wp_enqueue_style( 'portofranco-custom', get_template_directory_uri() . '/assets/css/portofranco.css', array('portofranco-style'), null );
 }
-add_action( 'wp_enqueue_scripts', 'portofranco_enqueue_styles' ); 
+add_action( 'wp_enqueue_scripts', 'portofranco_enqueue_styles' );
+
+// Forza l'uso dei template specifici per i custom post types
+function portofranco_custom_archive_template( $template ) {
+    if ( is_post_type_archive( 'artisti' ) ) {
+        $custom_template = locate_template( 'archive-artisti.php' );
+        if ( $custom_template ) {
+            return $custom_template;
+        }
+    }
+    
+    if ( is_post_type_archive( 'agenda' ) ) {
+        $custom_template = locate_template( 'archive-agenda.php' );
+        if ( $custom_template ) {
+            return $custom_template;
+        }
+    }
+    
+    return $template;
+}
+add_filter( 'archive_template', 'portofranco_custom_archive_template' );
+
+ 

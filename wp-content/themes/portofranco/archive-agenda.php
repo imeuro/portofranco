@@ -1,5 +1,5 @@
 <?php
-// Riga 1: Template archivio eventi
+// Template archivio eventi
 get_header();
 ?>
 <main id="main" tabindex="-1" role="main">

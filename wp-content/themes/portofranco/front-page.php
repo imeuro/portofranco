@@ -4,7 +4,7 @@ get_header();
 ?>
 <main id="main" tabindex="-1" role="main">
   <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
+    <div id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
       <?php
       // Ottieni i custom fields immagine
       $immagine_1_id = get_field('immagine_sx');
@@ -40,7 +40,7 @@ get_header();
       <div class="entry-content">
         <?php the_content(); ?>
       </div>
-    </article>
+    </div>
   <?php endwhile; endif; ?>
 </main>
 <?php get_footer(); ?> 

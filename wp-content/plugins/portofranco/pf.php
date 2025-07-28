@@ -85,11 +85,6 @@ class PF_Plugin {
         // Load Custom Post Types module
         $this->load_module('cpt');
         
-        // Load Pages module
-        //$this->load_module('pages');
-        
-        // Load Hero module
-        //$this->load_module('hero');
     }
     
     /**

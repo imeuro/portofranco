@@ -79,13 +79,18 @@ class PF_CPT_Manager {
             'publicly_queryable' => true,
             'show_ui'            => true,
             'show_in_menu'       => true,
-            'query_var'          => true,
-            'rewrite'            => array('slug' => 'artisti'),
+            'query_var'          => 'artisti',
+            'rewrite'            => array(
+                'slug' => 'artisti',
+                'with_front' => false,
+                'feeds' => true,
+                'pages' => true
+            ),
             'capability_type'    => 'post',
             'has_archive'        => true,
             'hierarchical'       => false,
-            'menu_position'      => 21,
-            'menu_icon'          => 'dashicons-businessperson',
+            'menu_position'      => 5,
+            'menu_icon'          => 'dashicons-admin-users',
             'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
             'show_in_rest'       => false, // Non visibile in REST API
         );
@@ -130,12 +135,17 @@ class PF_CPT_Manager {
             'publicly_queryable' => true,
             'show_ui'            => true,
             'show_in_menu'       => true,
-            'query_var'          => true,
-            'rewrite'            => array('slug' => 'agenda'),
+            'query_var'          => 'agenda',
+            'rewrite'            => array(
+                'slug' => 'agenda',
+                'with_front' => false,
+                'feeds' => true,
+                'pages' => true
+            ),
             'capability_type'    => 'post',
             'has_archive'        => true,
             'hierarchical'       => false,
-            'menu_position'      => 22,
+            'menu_position'      => 6,
             'menu_icon'          => 'dashicons-calendar-alt',
             'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
             'show_in_rest'       => false, // Non visibile in REST API
@@ -157,6 +167,11 @@ class PF_CPT_Manager {
     public function exclude_posts_from_frontend($query) {
         // Solo per query principali del frontend
         if (!is_admin() && $query->is_main_query()) {
+            // Non applicare questo filtro agli archive di custom post types
+            if (is_post_type_archive()) {
+                return;
+            }
+            
             // Ottieni tutti i post types pubblici
             $post_types = get_post_types(array('public' => true));
             

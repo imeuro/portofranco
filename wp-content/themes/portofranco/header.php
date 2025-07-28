@@ -15,9 +15,9 @@
       <h1 class="site-title">
         <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
             <?php if(is_front_page()): ?>
-              <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo-portofranco.png" width="360" height="352" alt="Portofranco">
+              <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo-portofranco.svg" width="360" height="352" alt="Portofranco">
             <?php else: ?>
-            <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo-portofranco-blk.png" width="360" height="352" alt="Portofranco">
+            <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo-portofranco-blk.svg" width="360" height="352" alt="Portofranco">
             <?php endif; ?>
         </a>
       </h1>

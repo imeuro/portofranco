@@ -1,12 +1,14 @@
 <?php
-// Riga 1: Template archivio
+// Template archivio generico
 get_header();
 ?>
-<main id="main" tabindex="-1">
+<!-- Template: archive.php (generico) -->
+<main id="main" tabindex="-1" role="main">
   <header class="page-header">
     <h1><?php the_archive_title(); ?></h1>
     <?php the_archive_description( '<div class="archive-description">', '</div>' ); ?>
   </header>
+  
   <?php if ( have_posts() ) : ?>
     <?php while ( have_posts() ) : the_post(); ?>
       <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">

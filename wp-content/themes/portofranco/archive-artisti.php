@@ -2,38 +2,33 @@
 // Template archivio artisti
 get_header();
 ?>
+<!-- Template: archive-artisti.php -->
 <main id="main" tabindex="-1" role="main">
-  <header class="page-header">
-    <h1><?php _e('Artisti', 'portofranco'); ?></h1>
-    <?php the_archive_description( '<div class="archive-description">', '</div>' ); ?>
-  </header>
   
   <?php if ( have_posts() ) : ?>
     <div class="artisti-grid">
-      <?php while ( have_posts() ) : the_post(); ?>
-        <article id="post-<?php the_ID(); ?>" <?php post_class('artista-card'); ?> tabindex="0">
-          <div class="artista-thumbnail">
-            <?php if ( has_post_thumbnail() ) : ?>
-              <a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
-                <?php the_post_thumbnail( 'medium', array( 'alt' => get_the_title() ) ); ?>
-              </a>
-            <?php endif; ?>
+
+
+      <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
+        <h1 class="page-title small-label"><?php _e('Artisti', 'portofranco'); ?></h1>
+
+          <div class="side-content">
+            <ul class="side-content-inner">
+              <?php while ( have_posts() ) : the_post(); ?>
+                <li><a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></li>
+              <?php endwhile; ?>
+            </ul>
           </div>
+
           
-          <div class="artista-content">
-            <h2><a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h2>
-            <div class="entry-summary">
-              <?php the_excerpt(); ?>
-            </div>
-            <a href="<?php the_permalink(); ?>" class="read-more" title="<?php _e('Leggi di più su', 'portofranco'); ?> <?php the_title_attribute(); ?>">
-              <?php _e('Leggi di più', 'portofranco'); ?>
-            </a>
-          </div>
-        </article>
-      <?php endwhile; ?>
+        <div class="entry-content big-text">
+          <?php the_content(); ?>
+        </div>
+
+      </article>
+
     </div>
     
-    <?php the_posts_navigation(); ?>
     
   <?php else : ?>
     <p><?php _e('Nessun artista trovato.', 'portofranco'); ?></p>
