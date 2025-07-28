@@ -12,13 +12,13 @@ get_header();
       <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
         <h1 class="page-title small-label"><?php _e('Artisti', 'portofranco'); ?></h1>
 
-          <div class="side-content">
-            <ul class="side-content-inner">
-              <?php while ( have_posts() ) : the_post(); ?>
-                <li><a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></li>
-              <?php endwhile; ?>
-            </ul>
-          </div>
+        <div class="side-content">
+          <ul class="side-content-inner">
+            <?php while ( have_posts() ) : the_post(); ?>
+              <li><a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></li>
+            <?php endwhile; ?>
+          </ul>
+        </div>
 
           
         <div class="entry-content big-text">
@@ -31,7 +31,14 @@ get_header();
     
     
   <?php else : ?>
-    <p><?php _e('Nessun artista trovato.', 'portofranco'); ?></p>
+    <div class="artisti-grid">
+      <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
+        <h1 class="page-title small-label"><?php _e('Artisti', 'portofranco'); ?></h1>
+        <div class="entry-content big-text">
+          <p><?php _e('Nessun artista trovato.', 'portofranco'); ?></p>
+        </div>
+      </article>
+    </div>
   <?php endif; ?>
 </main>
 <?php get_footer(); ?> 
