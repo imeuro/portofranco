@@ -85,6 +85,12 @@ class PF_Plugin {
         // Load Custom Post Types module
         $this->load_module('cpt');
         
+        // Load Archive Fields module
+        $this->load_module('archive-fields');
+        
+        // Load REST API module
+        $this->load_module('rest-api');
+        
     }
     
     /**
@@ -100,6 +106,16 @@ class PF_Plugin {
             // Correzione per il modulo CPT
             if ($module_name === 'cpt') {
                 $class_name = 'PF_CPT_Manager';
+            }
+            
+            // Correzione per il modulo Archive Fields
+            if ($module_name === 'archive-fields') {
+                $class_name = 'PF_Archive_Fields_Manager';
+            }
+            
+            // Correzione per il modulo REST API
+            if ($module_name === 'rest-api') {
+                $class_name = 'PF_REST_API_Manager';
             }
             
             if (class_exists($class_name)) {

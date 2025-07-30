@@ -207,11 +207,11 @@ nav#site-navigation {
 }
 
 /* Animazione voci menu */
-nav#site-navigation ul li {
-    /* opacity: 0;
-    animation: fadeIn 1.5s ease-in-out forwards; */
+/* nav#site-navigation ul li {
+    opacity: 0;
+    animation: fadeIn 1.5s ease-in-out forwards;
 }
-
+*/
 nav#site-navigation ul li:nth-child(1) {
     animation-delay: 0s;
 }

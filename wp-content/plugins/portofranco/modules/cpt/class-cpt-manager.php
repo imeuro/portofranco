@@ -92,7 +92,7 @@ class PF_CPT_Manager {
             'menu_position'      => 5,
             'menu_icon'          => 'dashicons-admin-users',
             'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
-            'show_in_rest'       => false, // Non visibile in REST API
+            'show_in_rest'       => true, // Abilitato per REST API
         );
         
         register_post_type('artisti', $args);
@@ -148,7 +148,7 @@ class PF_CPT_Manager {
             'menu_position'      => 6,
             'menu_icon'          => 'dashicons-calendar-alt',
             'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
-            'show_in_rest'       => false, // Non visibile in REST API
+            'show_in_rest'       => true, // Abilitato per REST API
         );
         
         register_post_type('agenda', $args);

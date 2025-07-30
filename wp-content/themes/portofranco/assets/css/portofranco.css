@@ -33,3 +33,147 @@ body.home {
   object-fit: cover;
   object-position: center;
 }
+/* ========================================
+   ARCHIVE CONTENT LOADER STYLES
+   ======================================== */
+
+/* Stati di caricamento */
+#main-textarea.loading {
+    position: relative;
+    min-height: 200px;
+}
+
+#main-textarea.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 34px;
+    height: 35px;
+}
+
+@keyframes fadeSequence {
+    0%,
+    24% {
+        opacity: 1;
+    }
+
+    25%,
+    100% {
+        opacity: 0.2;
+    }
+}
+
+#loading-path1 {
+    animation: fadeSequence 2s infinite;
+}
+
+#loading-path2 {
+    animation: fadeSequence 2s infinite;
+    animation-delay: 0.5s;
+}
+
+#loading-path3 {
+    animation: fadeSequence 2s infinite;
+    animation-delay: 1s;
+}
+
+#loading-path4 {
+    animation: fadeSequence 2s infinite;
+    animation-delay: 1.5s;
+}
+
+/* Elementi attivi nella lista */
+.side-archive-item.inactive a {
+    color: #0003;
+}
+
+/* Contenuto dinamico */
+.dynamic-content {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.content-header {
+    margin-bottom: 2rem;
+}
+
+.content-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.content-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.content-body {
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.content-footer {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    margin-top: 2rem;
+}
+
+.view-full-post {
+    display: inline-block;
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.view-full-post:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+/* Messaggi di errore */
+.error-message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.error-message h3 {
+    color: #d32f2f;
+    margin-bottom: 1rem;
+}
+
+.retry-button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.retry-button:hover {
+    background: #555;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content-title {
+        font-size: 1.5rem;
+    }
+    
+    .content-body {
+        font-size: 0.95rem;
+    }
+}

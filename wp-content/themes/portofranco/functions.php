@@ -33,6 +33,15 @@ add_action( 'wp_enqueue_scripts', 'portofranco_enqueue_styles' );
 function portofranco_enqueue_scripts() {
   // Carica il JavaScript per la gestione dello scroll dell'header
   wp_enqueue_script( 'portofranco-header-scroll', get_template_directory_uri() . '/assets/js/header-scroll.js', array(), null, true );
+  
+  // Carica il JavaScript per il caricamento dinamico del contenuto degli archivi
+  wp_enqueue_script( 'portofranco-archive-content-loader', get_template_directory_uri() . '/assets/js/archive-content-loader.js', array(), null, true );
+  
+  // Aggiungi variabile globale per l'URL base dell'API
+  wp_localize_script( 'portofranco-archive-content-loader', 'portofrancoAjax', array(
+    'apiBase' => get_rest_url( null, 'pf/v1/post-content/' ),
+    'nonce' => wp_create_nonce( 'wp_rest' )
+  ) );
 }
 add_action( 'wp_enqueue_scripts', 'portofranco_enqueue_scripts' );
 
@@ -57,3 +66,32 @@ function portofranco_custom_archive_template( $template ) {
 add_filter( 'archive_template', 'portofranco_custom_archive_template' );
 
  
+// Riga 60: Funzione helper per recuperare la descrizione dell'archivio
+function portofranco_get_archive_description($post_type = null) {
+    // Se non specificato, usa il post type corrente
+    if (!$post_type) {
+        $post_type = get_post_type();
+    }
+    
+    // Se siamo in un archivio, usa il post type dell'archivio
+    if (is_post_type_archive()) {
+        $post_type = get_post_type();
+    }
+    
+    // Recupera la descrizione dal plugin
+    if (class_exists('PF_Archive_Fields_Manager')) {
+        return PF_Archive_Fields_Manager::get_archive_description($post_type);
+    }
+    
+    // Fallback: cerca l'opzione direttamente
+    $option_name = "{$post_type}_archive_description";
+    return get_option($option_name, '');
+}
+
+// Riga 70: Funzione helper per ottenere lo slug del post
+function portofranco_get_post_slug($post_id = null) {
+    if (!$post_id) {
+        $post_id = get_the_ID();
+    }
+    return get_post_field('post_name', $post_id);
+}

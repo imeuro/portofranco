@@ -1,0 +1,31 @@
+<svg width="34" height="35" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+<style>
+@keyframes fadeSequence {
+  0%, 24% { opacity: 1; }
+  25%, 100% { opacity: 0.2; }
+}
+
+#path1 {
+  animation: fadeSequence 2s infinite;
+}
+
+#path2 {
+  animation: fadeSequence 2s infinite;
+  animation-delay: 0.5s;
+}
+
+#path3 {
+  animation: fadeSequence 2s infinite;
+  animation-delay: 1s;
+}
+
+#path4 {
+  animation: fadeSequence 2s infinite; 
+  animation-delay: 1.5s;
+}
+</style>
+<path id="path1" d="M17.264 33.1561V34.1065C26.2676 33.8778 32.7916 26.8964 33.1131 17.7714H27.6753C27.4609 25.9747 23.4807 32.6988 17.264 33.1632V33.1561Z" fill="black"/>
+<path id="path2" d="M15.8491 0.00715267C6.84557 0.235815 0.321556 7.21715 0 16.3422H5.43786C5.65223 8.13894 9.63239 1.41486 15.8491 0.95039V0V0.00715267Z" fill="black"/>
+<path id="path3" d="M0 17.7643C0.321556 26.8893 6.84557 33.8707 15.8491 34.0993V33.149C9.63239 32.6916 5.65938 25.9604 5.43786 17.7571H0V17.7643Z" fill="black"/>
+<path id="path4" d="M16.629 0.0130767V0.963444C22.8458 1.42077 27.4537 8.14614 27.6753 16.3494H33.1131C32.7916 7.22435 25.6326 0.248892 16.629 0.0202293V0.0130767Z" fill="black"/>
+</svg>
