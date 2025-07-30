@@ -182,6 +182,3 @@ class PF_Archive_Fields_Manager {
         return get_option($option_name, '');
     }
 }
-
-// Initialize the archive fields manager
-new PF_Archive_Fields_Manager();
