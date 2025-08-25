@@ -2,7 +2,7 @@
 // Template homepage statica personalizzabile
 get_header();
 ?>
-<main id="main" tabindex="-1" role="main">
+<main id="HPmain" tabindex="-1" role="main">
   <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
     <div id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
       <?php

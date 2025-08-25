@@ -30,6 +30,11 @@
       </h1>
     </div>
     <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="Menu principale">
+      <div class="menu-pre-mobile">
+        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo-portofranco-blk.svg" width="180" height="176" alt="Portofranco">
+        </a>
+      </div>
       <?php
         wp_nav_menu( array(
           'theme_location' => 'primary',

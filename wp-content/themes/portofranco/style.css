@@ -230,12 +230,10 @@ nav#site-navigation {
     align-items: flex-start;
     justify-content: space-between;
     padding-left: 12px;
-    padding-top: 250px;
+    padding-top: 12px;
 }
 .menu-active #site-navigation {
     left: -12px;
-    background: url(./assets/img/logo-portofranco-blk.svg) no-repeat 12px 12px #fff;
-    background-size: 180px;
 }
 nav#site-navigation .menu-main-ita-container { width: 100%; }
 .menu-icon line { transition: all 0.3s ease-out; }

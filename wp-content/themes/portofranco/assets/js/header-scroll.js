@@ -1,17 +1,18 @@
 
 /**
  * Header Scroll Management
- * Gestisce lo spostamento dell'header quando il footer si avvicina
+ * Gestisce lo spostamento dell'header quando il contenuto principale o footer si avvicina
  */
 
 const headerScrollManager = (() => {
     // Elementi DOM
     const header = document.getElementById('masthead');
+    const pcontent = document.getElementById('main');
     const footer = document.getElementById('colophon');
     
     // Configurazione
     const config = {
-        minDistance: 100, // Distanza minima tra header e footer in px
+        minDistance: 100, // Distanza minima tra header e elemento di riferimento in px
         scrollThreshold: 50, // Soglia per iniziare lo scroll
         animationDuration: 300 // Durata animazione in ms
     };
@@ -19,17 +20,29 @@ const headerScrollManager = (() => {
     // Stato corrente
     let isHeaderMoving = false;
     let currentOffset = 0;
+    let isInitialized = false; // Flag per tracciare se è stato fatto il primo scroll
     
     /**
-     * Calcola la distanza tra header e footer
+     * Calcola la distanza tra header e l'elemento di riferimento (pcontent o footer)
      */
     const calculateDistance = () => {
-        if (!header || !footer) return Infinity;
+        if (!header) return Infinity;
         
         const headerRect = header.getBoundingClientRect();
-        const footerRect = footer.getBoundingClientRect();
         
-        return footerRect.top - headerRect.bottom;
+        // Se pcontent è presente, usa quello come riferimento
+        if (pcontent) {
+            const pcontentRect = pcontent.getBoundingClientRect();
+            return pcontentRect.top - headerRect.bottom;
+        }
+        
+        // Altrimenti usa il footer come fallback
+        if (footer) {
+            const footerRect = footer.getBoundingClientRect();
+            return footerRect.top - headerRect.bottom;
+        }
+        
+        return Infinity;
     };
     
     /**
@@ -46,9 +59,25 @@ const headerScrollManager = (() => {
      * Gestisce lo scroll dell'header
      */
     const handleHeaderScroll = () => {
+        // Se non è ancora stato fatto il primo scroll, attiva il sistema
+        if (!isInitialized) {
+            isInitialized = true;
+            console.log('Header Scroll Manager: Primo scroll rilevato, sistema attivato');
+        }
+        
+        // Se lo scroll è tornato a zero (inizio pagina), forza l'header nella posizione originale
+        if (window.pageYOffset === 0) {
+            if (currentOffset !== 0) {
+                header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+                applyHeaderTransform(0);
+                isHeaderMoving = false;
+            }
+            return; // Esci dalla funzione senza ulteriori controlli
+        }
+        
         const distance = calculateDistance();
         
-        // Se il footer è troppo vicino
+        // Se l'elemento di riferimento è troppo vicino
         if (distance < config.minDistance) {
             const neededOffset = config.minDistance - distance;
             const maxOffset = header.offsetHeight + 20; // Altezza header + margine
@@ -76,18 +105,22 @@ const headerScrollManager = (() => {
      * Inizializza il gestore
      */
     const init = () => {
-        if (!header || !footer) {
-            console.warn('Header Scroll Manager: Elementi header o footer non trovati');
+        if (!header) {
+            console.warn('Header Scroll Manager: Elemento header non trovato');
+            return;
+        }
+        
+        // Verifica che almeno un elemento di riferimento sia presente
+        if (!pcontent && !footer) {
+            console.warn('Header Scroll Manager: Nessun elemento di riferimento (pcontent o footer) trovato');
             return;
         }
         
         // Aggiungi listener per lo scroll
         window.addEventListener('scroll', handleHeaderScroll, { passive: true });
         
-        // Esegui controllo iniziale
-        handleHeaderScroll();
-        
-        console.log('Header Scroll Manager inizializzato');
+        const referenceElement = pcontent ? 'pcontent' : 'footer';
+        console.log(`Header Scroll Manager inizializzato con riferimento a: ${referenceElement} - Attivazione al primo scroll`);
     };
     
     /**
@@ -108,6 +141,8 @@ const headerScrollManager = (() => {
         handleHeaderScroll
     };
 })();
+
+
 
 /**
  * Menu Toggle Management
