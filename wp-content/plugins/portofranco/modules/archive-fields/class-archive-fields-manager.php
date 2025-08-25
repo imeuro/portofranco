@@ -41,7 +41,7 @@ class PF_Archive_Fields_Manager {
                     "edit.php?post_type={$post_type}",
                     sprintf(__('Impostazioni %s', 'pf'), $post_type_obj->labels->name),
                     sprintf(__('Impostazioni %s', 'pf'), $post_type_obj->labels->name),
-                    'manage_options',
+                    'edit_posts',
                     "{$post_type}-archive-settings",
                     array($this, 'render_archive_settings_page')
                 );
