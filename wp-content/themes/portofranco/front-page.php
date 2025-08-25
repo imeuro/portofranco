@@ -12,14 +12,13 @@ get_header();
       
       // Mostra le immagini se esistono
       if ($immagine_1_id || $immagine_2_id) : ?>
-        <div class="homepage-images" style="display: flex; width: 100vw; height: 100vh; overflow: hidden;">
+        <div class="homepage-images">
           <?php if ($immagine_1_id) : 
             $immagine_1_full = wp_get_attachment_image_src($immagine_1_id, 'full');
           ?>
-            <div class="homepage-image" style="width: 50vw; height: 100vh; overflow: hidden;">
+            <div class="homepage-image">
               <img src="<?php echo esc_url($immagine_1_full[0]); ?>" 
                    alt="<?php echo esc_attr(get_the_title()); ?> - Immagine 1"
-                   style="width: 100%; height: 100%; object-fit: cover;"
                    loading="eager">
             </div>
           <?php endif; ?>
@@ -27,10 +26,9 @@ get_header();
           <?php if ($immagine_2_id) : 
             $immagine_2_full = wp_get_attachment_image_src($immagine_2_id, 'full');
           ?>
-            <div class="homepage-image" style="width: 50vw; height: 100vh; overflow: hidden;">
+            <div class="homepage-image">
               <img src="<?php echo esc_url($immagine_2_full[0]); ?>" 
                    alt="<?php echo esc_attr(get_the_title()); ?> - Immagine 2"
-                   style="width: 100%; height: 100%; object-fit: cover;"
                    loading="eager">
             </div>
           <?php endif; ?>

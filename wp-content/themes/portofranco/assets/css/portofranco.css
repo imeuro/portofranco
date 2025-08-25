@@ -16,6 +16,8 @@ body.home {
 */
 
 .homepage-images {
+  display: flex;
+  flex-flow: column nowrap;
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -25,6 +27,9 @@ body.home {
 .homepage-image {
   position: relative;
   overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .homepage-image img {
@@ -33,6 +38,16 @@ body.home {
   object-fit: cover;
   object-position: center;
 }
+
+@media (min-width: 1000px) {
+  .homepage-images {
+    flex-flow: row nowrap;
+  }
+  .homepage-image {
+    width: 50vw;
+  }
+}
+
 /* ========================================
    ARCHIVE CONTENT LOADER STYLES
    ======================================== */

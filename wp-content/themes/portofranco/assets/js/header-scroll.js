@@ -1,3 +1,4 @@
+
 /**
  * Header Scroll Management
  * Gestisce lo spostamento dell'header quando il footer si avvicina
@@ -108,8 +109,153 @@ const headerScrollManager = (() => {
     };
 })();
 
+/**
+ * Menu Toggle Management
+ * Gestisce l'apertura e chiusura del menu mobile
+ */
+
+const menuToggleManager = (() => {
+    // Elementi DOM
+    const menuToggle = document.querySelector('.menu-toggle');
+    const siteNavigation = document.getElementById('site-navigation');
+    
+    // Configurazione
+    const config = {
+        activeClass: 'menu-active',
+        animationDuration: 300
+    };
+    
+    // Stato corrente
+    let isMenuOpen = false;
+    
+    /**
+     * Apre il menu
+     */
+    const openMenu = () => {
+        if (!siteNavigation) return;
+        
+        siteNavigation.parentElement.classList.add(config.activeClass);
+        isMenuOpen = true;
+        
+        // Aggiorna l'attributo aria-expanded del bottone
+        if (menuToggle) {
+            menuToggle.setAttribute('aria-expanded', 'true');
+        }
+        
+        // Blocca lo scroll del body
+        document.body.style.overflow = 'hidden';
+    };
+    
+    /**
+     * Chiude il menu
+     */
+    const closeMenu = () => {
+        if (!siteNavigation) return;
+        
+        siteNavigation.parentElement.classList.remove(config.activeClass);
+        isMenuOpen = false;
+        
+        // Aggiorna l'attributo aria-expanded del bottone
+        if (menuToggle) {
+            menuToggle.setAttribute('aria-expanded', 'false');
+        }
+        
+        // Ripristina lo scroll del body
+        document.body.style.overflow = '';
+    };
+    
+    /**
+     * Toggle del menu
+     */
+    const toggleMenu = () => {
+        if (isMenuOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    };
+    
+    /**
+     * Gestisce il click sul bottone menu
+     */
+    const handleMenuToggle = (event) => {
+        event.preventDefault();
+        toggleMenu();
+    };
+    
+    /**
+     * Gestisce la chiusura del menu con ESC
+     */
+    const handleKeydown = (event) => {
+        if (event.key === 'Escape' && isMenuOpen) {
+            closeMenu();
+        }
+    };
+    
+    /**
+     * Gestisce la chiusura del menu al click fuori
+     */
+    const handleClickOutside = (event) => {
+        if (isMenuOpen && 
+            !siteNavigation?.contains(event.target) && 
+            !menuToggle?.contains(event.target)) {
+            closeMenu();
+        }
+    };
+    
+    /**
+     * Inizializza il gestore del menu
+     */
+    const init = () => {
+        if (!menuToggle || !siteNavigation) {
+            console.warn('Menu Toggle Manager: Elementi menu non trovati');
+            return;
+        }
+        
+        // Aggiungi listener per il click sul bottone
+        menuToggle.addEventListener('click', handleMenuToggle);
+        
+        // Aggiungi listener per la tastiera (ESC)
+        document.addEventListener('keydown', handleKeydown);
+        
+        // Aggiungi listener per click fuori dal menu
+        document.addEventListener('click', handleClickOutside);
+        
+        console.log('Menu Toggle Manager inizializzato');
+    };
+    
+    /**
+     * Pulisci i listener
+     */
+    const destroy = () => {
+        if (menuToggle) {
+            menuToggle.removeEventListener('click', handleMenuToggle);
+        }
+        document.removeEventListener('keydown', handleKeydown);
+        document.removeEventListener('click', handleClickOutside);
+        
+        // Chiudi il menu se aperto
+        if (isMenuOpen) {
+            closeMenu();
+        }
+    };
+    
+    // API pubblica
+    return {
+        init,
+        destroy,
+        openMenu,
+        closeMenu,
+        toggleMenu
+    };
+})();
+
 // Inizializza quando il DOM è pronto
-document.addEventListener('DOMContentLoaded', headerScrollManager.init);
+document.addEventListener('DOMContentLoaded', () => {
+    headerScrollManager.init();
+    menuToggleManager.init();
+});
 
 // Esporta per uso globale se necessario
-window.headerScrollManager = headerScrollManager; 
+window.headerScrollManager = headerScrollManager;
+window.menuToggleManager = menuToggleManager; 
