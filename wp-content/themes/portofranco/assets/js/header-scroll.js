@@ -56,6 +56,16 @@ const headerScrollManager = (() => {
     };
     
     /**
+     * Applica trasformazione all'header con transizione
+     */
+    const applyHeaderTransformWithTransition = (offset) => {
+        if (!header) return;
+        
+        header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+        applyHeaderTransform(offset);
+    };
+    
+    /**
      * Gestisce lo scroll dell'header
      */
     const handleHeaderScroll = () => {
@@ -68,9 +78,13 @@ const headerScrollManager = (() => {
         // Se lo scroll è tornato a zero (inizio pagina), forza l'header nella posizione originale
         if (window.pageYOffset === 0) {
             if (currentOffset !== 0) {
-                header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+                // Rimuovi la transizione per un reset istantaneo
+                header.style.transition = 'none';
                 applyHeaderTransform(0);
                 isHeaderMoving = false;
+                
+                // Forza il reflow per applicare immediatamente la trasformazione
+                header.offsetHeight;
             }
             return; // Esci dalla funzione senza ulteriori controlli
         }
@@ -87,15 +101,13 @@ const headerScrollManager = (() => {
             
             // Applica la trasformazione con animazione
             if (Math.abs(targetOffset - currentOffset) > config.scrollThreshold) {
-                header.style.transition = `transform ${config.animationDuration}ms ease-out`;
-                applyHeaderTransform(-targetOffset);
+                applyHeaderTransformWithTransition(-targetOffset);
                 isHeaderMoving = true;
             }
         } else {
             // Riporta l'header alla posizione originale
             if (currentOffset !== 0) {
-                header.style.transition = `transform ${config.animationDuration}ms ease-out`;
-                applyHeaderTransform(0);
+                applyHeaderTransformWithTransition(0);
                 isHeaderMoving = false;
             }
         }
