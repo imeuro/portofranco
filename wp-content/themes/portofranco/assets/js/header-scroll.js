@@ -14,13 +14,21 @@ const headerScrollManager = (() => {
     const config = {
         minDistance: 100, // Distanza minima tra header e elemento di riferimento in px
         scrollThreshold: 50, // Soglia per iniziare lo scroll
-        animationDuration: 300 // Durata animazione in ms
+        animationDuration: 500, // Durata animazione in ms
+        mobileScrollThreshold: 250 // Pixel di scroll per spostare l'header su mobile
     };
     
     // Stato corrente
     let isHeaderMoving = false;
     let currentOffset = 0;
     let isInitialized = false; // Flag per tracciare se è stato fatto il primo scroll
+    
+    /**
+     * Verifica se il dispositivo è mobile
+     */
+    const isMobile = () => {
+        return window.innerWidth <= 768;
+    };
     
     /**
      * Calcola la distanza tra header e l'elemento di riferimento (pcontent o footer)
@@ -30,11 +38,11 @@ const headerScrollManager = (() => {
         
         const headerRect = header.getBoundingClientRect();
         
-        // Se pcontent è presente, usa quello come riferimento
-        if (pcontent) {
-            const pcontentRect = pcontent.getBoundingClientRect();
-            return pcontentRect.top - headerRect.bottom;
-        }
+        // // Se pcontent è presente, usa quello come riferimento
+        // if (pcontent) {
+        //     const pcontentRect = pcontent.getBoundingClientRect();
+        //     return pcontentRect.top - headerRect.bottom;
+        // }
         
         // Altrimenti usa il footer come fallback
         if (footer) {
@@ -56,16 +64,6 @@ const headerScrollManager = (() => {
     };
     
     /**
-     * Applica trasformazione all'header con transizione
-     */
-    const applyHeaderTransformWithTransition = (offset) => {
-        if (!header) return;
-        
-        header.style.transition = `transform ${config.animationDuration}ms ease-out`;
-        applyHeaderTransform(offset);
-    };
-    
-    /**
      * Gestisce lo scroll dell'header
      */
     const handleHeaderScroll = () => {
@@ -75,41 +73,65 @@ const headerScrollManager = (() => {
             console.log('Header Scroll Manager: Primo scroll rilevato, sistema attivato');
         }
         
-        // Se lo scroll è tornato a zero (inizio pagina), forza l'header nella posizione originale
-        if (window.pageYOffset === 0) {
-            if (currentOffset !== 0) {
-                // Rimuovi la transizione per un reset istantaneo
-                header.style.transition = 'none';
-                applyHeaderTransform(0);
-                isHeaderMoving = false;
-                
-                // Forza il reflow per applicare immediatamente la trasformazione
-                header.offsetHeight;
-            }
-            return; // Esci dalla funzione senza ulteriori controlli
-        }
-        
-        const distance = calculateDistance();
-        
-        // Se l'elemento di riferimento è troppo vicino
-        if (distance < config.minDistance) {
-            const neededOffset = config.minDistance - distance;
+        // Logica diversa per mobile e desktop
+        if (isMobile()) {
+            // Comportamento mobile: sposta l'header fuori campo dopo 250px di scroll
+            const scrollTop = window.pageYOffset;
             const maxOffset = header.offsetHeight + 20; // Altezza header + margine
             
-            // Calcola l'offset necessario
-            const targetOffset = Math.min(neededOffset, maxOffset);
-            
-            // Applica la trasformazione con animazione
-            if (Math.abs(targetOffset - currentOffset) > config.scrollThreshold) {
-                applyHeaderTransformWithTransition(-targetOffset);
-                isHeaderMoving = true;
+            if (scrollTop > config.mobileScrollThreshold) {
+                // Sposta l'header fuori campo
+                if (currentOffset === 0) {
+                    header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+                    applyHeaderTransform(-maxOffset);
+                    isHeaderMoving = true;
+                }
+            } else {
+                // Riporta l'header alla posizione originale
+                if (currentOffset !== 0) {
+                    header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+                    applyHeaderTransform(0);
+                    isHeaderMoving = false;
+                }
             }
         } else {
-            // Riporta l'header alla posizione originale
-            if (currentOffset !== 0) {
-                applyHeaderTransformWithTransition(0);
-                isHeaderMoving = false;
+            // Comportamento desktop: logica originale basata sulla distanza
+            const distance = calculateDistance();
+            
+            // Se l'elemento di riferimento è troppo vicino
+            if (distance < config.minDistance) {
+                const neededOffset = config.minDistance - distance;
+                const maxOffset = header.offsetHeight + 20; // Altezza header + margine
+                
+                // Calcola l'offset necessario
+                const targetOffset = Math.min(neededOffset, maxOffset);
+                
+                // Applica la trasformazione con animazione
+                if (Math.abs(targetOffset - currentOffset) > config.scrollThreshold) {
+                    header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+                    applyHeaderTransform(-targetOffset);
+                    isHeaderMoving = true;
+                }
+            } else {
+                // Riporta l'header alla posizione originale
+                if (currentOffset !== 0) {
+                    header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+                    applyHeaderTransform(0);
+                    isHeaderMoving = false;
+                }
             }
+        }
+    };
+    
+    /**
+     * Gestisce il resize della finestra
+     */
+    const handleResize = () => {
+        // Riporta l'header alla posizione originale quando cambia la dimensione della finestra
+        if (currentOffset !== 0) {
+            header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+            applyHeaderTransform(0);
+            isHeaderMoving = false;
         }
     };
     
@@ -131,8 +153,12 @@ const headerScrollManager = (() => {
         // Aggiungi listener per lo scroll
         window.addEventListener('scroll', handleHeaderScroll, { passive: true });
         
+        // Aggiungi listener per il resize
+        window.addEventListener('resize', handleResize, { passive: true });
+        
         const referenceElement = pcontent ? 'pcontent' : 'footer';
-        console.log(`Header Scroll Manager inizializzato con riferimento a: ${referenceElement} - Attivazione al primo scroll`);
+        const deviceType = isMobile() ? 'mobile' : 'desktop';
+        console.log(`Header Scroll Manager inizializzato con riferimento a: ${referenceElement} - Dispositivo: ${deviceType} - Attivazione al primo scroll`);
     };
     
     /**
@@ -140,6 +166,7 @@ const headerScrollManager = (() => {
      */
     const destroy = () => {
         window.removeEventListener('scroll', handleHeaderScroll);
+        window.removeEventListener('resize', handleResize);
         if (header) {
             header.style.transform = '';
             header.style.transition = '';

@@ -275,6 +275,7 @@ nav#site-navigation .menu-post-mobile a {
 
 @media (min-width: 1000px) {
     header#masthead .menu-toggle,
+    nav#site-navigation .menu-pre-mobile,
     nav#site-navigation .menu-post-mobile {
         display: none;
     }
@@ -414,6 +415,11 @@ nav#site-navigation .menu-post-mobile a {
     margin-bottom: 40px;
 }
 
+#main figure.wp-block-gallery.has-nested-images {
+    gap: 0;
+    margin: 10px -20px;
+}
+
 @media (min-width: 1000px) {
     #main article {
         align-items: flex-start;
@@ -445,6 +451,10 @@ nav#site-navigation .menu-post-mobile a {
         text-align: left;
         font-size: 12px;
         line-height: 1.6;
+    }
+    #main figure.wp-block-gallery.has-nested-images {
+        gap: 5px;
+        margin: 10px -20px;
     }
 }
 
