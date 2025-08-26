@@ -1,6 +1,63 @@
 /**
+ * Determina il path base dell'installazione WordPress
+ * @returns {string} Il path base dell'installazione
+ */
+const getWordPressBasePath = () => {
+    // Se è definita una variabile globale, usala
+    if (window.PORTOFRANCO_BASE_PATH) {
+        return window.PORTOFRANCO_BASE_PATH;
+    }
+    
+    // Se è disponibile la variabile localizzata da WordPress, usala  
+    if (window.portofrancoAjax && window.portofrancoAjax.basePath) {
+        return window.portofrancoAjax.basePath;
+    }
+
+    const pathname = window.location.pathname;
+    
+    // Estrai il path del progetto dal pathname corrente
+    const projectPath = pathname.split('/')[1] || '';
+    
+    // Se siamo in localhost o meuro.dev, aggiungi il path del progetto
+    if (window.location.hostname === 'localhost' || 
+        window.location.hostname === 'meuro.dev' || 
+        window.location.hostname.includes('localhost')) {
+        return `/${projectPath}/`;
+    }
+    
+    // Per altri ambienti, usa il path root
+    return '/';
+};
+
+
+/**
  * Archive Content Loader
  * Gestisce il caricamento dinamico del contenuto dei post negli archivi
+ * 
+ * CSS consigliato per le animazioni:
+ * .mobile-content-area {
+ *     margin: 10px 0;
+ *     padding: 15px;
+ *     background: #f9f9f9;
+ *     border-radius: 8px;
+ *     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ * }
+ * 
+ * .slide-content {
+ *     display: none;
+ * }
+ * 
+ * .close-icon {
+ *     display: inline-block;
+ *     margin-left: 10px;
+ *     cursor: pointer;
+ *     opacity: 0.7;
+ *     transition: opacity 0.2s ease;
+ * }
+ * 
+ * .close-icon:hover {
+ *     opacity: 1;
+ * }
  */
 
 const archiveContentLoader = (() => {
@@ -25,19 +82,9 @@ const archiveContentLoader = (() => {
             return window.portofrancoAjax.apiBase;
         }
         
-        const hostname = window.location.hostname;
-        const pathname = window.location.pathname;
-        
-        // Estrai il path del progetto dal pathname corrente
-        const projectPath = pathname.split('/')[1] || '';
-        
-        // Se siamo in localhost o meuro.dev, aggiungi il path del progetto
-        if (hostname === 'localhost' || hostname === 'meuro.dev' || hostname.includes('localhost')) {
-            return `/${projectPath}/wp-json/pf/v1/post-content/`;
-        }
-        
-        // Per altri ambienti, usa il path standard
-        return '/wp-json/pf/v1/post-content/';
+        // Usa la funzione centralizzata per il base path
+        const basePath = getWordPressBasePath();
+        return `${basePath}wp-json/pf/v1/post-content/`;
     };
 
     /**
@@ -136,9 +183,6 @@ const archiveContentLoader = (() => {
         // Event delegation per i link
         elements.list.addEventListener('click', handleItemClick);
         
-        // Gestione navigazione browser
-        window.addEventListener('popstate', handlePopState);
-        
         // Gestione resize per cambiare modalità
         window.addEventListener('resize', handleResize);
     };
@@ -178,19 +222,63 @@ const archiveContentLoader = (() => {
     };
 
     /**
+     * Animazione slide down per mostrare il contenuto
+     */
+    const slideDown = (element) => {
+        return new Promise((resolve) => {
+            element.style.display = 'block';
+            element.style.maxHeight = '0';
+            element.style.overflow = 'hidden';
+            element.style.transition = `max-height ${config.animation.duration}ms ${config.animation.easing}`;
+            
+            // Forza il reflow
+            element.offsetHeight;
+            
+            element.style.maxHeight = element.scrollHeight + 'px';
+            
+            setTimeout(() => {
+                element.style.maxHeight = 'none';
+                element.style.overflow = 'visible';
+                resolve();
+            }, config.animation.duration);
+        });
+    };
+
+    /**
+     * Animazione slide up per nascondere il contenuto
+     */
+    const slideUpAndRemove = (element) => {
+        return new Promise((resolve) => {
+            element.style.maxHeight = element.scrollHeight + 'px';
+            element.style.overflow = 'hidden';
+            element.style.transition = `max-height ${config.animation.duration}ms ${config.animation.easing}`;
+            
+            // Forza il reflow
+            element.offsetHeight;
+            
+            element.style.maxHeight = '0';
+            
+            setTimeout(() => {
+                element.remove();
+                resolve();
+            }, config.animation.duration);
+        });
+    };
+
+    /**
      * Crea il contenitore mobile dopo il link cliccato
      */
     const createMobileContentArea = (clickedLink) => {
-        // Rimuovi eventuali contenitori mobile esistenti
+        // Rimuovi eventuali contenitori mobile esistenti con animazione
         const existingMobileContent = document.querySelector(config.selectors.mobileContentArea);
         if (existingMobileContent) {
-            existingMobileContent.remove();
+            slideUpAndRemove(existingMobileContent);
         }
         
         // Crea il nuovo contenitore
         const mobileContentArea = document.createElement('div');
         mobileContentArea.id = 'mob-main-textarea';
-        mobileContentArea.className = 'mobile-content-area';
+        mobileContentArea.className = 'mobile-content-area slide-content';
         
         // Inserisci dopo il link cliccato
         clickedLink.parentNode.insertBefore(mobileContentArea, clickedLink.nextSibling);
@@ -216,13 +304,54 @@ const archiveContentLoader = (() => {
     /**
      * Gestisce il click sugli elementi della lista
      */
-    const handleItemClick = (event) => {
+    const handleItemClick = async (event) => {
         const link = event.target.closest('a');
         if (!link) return;
         
         event.preventDefault();
-        link.classList.toggle('active');
-        link.closest('.side-archive-item').classList.toggle('active');
+        
+        // Controlla se l'elemento è già attivo
+        const isAlreadyActive = link.classList.contains('active');
+        
+        // Se è già attivo, ripristina lo stato iniziale
+        if (isAlreadyActive) {
+            // Rimuovi le classi active
+            link.classList.remove('active');
+            link.closest('.side-archive-item').classList.remove('active');
+            
+            // Rimuovi l'icona di chiusura
+            const closeSpan = link.querySelector('span img[alt="Chiudi"]');
+            if (closeSpan && closeSpan.parentNode) {
+                closeSpan.parentNode.remove();
+            }
+            
+            // Ripristina il contenuto originale
+            await restoreOriginalContent();
+            return;
+        }
+        
+        // Rimuovi le classi active da tutti gli altri elementi
+        document.querySelectorAll(config.selectors.links).forEach(otherLink => {
+            otherLink.classList.remove('active');
+            otherLink.closest('.side-archive-item').classList.remove('active');
+            
+            // Rimuovi l'icona di chiusura se presente
+            const closeSpan = otherLink.querySelector('span img[alt="Chiudi"]');
+            if (closeSpan && closeSpan.parentNode) {
+                closeSpan.parentNode.remove();
+            }
+        });
+        
+        // Aggiungi le classi active all'elemento cliccato
+        link.classList.add('active');
+        link.closest('.side-archive-item').classList.add('active');
+        // Aggiungi l'icona di chiusura
+        const closeSpan = document.createElement('span');
+        const basePath = getWordPressBasePath();
+        closeSpan.innerHTML = `<img src="${window.location.origin}${basePath}wp-content/themes/portofranco/assets/img/close.svg" alt="Chiudi">`;
+        closeSpan.className = 'close-icon';
+        link.appendChild(closeSpan);
+
         
         // Ottieni l'ID del post dall'attributo data
         const postType = elements.list.dataset.postType;
@@ -240,16 +369,7 @@ const archiveContentLoader = (() => {
         loadPostContent(postId, link);
     };
 
-    /**
-     * Gestisce la navigazione del browser (back/forward)
-     */
-    const handlePopState = (event) => {
-        if (event.state && event.state.postId) {
-            loadPostContent(event.state.postId);
-        } else {
-            restoreOriginalContent();
-        }
-    };
+
 
     /**
      * Carica il contenuto di un post
@@ -278,10 +398,7 @@ const archiveContentLoader = (() => {
             const data = await response.json();
             
             // Aggiorna il contenuto
-            updateContent(data, clickedLink);
-            
-            // Aggiorna l'URL del browser
-            updateBrowserURL(postId, data.title);
+            await updateContent(data, clickedLink);
             
             console.log('Archive Content Loader: Contenuto caricato con successo');
             
@@ -297,16 +414,6 @@ const archiveContentLoader = (() => {
      * Aggiorna l'interfaccia utente
      */
     const updateUI = (clickedLink) => {
-        // Aggiungi classe inactive a tutti gli elementi
-        document.querySelectorAll(config.selectors.items).forEach(item => {
-            item.classList.add(config.classes.inactive);
-        });
-        
-        // Rimuovi classe inactive all'elemento cliccato
-        if (clickedLink) {
-            clickedLink.closest(config.selectors.items).classList.remove(config.classes.inactive);
-        }
-        
         // Aggiungi classe loading all'area contenuto appropriata
         if (state.isMobile) {
             // Su mobile, la classe loading verrà aggiunta dopo la creazione del contenitore
@@ -318,7 +425,7 @@ const archiveContentLoader = (() => {
     /**
      * Aggiorna il contenuto dell'area principale
      */
-    const updateContent = (data, clickedLink) => {
+    const updateContent = async (data, clickedLink) => {
         let targetContentArea;
         
         if (state.isMobile) {
@@ -339,15 +446,21 @@ const archiveContentLoader = (() => {
             </div>
         `;
         
-        // Aggiorna il contenuto con animazione
-        targetContentArea.style.opacity = '0';
+        // Aggiorna il contenuto
         targetContentArea.innerHTML = newContent;
         
-        // Anima l'apparizione
-        setTimeout(() => {
-            targetContentArea.style.transition = `opacity ${config.animation.duration}ms ${config.animation.easing}`;
-            targetContentArea.style.opacity = '1';
-        }, 10);
+        // Applica animazione appropriata
+        if (state.isMobile) {
+            // Su mobile, usa slide down
+            await slideDown(targetContentArea);
+        } else {
+            // Su desktop, usa fade in
+            targetContentArea.style.opacity = '0';
+            setTimeout(() => {
+                targetContentArea.style.transition = `opacity ${config.animation.duration}ms ${config.animation.easing}`;
+                targetContentArea.style.opacity = '1';
+            }, 10);
+        }
     };
 
     /**
@@ -376,27 +489,20 @@ const archiveContentLoader = (() => {
         targetContentArea.innerHTML = errorContent;
     };
 
-    /**
-     * Aggiorna l'URL del browser
-     */
-    const updateBrowserURL = (postId, title) => {
-        const url = new URL(window.location);
-        url.searchParams.set('post', postId);
-        url.searchParams.set('title', encodeURIComponent(title));
-        
-        window.history.pushState({ postId }, title, url);
-    };
+
 
     /**
      * Ripristina il contenuto originale
      */
-    const restoreOriginalContent = () => {
+    const restoreOriginalContent = async () => {
         state.currentPostId = null;
         
         if (state.isMobile) {
-            // Su mobile, rimuovi tutti i contenitori mobile
+            // Su mobile, rimuovi tutti i contenitori mobile con animazione
             const mobileContents = document.querySelectorAll(config.selectors.mobileContentArea);
-            mobileContents.forEach(content => content.remove());
+            for (const content of mobileContents) {
+                await slideUpAndRemove(content);
+            }
         } else {
             // Su desktop, ripristina il contenuto originale
             if (elements.contentArea) {
@@ -412,15 +518,18 @@ const archiveContentLoader = (() => {
         }
         
         // Rimuovi classe active da tutti gli elementi
-        document.querySelectorAll(config.selectors.items).forEach(item => {
-            item.classList.remove(config.classes.inactive);
+        document.querySelectorAll(config.selectors.links).forEach(link => {
+            link.classList.remove('active');
+            link.closest('.side-archive-item').classList.remove('active');
+            
+            // Rimuovi l'icona di chiusura se presente
+            const closeSpan = link.querySelector('span img[alt="Chiudi"]');
+            if (closeSpan && closeSpan.parentNode) {
+                closeSpan.parentNode.remove();
+            }
         });
         
-        // Aggiorna l'URL del browser
-        const url = new URL(window.location);
-        url.searchParams.delete('post');
-        url.searchParams.delete('title');
-        window.history.pushState({}, document.title, url);
+
     };
 
     /**

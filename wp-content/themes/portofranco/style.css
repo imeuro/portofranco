@@ -429,15 +429,27 @@ nav#site-navigation .menu-post-mobile a {
     font-size: 30px;
     line-height: 1.6;
     margin-bottom: 20px;
+    width: 100%;
+    display: block;
 }
 .side-content a {
     display: block;
 }
+.side-archive-item { position: relative; }
+.side-archive-item .close-icon {
+    position: absolute;
+    right: 0;
+    top: 16px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
 
-div#mob-main-textarea {
+.side-archive-item #mob-main-textarea {
     font-size: 18px;
     margin: 32px 0;
 }
+
 
 @media (min-width: 1000px) {
     #main article {
@@ -452,6 +464,14 @@ div#mob-main-textarea {
         font-size: 18px;
         line-height: 1.6;
         margin: 10px 0 40px 0;
+    }
+
+    .side-archive-item .close-icon {
+        top: 8px;
+        right: 48px;
+        width: 12px;
+        height: 12px;
+        cursor: pointer;
     }
 
     .entry-content {
@@ -486,7 +506,9 @@ div#mob-main-textarea {
         flex: 0 0 340px;
         font-size: 20px;
     }
-
+    .side-archive-item .close-icon {
+        top: 10px;
+    }
     .entry-content {
         flex: 1 0 calc(100% - 360px);
     }
