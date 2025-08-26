@@ -399,7 +399,7 @@ nav#site-navigation .menu-post-mobile a {
 #main {
     min-height: 400px;
     position: relative;
-    z-index: 100;
+    z-index: 9;
 }
 
 #main article {
@@ -452,6 +452,9 @@ nav#site-navigation .menu-post-mobile a {
 
 
 @media (min-width: 1000px) {
+    #main {
+        z-index: 100;
+    }
     #main article {
         align-items: flex-start;
         justify-content: flex-start;
