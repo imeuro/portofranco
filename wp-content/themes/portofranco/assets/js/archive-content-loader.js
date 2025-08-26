@@ -5,6 +5,13 @@
 
 const archiveContentLoader = (() => {
     /**
+     * Determina se siamo su dispositivo mobile
+     */
+    const isMobile = () => {
+        return window.innerWidth <= 768;
+    };
+
+    /**
      * Determina l'URL base dell'API in base all'ambiente
      */
     const getApiBaseUrl = () => {
@@ -54,6 +61,7 @@ const archiveContentLoader = (() => {
             list: '#side-archive-list',
             items: '.side-archive-item',
             contentArea: '#main-textarea',
+            mobileContentArea: '#mob-main-textarea',
             links: '.side-archive-item a'
         },
         classes: {
@@ -71,7 +79,8 @@ const archiveContentLoader = (() => {
     let state = {
         currentPostId: null,
         originalContent: null,
-        isLoading: false
+        isLoading: false,
+        isMobile: false
     };
 
     // Elementi DOM
@@ -83,23 +92,36 @@ const archiveContentLoader = (() => {
     const init = () => {
         console.log('Archive Content Loader: Inizializzazione...');
         
+        // Aggiorna lo stato mobile
+        state.isMobile = isMobile();
+        
         // Trova gli elementi DOM
         elements.list = document.querySelector(config.selectors.list);
-        elements.contentArea = document.querySelector(config.selectors.contentArea);
         
-        if (!elements.list || !elements.contentArea) {
-            console.warn('Archive Content Loader: Elementi richiesti non trovati');
+        if (state.isMobile) {
+            console.log('Archive Content Loader: Modalità mobile rilevata');
+            // Su mobile non cerchiamo #main-textarea inizialmente
+        } else {
+            elements.contentArea = document.querySelector(config.selectors.contentArea);
+            if (!elements.contentArea) {
+                console.warn('Archive Content Loader: Elemento #main-textarea non trovato');
+                return;
+            }
+            // Salva il contenuto originale solo su desktop
+            state.originalContent = elements.contentArea.innerHTML;
+        }
+        
+        if (!elements.list) {
+            console.warn('Archive Content Loader: Elemento lista non trovato');
             return;
         }
 
-        // Salva il contenuto originale
-        state.originalContent = elements.contentArea.innerHTML;
-        
         // Ottieni il post type dall'attributo data
         const postType = elements.list.dataset.postType;
         console.log('Archive Content Loader: Post type rilevato:', postType);
         console.log('Archive Content Loader: Elementi lista trovati:', elements.list.querySelectorAll(config.selectors.items).length);
         console.log('Archive Content Loader: API Base URL:', config.apiBase);
+        console.log('Archive Content Loader: Modalità:', state.isMobile ? 'Mobile' : 'Desktop');
         
         // Aggiungi event listeners
         addEventListeners();
@@ -116,6 +138,64 @@ const archiveContentLoader = (() => {
         
         // Gestione navigazione browser
         window.addEventListener('popstate', handlePopState);
+        
+        // Gestione resize per cambiare modalità
+        window.addEventListener('resize', handleResize);
+    };
+
+    /**
+     * Gestisce il resize della finestra
+     */
+    const handleResize = () => {
+        const wasMobile = state.isMobile;
+        state.isMobile = isMobile();
+        
+        // Se è cambiata la modalità, ripristina lo stato originale
+        if (wasMobile !== state.isMobile) {
+            console.log('Archive Content Loader: Cambio modalità da', wasMobile ? 'Mobile' : 'Desktop', 'a', state.isMobile ? 'Mobile' : 'Desktop');
+            
+            if (state.isMobile) {
+                // Passaggio a mobile: rimuovi contenuto da desktop
+                if (elements.contentArea) {
+                    elements.contentArea.innerHTML = state.originalContent || '';
+                }
+            } else {
+                // Passaggio a desktop: rimuovi contenuto mobile
+                const mobileContent = document.querySelector(config.selectors.mobileContentArea);
+                if (mobileContent) {
+                    mobileContent.remove();
+                }
+                // Ripristina contenuto originale su desktop
+                if (elements.contentArea && state.originalContent) {
+                    elements.contentArea.innerHTML = state.originalContent;
+                }
+            }
+            
+            // Reset dello stato
+            state.currentPostId = null;
+            state.isLoading = false;
+        }
+    };
+
+    /**
+     * Crea il contenitore mobile dopo il link cliccato
+     */
+    const createMobileContentArea = (clickedLink) => {
+        // Rimuovi eventuali contenitori mobile esistenti
+        const existingMobileContent = document.querySelector(config.selectors.mobileContentArea);
+        if (existingMobileContent) {
+            existingMobileContent.remove();
+        }
+        
+        // Crea il nuovo contenitore
+        const mobileContentArea = document.createElement('div');
+        mobileContentArea.id = 'mob-main-textarea';
+        mobileContentArea.className = 'mobile-content-area';
+        
+        // Inserisci dopo il link cliccato
+        clickedLink.parentNode.insertBefore(mobileContentArea, clickedLink.nextSibling);
+        
+        return mobileContentArea;
     };
 
     /**
@@ -141,6 +221,8 @@ const archiveContentLoader = (() => {
         if (!link) return;
         
         event.preventDefault();
+        link.classList.toggle('active');
+        link.closest('.side-archive-item').classList.toggle('active');
         
         // Ottieni l'ID del post dall'attributo data
         const postType = elements.list.dataset.postType;
@@ -196,7 +278,7 @@ const archiveContentLoader = (() => {
             const data = await response.json();
             
             // Aggiorna il contenuto
-            updateContent(data);
+            updateContent(data, clickedLink);
             
             // Aggiorna l'URL del browser
             updateBrowserURL(postId, data.title);
@@ -205,7 +287,7 @@ const archiveContentLoader = (() => {
             
         } catch (error) {
             console.error('Archive Content Loader: Errore nel caricamento:', error);
-            handleError(error);
+            handleError(error, clickedLink);
         } finally {
             state.isLoading = false;
         }
@@ -225,16 +307,30 @@ const archiveContentLoader = (() => {
             clickedLink.closest(config.selectors.items).classList.remove(config.classes.inactive);
         }
         
-        // Aggiungi classe loading all'area contenuto
-        elements.contentArea.classList.add(config.classes.loading);
+        // Aggiungi classe loading all'area contenuto appropriata
+        if (state.isMobile) {
+            // Su mobile, la classe loading verrà aggiunta dopo la creazione del contenitore
+        } else {
+            elements.contentArea.classList.add(config.classes.loading);
+        }
     };
 
     /**
      * Aggiorna il contenuto dell'area principale
      */
-    const updateContent = (data) => {
+    const updateContent = (data, clickedLink) => {
+        let targetContentArea;
+        
+        if (state.isMobile) {
+            // Su mobile, crea il contenitore dopo il link cliccato
+            targetContentArea = createMobileContentArea(clickedLink);
+        } else {
+            // Su desktop, usa il contenitore esistente
+            targetContentArea = elements.contentArea;
+        }
+        
         // Rimuovi classe loading
-        elements.contentArea.classList.remove(config.classes.loading);
+        targetContentArea.classList.remove(config.classes.loading);
         
         // Crea il nuovo contenuto
         const newContent = `
@@ -244,22 +340,31 @@ const archiveContentLoader = (() => {
         `;
         
         // Aggiorna il contenuto con animazione
-        elements.contentArea.style.opacity = '0';
-        elements.contentArea.innerHTML = newContent;
+        targetContentArea.style.opacity = '0';
+        targetContentArea.innerHTML = newContent;
         
         // Anima l'apparizione
         setTimeout(() => {
-            elements.contentArea.style.transition = `opacity ${config.animation.duration}ms ${config.animation.easing}`;
-            elements.contentArea.style.opacity = '1';
+            targetContentArea.style.transition = `opacity ${config.animation.duration}ms ${config.animation.easing}`;
+            targetContentArea.style.opacity = '1';
         }, 10);
     };
 
     /**
      * Gestisce gli errori
      */
-    const handleError = (error) => {
-        elements.contentArea.classList.remove(config.classes.loading);
-        elements.contentArea.classList.add(config.classes.error);
+    const handleError = (error, clickedLink) => {
+        let targetContentArea;
+        
+        if (state.isMobile) {
+            // Su mobile, crea il contenitore per l'errore
+            targetContentArea = createMobileContentArea(clickedLink);
+        } else {
+            targetContentArea = elements.contentArea;
+        }
+        
+        targetContentArea.classList.remove(config.classes.loading);
+        targetContentArea.classList.add(config.classes.error);
         
         const errorContent = `
             <div class="error-message">
@@ -268,7 +373,7 @@ const archiveContentLoader = (() => {
             </div>
         `;
         
-        elements.contentArea.innerHTML = errorContent;
+        targetContentArea.innerHTML = errorContent;
     };
 
     /**
@@ -287,14 +392,24 @@ const archiveContentLoader = (() => {
      */
     const restoreOriginalContent = () => {
         state.currentPostId = null;
-        elements.contentArea.classList.remove(config.classes.loading, config.classes.error);
         
-        elements.contentArea.style.opacity = '0';
-        elements.contentArea.innerHTML = state.originalContent;
-        
-        setTimeout(() => {
-            elements.contentArea.style.opacity = '1';
-        }, 10);
+        if (state.isMobile) {
+            // Su mobile, rimuovi tutti i contenitori mobile
+            const mobileContents = document.querySelectorAll(config.selectors.mobileContentArea);
+            mobileContents.forEach(content => content.remove());
+        } else {
+            // Su desktop, ripristina il contenuto originale
+            if (elements.contentArea) {
+                elements.contentArea.classList.remove(config.classes.loading, config.classes.error);
+                
+                elements.contentArea.style.opacity = '0';
+                elements.contentArea.innerHTML = state.originalContent;
+                
+                setTimeout(() => {
+                    elements.contentArea.style.opacity = '1';
+                }, 10);
+            }
+        }
         
         // Rimuovi classe active da tutti gli elementi
         document.querySelectorAll(config.selectors.items).forEach(item => {
