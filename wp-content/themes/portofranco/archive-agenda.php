@@ -144,7 +144,7 @@ $months = array(
               
               <li class="side-archive-year side-archive-year-desktop">
                 <span class="year-label" tabindex="0" role="button" aria-expanded="<?php echo ($year === reset($years)) ? 'true' : 'false'; ?>" aria-controls="months-<?php echo esc_attr($year); ?>"><?php echo esc_html($year); ?></span>
-                <ul id="months-<?php echo esc_attr($year); ?>" class="months-list" style="display: <?php echo ($year === reset($years)) ? 'block' : 'none'; ?>;">
+                <ul id="months-<?php echo esc_attr($year); ?>" class="months-list <?php echo ($year === reset($years)) ? 'expanded' : ''; ?>">
                   <?php foreach ( $months as $month_num => $month_name ) : ?>
                     <li class="side-archive-month side-archive-item">
                       <?php if ( portofranco_has_agenda_posts_for_month($year, $month_num) ) : ?>

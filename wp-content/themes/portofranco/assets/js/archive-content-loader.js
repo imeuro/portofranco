@@ -625,12 +625,12 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             allMonthsLists.forEach(function (list) {
-                list.style.display = 'none';
+                list.classList.remove('expanded');
             });
 
             // Se l'anno cliccato era chiuso, aprilo
             if (!isExpanded) {
-                monthsList.style.display = 'block';
+                monthsList.classList.add('expanded');
                 this.setAttribute('aria-expanded', 'true');
             }
             // Se l'anno cliccato era aperto, rimane chiuso (comportamento toggle)
