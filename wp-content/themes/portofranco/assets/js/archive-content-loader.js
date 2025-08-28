@@ -253,7 +253,7 @@ const archiveContentLoader = (() => {
     /**
      * Crea il contenitore mobile dopo il link cliccato
      */
-    const createMobileContentArea = (clickedLink, postType) => {
+    const createMobileContentArea = (clickedLink) => {
         // Rimuovi eventuali contenitori mobile esistenti con animazione
         const existingMobileContent = document.querySelector(config.selectors.mobileContentArea);
         if (existingMobileContent) {
@@ -265,15 +265,8 @@ const archiveContentLoader = (() => {
         mobileContentArea.id = 'mob-main-textarea';
         mobileContentArea.className = 'mobile-content-area slide-content';
         
-        if(postType === 'agenda') {            // Inserisci prima del contenitore principale #main-textarea
-            const mainTextarea = document.querySelector('#main-textarea');
-            if (mainTextarea) {
-                mainTextarea.insertAdjacentElement('beforebegin', mobileContentArea);
-            }
-        } else {
-            // Inserisci dopo il link cliccato
-            clickedLink.parentNode.insertBefore(mobileContentArea, clickedLink.nextSibling);
-        }
+        // Inserisci dopo il link cliccato
+        clickedLink.parentNode.insertBefore(mobileContentArea, clickedLink.nextSibling);
         
         return mobileContentArea;
     };
@@ -328,11 +321,7 @@ const archiveContentLoader = (() => {
         if (isAlreadyActive) {
             // Rimuovi le classi active
             link.classList.remove('active');
-            link.classList.remove('inactive');
             link.closest('.side-archive-item').classList.remove('active');
-            document.querySelectorAll(config.selectors.items).forEach(item => {
-                item.classList.remove('inactive');
-            });
             
             // Rimuovi l'icona di chiusura
             const closeSpan = link.querySelector('span img[alt="Chiudi"]');
@@ -349,7 +338,6 @@ const archiveContentLoader = (() => {
         document.querySelectorAll(config.selectors.links).forEach(otherLink => {
             otherLink.classList.remove('active');
             otherLink.closest('.side-archive-item').classList.remove('active');
-            otherLink.closest('.side-archive-item').classList.add('inactive');
             
             // Rimuovi l'icona di chiusura se presente
             const closeSpan = otherLink.querySelector('span img[alt="Chiudi"]');
@@ -361,7 +349,6 @@ const archiveContentLoader = (() => {
         // Aggiungi le classi active all'elemento cliccato
         link.classList.add('active');
         link.closest('.side-archive-item').classList.add('active');
-        link.closest('.side-archive-item').classList.remove('inactive');
         // Aggiungi l'icona di chiusura
         const closeSpan = document.createElement('span');
         const basePath = getWordPressBasePath();
@@ -452,7 +439,7 @@ const archiveContentLoader = (() => {
         
         if (state.isMobile) {
             // Su mobile, crea il contenitore dopo il link cliccato
-            targetContentArea = createMobileContentArea(clickedLink, postType);
+            targetContentArea = createMobileContentArea(clickedLink);
         } else {
             // Su desktop, usa il contenitore esistente
             targetContentArea = elements.contentArea;
@@ -532,7 +519,7 @@ const archiveContentLoader = (() => {
         
         if (state.isMobile) {
             // Su mobile, crea il contenitore per l'errore
-            targetContentArea = createMobileContentArea(clickedLink, postType);
+            targetContentArea = createMobileContentArea(clickedLink);
         } else {
             targetContentArea = elements.contentArea;
         }
@@ -629,12 +616,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const monthsList = yearItem.querySelector('.months-list');
             const isExpanded = this.getAttribute('aria-expanded') === 'true';
 
-            // Se l'anno cliccato è già espanso, non fare nulla
-            if (isExpanded) {
-                return;
-            }
-
-            // Chiudi tutti gli altri anni
+            // Chiudi tutti gli anni prima
             const allYearLabels = document.querySelectorAll('.side-archive-year .year-label');
             const allMonthsLists = document.querySelectorAll('.side-archive-year .months-list');
 
@@ -643,12 +625,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             allMonthsLists.forEach(function (list) {
-                list.classList.remove('expanded');
+                list.style.display = 'none';
             });
 
-            // Espandi solo l'anno cliccato
-            monthsList.classList.add('expanded');
-            this.setAttribute('aria-expanded', 'true');
+            // Se l'anno cliccato era chiuso, aprilo
+            if (!isExpanded) {
+                monthsList.style.display = 'block';
+                this.setAttribute('aria-expanded', 'true');
+            }
+            // Se l'anno cliccato era aperto, rimane chiuso (comportamento toggle)
         });
 
         // Gestione tastiera per accessibilità

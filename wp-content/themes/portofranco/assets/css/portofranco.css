@@ -283,7 +283,7 @@ body.home {
 }
 
 @media (min-width: 1000px) {
-    #side-archive-list {
+    #side-archive-list[data-post-type="agenda"] {
         flex-flow: column nowrap;
     }
 
