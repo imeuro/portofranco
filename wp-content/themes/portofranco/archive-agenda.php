@@ -118,33 +118,10 @@ $months = array(
 
         <div class="side-content">
           <ul id="side-archive-list" class="side-content-inner" data-post-type="agenda">
-            <?php foreach ( $years as $year ) : ?>
-              <!--li class="side-archive-year side-archive-year-mobile">
-                <span class="year-label" tabindex="0" role="button" aria-expanded="<?php echo ($year === reset($years)) ? 'true' : 'false'; ?>" aria-controls="months-<?php echo esc_attr($year); ?>"><?php echo esc_html($year); ?></span>
-                <ul id="months-<?php echo esc_attr($year); ?>" class="months-list <?php if ($year == '2025') { echo 'expanded'; } ?>">
-                  <?php foreach ( $months as $month_num => $month_name ) : ?>
-                    <li class="side-archive-month side-archive-item">
-                      <?php if ( portofranco_has_agenda_posts_for_month($year, $month_num) ) : ?>
-                        <a href="<?php echo esc_url(portofranco_get_agenda_month_archive_url($year, $month_num)); ?>" 
-                           rel="bookmark" 
-                           title="<?php echo esc_attr(sprintf(__('Eventi di %s %d', 'portofranco'), $month_name, $year)); ?>"
-                           data-year="<?php echo esc_attr($year); ?>"
-                           data-month="<?php echo esc_attr($month_num); ?>">
-                          <?php echo esc_html($month_name); ?>
-                        </a>
-                      <?php else : ?>
-                        <span class="month-no-events"><?php echo esc_html($month_name); ?></span>
-                      <?php endif; ?>
-                    </li>
-                  <?php endforeach; ?>
-                </ul>
-              </li--> 
-
-
-              
+            <?php foreach ( $years as $year ) : ?>              
               <li class="side-archive-year side-archive-year-desktop">
-                <span class="year-label" tabindex="0" role="button" aria-expanded="<?php echo ($year === reset($years)) ? 'true' : 'false'; ?>" aria-controls="months-<?php echo esc_attr($year); ?>"><?php echo esc_html($year); ?></span>
-                <ul id="months-<?php echo esc_attr($year); ?>" class="months-list <?php echo ($year === reset($years)) ? 'expanded' : ''; ?>">
+                <span class="year-label" tabindex="0" role="button" aria-expanded="false" aria-controls="months-<?php echo esc_attr($year); ?>"><?php echo esc_html($year); ?></span>
+                <ul id="months-<?php echo esc_attr($year); ?>" class="months-list">
                   <?php foreach ( $months as $month_num => $month_name ) : ?>
                     <li class="side-archive-month side-archive-item">
                       <?php if ( portofranco_has_agenda_posts_for_month($year, $month_num) ) : ?>
@@ -190,47 +167,5 @@ $months = array(
     </div>
   <?php endif; ?>
 </main>
-
-<script>
-// Gestione toggle anni/mesi nell'archivio agenda
-document.addEventListener('DOMContentLoaded', function() {
-    const yearLabels = document.querySelectorAll('.side-archive-year .year-label');
-    
-    yearLabels.forEach(function(yearLabel) {
-        yearLabel.addEventListener('click', function() {
-            const yearItem = this.closest('.side-archive-year');
-            const monthsList = yearItem.querySelector('.months-list');
-            const isExpanded = this.getAttribute('aria-expanded') === 'true';
-            
-            // Chiudi tutti gli anni prima
-            const allYearLabels = document.querySelectorAll('.side-archive-year .year-label');
-            const allMonthsLists = document.querySelectorAll('.side-archive-year .months-list');
-            
-            allYearLabels.forEach(function(label) {
-                label.setAttribute('aria-expanded', 'false');
-            });
-            
-            allMonthsLists.forEach(function(list) {
-                list.style.display = 'none';
-            });
-            
-            // Se l'anno cliccato era chiuso, aprilo
-            if (!isExpanded) {
-                monthsList.style.display = 'block';
-                this.setAttribute('aria-expanded', 'true');
-            }
-            // Se l'anno cliccato era aperto, rimane chiuso (comportamento toggle)
-        });
-        
-        // Gestione tastiera per accessibilità
-        yearLabel.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                this.click();
-            }
-        });
-    });
-});
-</script>
 
 <?php get_footer(); ?> 
