@@ -253,7 +253,7 @@ const archiveContentLoader = (() => {
     /**
      * Crea il contenitore mobile dopo il link cliccato
      */
-    const createMobileContentArea = (clickedLink) => {
+    const createMobileContentArea = (clickedLink, postType) => {
         // Rimuovi eventuali contenitori mobile esistenti con animazione
         const existingMobileContent = document.querySelector(config.selectors.mobileContentArea);
         if (existingMobileContent) {
@@ -265,8 +265,15 @@ const archiveContentLoader = (() => {
         mobileContentArea.id = 'mob-main-textarea';
         mobileContentArea.className = 'mobile-content-area slide-content';
         
-        // Inserisci dopo il link cliccato
-        clickedLink.parentNode.insertBefore(mobileContentArea, clickedLink.nextSibling);
+        if(postType === 'agenda') {            // Inserisci prima del contenitore principale #main-textarea
+            const mainTextarea = document.querySelector('#main-textarea');
+            if (mainTextarea) {
+                mainTextarea.insertAdjacentElement('beforebegin', mobileContentArea);
+            }
+        } else {
+            // Inserisci dopo il link cliccato
+            clickedLink.parentNode.insertBefore(mobileContentArea, clickedLink.nextSibling);
+        }
         
         return mobileContentArea;
     };
@@ -321,7 +328,11 @@ const archiveContentLoader = (() => {
         if (isAlreadyActive) {
             // Rimuovi le classi active
             link.classList.remove('active');
+            link.classList.remove('inactive');
             link.closest('.side-archive-item').classList.remove('active');
+            document.querySelectorAll(config.selectors.items).forEach(item => {
+                item.classList.remove('inactive');
+            });
             
             // Rimuovi l'icona di chiusura
             const closeSpan = link.querySelector('span img[alt="Chiudi"]');
@@ -338,6 +349,7 @@ const archiveContentLoader = (() => {
         document.querySelectorAll(config.selectors.links).forEach(otherLink => {
             otherLink.classList.remove('active');
             otherLink.closest('.side-archive-item').classList.remove('active');
+            otherLink.closest('.side-archive-item').classList.add('inactive');
             
             // Rimuovi l'icona di chiusura se presente
             const closeSpan = otherLink.querySelector('span img[alt="Chiudi"]');
@@ -349,6 +361,7 @@ const archiveContentLoader = (() => {
         // Aggiungi le classi active all'elemento cliccato
         link.classList.add('active');
         link.closest('.side-archive-item').classList.add('active');
+        link.closest('.side-archive-item').classList.remove('inactive');
         // Aggiungi l'icona di chiusura
         const closeSpan = document.createElement('span');
         const basePath = getWordPressBasePath();
@@ -439,7 +452,7 @@ const archiveContentLoader = (() => {
         
         if (state.isMobile) {
             // Su mobile, crea il contenitore dopo il link cliccato
-            targetContentArea = createMobileContentArea(clickedLink);
+            targetContentArea = createMobileContentArea(clickedLink, postType);
         } else {
             // Su desktop, usa il contenitore esistente
             targetContentArea = elements.contentArea;
@@ -519,7 +532,7 @@ const archiveContentLoader = (() => {
         
         if (state.isMobile) {
             // Su mobile, crea il contenitore per l'errore
-            targetContentArea = createMobileContentArea(clickedLink);
+            targetContentArea = createMobileContentArea(clickedLink, postType);
         } else {
             targetContentArea = elements.contentArea;
         }

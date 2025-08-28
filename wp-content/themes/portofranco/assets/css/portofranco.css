@@ -197,10 +197,37 @@ body.home {
 
 
 /* Stili per il toggle anni/mesi */
+#side-archive-list[data-post-type="agenda"] {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
 .side-archive-year .year-label {
     cursor: pointer;
     width: 100%;
     display: inline-block;
+}
+.side-archive-year .year-label[aria-expanded="true"]:after,
+.side-archive-year .year-label[aria-expanded="false"]:after {
+    content: '';
+    width: 12px;
+    height: 2px;
+    position: relative;
+    top: -5px;
+    left: 10px;
+    display: inline-block;
+    background: #000
+
+}
+.side-archive-year .year-label[aria-expanded="false"]:after {
+    width: 12px;
+    height: 12px;
+    background: url('../img/close.svg') no-repeat center center;
+    background-size: contain;
+    transform: rotate(45deg);
+    top: -1px;
 }
 .months-list {
     margin-left: 12px;
@@ -219,6 +246,10 @@ body.home {
 
 .side-archive-month {
     margin-bottom: 3px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 2;
+    color: #000;
 }
 
 .side-archive-month a {
@@ -249,4 +280,11 @@ body.home {
     font-size: 12px;
     line-height: 1.2;
     color: #000;
+}
+
+@media (min-width: 1000px) {
+    #side-archive-list {
+        flex-flow: column nowrap;
+    }
+
 }
