@@ -35,11 +35,11 @@ function portofranco_enqueue_scripts() {
   wp_enqueue_script( 'portofranco-header-scroll', get_template_directory_uri() . '/assets/js/header-scroll.js', array(), null, true );
   
   // Carica il JavaScript per il caricamento dinamico del contenuto degli archivi
-  wp_enqueue_script( 'portofranco-archive-content-loader', get_template_directory_uri() . '/assets/js/archive-content-loader.js', array(), null, true );
+  wp_enqueue_script( 'portofranco-archive-content-loader', get_template_directory_uri() . '/assets/js/archive-content-loader.js', array(), '1.0.1', true );
   
   // Aggiungi variabile globale per l'URL base dell'API
   wp_localize_script( 'portofranco-archive-content-loader', 'portofrancoAjax', array(
-    'apiBase' => get_rest_url( null, 'pf/v1/post-content/' ),
+    'apiBase' => get_rest_url( null, 'pf/v1/' ),
     'nonce' => wp_create_nonce( 'wp_rest' )
   ) );
 }

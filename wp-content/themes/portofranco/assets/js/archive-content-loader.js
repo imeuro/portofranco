@@ -33,31 +33,6 @@ const getWordPressBasePath = () => {
 /**
  * Archive Content Loader
  * Gestisce il caricamento dinamico del contenuto dei post negli archivi
- * 
- * CSS consigliato per le animazioni:
- * .mobile-content-area {
- *     margin: 10px 0;
- *     padding: 15px;
- *     background: #f9f9f9;
- *     border-radius: 8px;
- *     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
- * }
- * 
- * .slide-content {
- *     display: none;
- * }
- * 
- * .close-icon {
- *     display: inline-block;
- *     margin-left: 10px;
- *     cursor: pointer;
- *     opacity: 0.7;
- *     transition: opacity 0.2s ease;
- * }
- * 
- * .close-icon:hover {
- *     opacity: 1;
- * }
  */
 
 const archiveContentLoader = (() => {
@@ -84,21 +59,31 @@ const archiveContentLoader = (() => {
         
         // Usa la funzione centralizzata per il base path
         const basePath = getWordPressBasePath();
-        return `${basePath}wp-json/pf/v1/post-content/`;
+        return `${basePath}wp-json/pf/v1/`;
     };
 
     /**
      * Costruisce l'URL completo per la richiesta API
      */
-    const buildApiUrl = (postId) => {
+    const buildApiUrl = (params, postType) => {
         const baseUrl = config.apiBase;
+        
+        let endpoint = '';
+        
+        if (postType === 'agenda') {
+            // Per Agenda, usa endpoint per liste di post
+            endpoint = `agenda-posts/${params.year}/${params.month}`;
+        } else {
+            // Per altri post types, usa endpoint per post singoli
+            endpoint = `post-content/${params.postId}`;
+        }
         
         // Se l'URL base è relativo, costruisci l'URL completo
         if (baseUrl.startsWith('/')) {
-            return `${window.location.origin}${baseUrl}${postId}`;
+            return `${window.location.origin}${baseUrl}${endpoint}`;
         }
         
-        return `${baseUrl}${postId}`;
+        return `${baseUrl}${endpoint}`;
     };
 
     // Configurazione
@@ -287,18 +272,37 @@ const archiveContentLoader = (() => {
     };
 
     /**
-     * Ottiene l'ID del post dall'attributo data
+     * Ottiene i parametri del post dall'attributo data
      */
-    const getPostIdFromData = (link, postType) => {
-        // Mappa dei post types ai loro attributi data
-        const dataAttributeMap = {
-            'artisti': 'artist',
-            'agenda': 'agenda',
-            'post': 'post'
-        };
-        
-        const dataAttribute = dataAttributeMap[postType] || postType;
-        return link.dataset[`${dataAttribute}Id`];
+    const getPostParamsFromData = (link, postType) => {
+        if (postType === 'agenda') {
+            // Per Agenda, usa year e month
+            const year = link.dataset.year;
+            const month = link.dataset.month;
+            
+            if (!year || !month) {
+                console.error('Archive Content Loader: Parametri year/month mancanti per Agenda');
+                return null;
+            }
+            
+            return { year, month };
+        } else {
+            // Per altri post types (artisti, post), usa l'ID
+            const dataAttributeMap = {
+                'artisti': 'artist',
+                'post': 'post'
+            };
+            
+            const dataAttribute = dataAttributeMap[postType] || postType;
+            const postId = link.dataset[`${dataAttribute}Id`];
+            
+            if (!postId) {
+                console.error('Archive Content Loader: ID post mancante per', postType);
+                return null;
+            }
+            
+            return { postId };
+        }
     };
 
     /**
@@ -353,12 +357,12 @@ const archiveContentLoader = (() => {
         link.appendChild(closeSpan);
 
         
-        // Ottieni l'ID del post dall'attributo data
+        // Ottieni i parametri del post dall'attributo data
         const postType = elements.list.dataset.postType;
-        const postId = getPostIdFromData(link, postType);
+        const postParams = getPostParamsFromData(link, postType);
         
-        if (!postId) {
-            console.error('Archive Content Loader: ID post non trovato');
+        if (!postParams) {
+            console.error('Archive Content Loader: Parametri post non trovati');
             console.log('Archive Content Loader: Post type:', postType);
             console.log('Archive Content Loader: Available data attributes:', Object.keys(link.dataset));
             console.log('Archive Content Loader: Link HTML:', link.outerHTML);
@@ -366,7 +370,7 @@ const archiveContentLoader = (() => {
         }
         
         // Carica il contenuto
-        loadPostContent(postId, link);
+        loadPostContent(postParams, postType, link);
     };
 
 
@@ -374,18 +378,23 @@ const archiveContentLoader = (() => {
     /**
      * Carica il contenuto di un post
      */
-    const loadPostContent = async (postId, clickedLink = null) => {
-        if (state.isLoading || state.currentPostId === postId) return;
+    const loadPostContent = async (postParams, postType, clickedLink = null) => {
+        // Crea un identificatore unico per il contenuto corrente
+        const currentContentId = postType === 'agenda' 
+            ? `agenda-${postParams.year}-${postParams.month}`
+            : postParams.postId;
+            
+        if (state.isLoading || state.currentPostId === currentContentId) return;
         
         state.isLoading = true;
-        state.currentPostId = postId;
+        state.currentPostId = currentContentId;
         
         // Aggiorna UI
         updateUI(clickedLink);
         
         try {
-            console.log('Archive Content Loader: Caricamento post ID:', postId);
-            const apiUrl = buildApiUrl(postId);
+            console.log('Archive Content Loader: Caricamento', postType, 'con parametri:', postParams);
+            const apiUrl = buildApiUrl(postParams, postType);
             console.log('Archive Content Loader: URL richiesta:', apiUrl);
             
             // Effettua la richiesta API
@@ -398,13 +407,13 @@ const archiveContentLoader = (() => {
             const data = await response.json();
             
             // Aggiorna il contenuto
-            await updateContent(data, clickedLink);
+            await updateContent(data, postType, clickedLink);
             
             console.log('Archive Content Loader: Contenuto caricato con successo');
             
         } catch (error) {
             console.error('Archive Content Loader: Errore nel caricamento:', error);
-            handleError(error, clickedLink);
+            handleError(error, postType, clickedLink);
         } finally {
             state.isLoading = false;
         }
@@ -425,7 +434,7 @@ const archiveContentLoader = (() => {
     /**
      * Aggiorna il contenuto dell'area principale
      */
-    const updateContent = async (data, clickedLink) => {
+    const updateContent = async (data, postType, clickedLink) => {
         let targetContentArea;
         
         if (state.isMobile) {
@@ -439,12 +448,51 @@ const archiveContentLoader = (() => {
         // Rimuovi classe loading
         targetContentArea.classList.remove(config.classes.loading);
         
-        // Crea il nuovo contenuto
-        const newContent = `
-            <div class="dynamic-content">
-                ${data.content}
-            </div>
-        `;
+        // Crea il nuovo contenuto in base al tipo di post
+        let newContent = '';
+        
+        if (postType === 'agenda') {
+            // Per Agenda, gestisci lista di post
+            if (data.posts && Array.isArray(data.posts)) {
+                newContent = `
+                    <div class="dynamic-content agenda-posts">
+                        <div class="agenda-posts-list">
+                            ${data.posts.map(post => `
+                                <div class="agenda-post-item">
+                                    ${post.featured_image ? `
+                                        <div class="post-image">
+                                            <img src="${post.featured_image}" alt="${post.title}" loading="lazy">
+                                        </div>
+                                    ` : ''}
+                                    <div class="post-content">
+                                        <h2 class="agenda-post-title"><a href="${post.link}">${post.title}</a></h2>
+                                        <div class="post-meta">
+                                            <time>${post.formatted_date}</time>
+                                        </div>
+                                        <div class="post-excerpt">
+                                            ${post.excerpt}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                newContent = `
+                    <div class="dynamic-content">
+                        <p>Nessun evento trovato per ${data.month_name} ${data.year}</p>
+                    </div>
+                `;
+            }
+        } else {
+            // Per altri post types (artisti, post), usa il contenuto singolo
+            newContent = `
+                <div class="dynamic-content">
+                    ${data.content}
+                </div>
+            `;
+        }
         
         // Aggiorna il contenuto
         targetContentArea.innerHTML = newContent;
@@ -466,7 +514,7 @@ const archiveContentLoader = (() => {
     /**
      * Gestisce gli errori
      */
-    const handleError = (error, clickedLink) => {
+    const handleError = (error, postType, clickedLink) => {
         let targetContentArea;
         
         if (state.isMobile) {
@@ -496,6 +544,7 @@ const archiveContentLoader = (() => {
      */
     const restoreOriginalContent = async () => {
         state.currentPostId = null;
+        state.isLoading = false;
         
         if (state.isMobile) {
             // Su mobile, rimuovi tutti i contenitori mobile con animazione
@@ -548,3 +597,53 @@ document.addEventListener('DOMContentLoaded', archiveContentLoader.init);
 
 // Esponi globalmente per debug
 window.archiveContentLoader = archiveContentLoader;
+
+
+
+
+// Gestione toggle anni/mesi nell'archivio agenda
+document.addEventListener('DOMContentLoaded', function () {
+    // Verifica se siamo nella pagina Agenda
+    const isAgendaPage = document.querySelector('#side-archive-list[data-post-type="agenda"]');
+    
+    if (!isAgendaPage) return;
+
+    const yearLabels = document.querySelectorAll('.side-archive-year .year-label');
+
+    yearLabels.forEach(function (yearLabel) {
+        yearLabel.addEventListener('click', function () {
+            const yearItem = this.closest('.side-archive-year');
+            const monthsList = yearItem.querySelector('.months-list');
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+            // Se l'anno cliccato è già espanso, non fare nulla
+            if (isExpanded) {
+                return;
+            }
+
+            // Chiudi tutti gli altri anni
+            const allYearLabels = document.querySelectorAll('.side-archive-year .year-label');
+            const allMonthsLists = document.querySelectorAll('.side-archive-year .months-list');
+
+            allYearLabels.forEach(function (label) {
+                label.setAttribute('aria-expanded', 'false');
+            });
+
+            allMonthsLists.forEach(function (list) {
+                list.classList.remove('expanded');
+            });
+
+            // Espandi solo l'anno cliccato
+            monthsList.classList.add('expanded');
+            this.setAttribute('aria-expanded', 'true');
+        });
+
+        // Gestione tastiera per accessibilità
+        yearLabel.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.click();
+            }
+        });
+    });
+});

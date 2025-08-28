@@ -2,19 +2,115 @@
 // Template archivio agenda
 get_header();
 
-// Query personalizzata per ottenere tutti gli agenda ordinati alfabeticamente
-$agenda_query = new WP_Query(array(
-    'post_type' => 'agenda',
-    'posts_per_page' => -1, // Mostra tutti i post
-    'post_status' => 'publish',
-    'orderby' => 'title',
-    'order' => 'ASC' // Ordine alfabetico A-Z
-));
+/**
+ * Funzione helper per recuperare gli anni unici dal custom field inizio_evento_anno
+ */
+function portofranco_get_agenda_years() {
+    global $wpdb;
+    
+    $years = $wpdb->get_col($wpdb->prepare(
+        "SELECT DISTINCT pm.meta_value as year 
+         FROM {$wpdb->postmeta} pm 
+         INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID 
+         WHERE pm.meta_key = 'inizio_evento_anno' 
+         AND p.post_type = %s 
+         AND p.post_status = 'publish' 
+         AND pm.meta_value IS NOT NULL 
+         AND pm.meta_value != '' 
+         ORDER BY year ASC",
+        'agenda'
+    ));
+    
+    return $years;
+}
+
+/**
+ * Funzione helper per verificare se esistono post per un anno/mese specifico
+ */
+function portofranco_has_agenda_posts_for_month($year, $month) {
+    global $wpdb;
+    
+    $count = $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) 
+         FROM {$wpdb->postmeta} pm_anno 
+         INNER JOIN {$wpdb->postmeta} pm_mese ON pm_anno.post_id = pm_mese.post_id 
+         INNER JOIN {$wpdb->posts} p ON pm_anno.post_id = p.ID 
+         WHERE pm_anno.meta_key = 'inizio_evento_anno' 
+         AND pm_mese.meta_key = 'inizio_evento_mese' 
+         AND p.post_type = %s 
+         AND p.post_status = 'publish' 
+         AND pm_anno.meta_value = %d 
+         AND pm_mese.meta_value = %d",
+        'agenda',
+        $year,
+        $month
+    ));
+    
+    return $count > 0;
+}
+
+/**
+ * Funzione helper per generare URL dell'archivio per mese
+ */
+function portofranco_get_agenda_month_archive_url($year, $month) {
+    return add_query_arg(array(
+        'anno' => $year,
+        'mese' => $month
+    ), get_post_type_archive_link('agenda'));
+}
+
+// Recupera gli anni disponibili
+$years = portofranco_get_agenda_years();
+
+// Debug temporaneo - rimuovere dopo il test
+if (empty($years)) {
+    // Verifica se ci sono post agenda
+    $test_query = new WP_Query(array(
+        'post_type' => 'agenda',
+        'posts_per_page' => -1,
+        'post_status' => 'publish'
+    ));
+    
+    if ($test_query->have_posts()) {
+        echo '<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">';
+        echo '<h3>Debug: Post Agenda trovati</h3>';
+        echo '<p>Numero post: ' . $test_query->found_posts . '</p>';
+        
+        while ($test_query->have_posts()) {
+            $test_query->the_post();
+            $anno = get_field('inizio_evento_anno');
+            $mese = get_field('inizio_evento_mese');
+            echo '<p>Post ID: ' . get_the_ID() . ' - Titolo: ' . get_the_title() . ' - Anno: ' . ($anno ? $anno : 'NULL') . ' - Mese: ' . ($mese ? $mese : 'NULL') . '</p>';
+        }
+        echo '</div>';
+        wp_reset_postdata();
+    } else {
+        echo '<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">';
+        echo '<h3>Debug: Nessun post agenda trovato</h3>';
+        echo '</div>';
+    }
+}
+
+// Array dei mesi in italiano
+$months = array(
+    1 => 'Gennaio',
+    2 => 'Febbraio', 
+    3 => 'Marzo',
+    4 => 'Aprile',
+    5 => 'Maggio',
+    6 => 'Giugno',
+    7 => 'Luglio',
+    8 => 'Agosto',
+    9 => 'Settembre',
+    10 => 'Ottobre',
+    11 => 'Novembre',
+    12 => 'Dicembre'
+);
 ?>
 <!-- Template: archive-agenda.php -->
 <main id="main" tabindex="-1" role="main">
   
-  <?php if ( $agenda_query->have_posts() ) : ?>
+  <?php if ( !empty($years) ) : ?>
     <div class="agenda-grid">
 
       <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
@@ -22,9 +118,28 @@ $agenda_query = new WP_Query(array(
 
         <div class="side-content">
           <ul id="side-archive-list" class="side-content-inner" data-post-type="agenda">
-            <?php while ( $agenda_query->have_posts() ) : $agenda_query->the_post(); ?>
-              <li class="side-archive-item"><a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>" data-agenda-id="<?php the_ID(); ?>" data-agenda-slug="<?php echo portofranco_get_post_slug(); ?>" ><?php the_title(); ?></a></li>
-            <?php endwhile; ?>
+            <?php foreach ( $years as $year ) : ?>
+              <li class="side-archive-year">
+                <span class="year-label" tabindex="0" role="button" aria-expanded="<?php echo ($year === reset($years)) ? 'true' : 'false'; ?>" aria-controls="months-<?php echo esc_attr($year); ?>"><?php echo esc_html($year); ?></span>
+                <ul id="months-<?php echo esc_attr($year); ?>" class="months-list <?php if ($year == '2025') { echo 'expanded'; } ?>">
+                  <?php foreach ( $months as $month_num => $month_name ) : ?>
+                    <li class="side-archive-month side-archive-item">
+                      <?php if ( portofranco_has_agenda_posts_for_month($year, $month_num) ) : ?>
+                        <a href="<?php echo esc_url(portofranco_get_agenda_month_archive_url($year, $month_num)); ?>" 
+                           rel="bookmark" 
+                           title="<?php echo esc_attr(sprintf(__('Eventi di %s %d', 'portofranco'), $month_name, $year)); ?>"
+                           data-year="<?php echo esc_attr($year); ?>"
+                           data-month="<?php echo esc_attr($month_num); ?>">
+                          <?php echo esc_html($month_name); ?>
+                        </a>
+                      <?php else : ?>
+                        <span class="month-no-events"><?php echo esc_html($month_name); ?></span>
+                      <?php endif; ?>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              </li>
+            <?php endforeach; ?>
           </ul>
         </div>
 
@@ -41,11 +156,6 @@ $agenda_query = new WP_Query(array(
 
     </div>
     
-    <?php 
-    // Reset post data
-    wp_reset_postdata();
-    ?>
-    
   <?php else : ?>
     <div class="agenda-grid">
       <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
@@ -56,5 +166,6 @@ $agenda_query = new WP_Query(array(
       </article>
     </div>
   <?php endif; ?>
-</main>
+</main>ì
+
 <?php get_footer(); ?> 

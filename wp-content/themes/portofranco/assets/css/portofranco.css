@@ -192,3 +192,61 @@ body.home {
         font-size: 0.95rem;
     }
 }
+
+
+
+
+/* Stili per il toggle anni/mesi */
+.side-archive-year .year-label {
+    cursor: pointer;
+    width: 100%;
+    display: inline-block;
+}
+.months-list {
+    margin-left: 12px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.months-list.expanded {
+    max-height: 500px; /* Altezza massima stimata per il contenuto */
+    opacity: 1;
+}
+
+.side-archive-month {
+    margin-bottom: 3px;
+}
+
+.side-archive-month a {
+    text-decoration: none;
+    color: #000;
+}
+
+.month-no-events {
+    color: #0003;
+}
+
+.agenda-post-item .post-content {
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+.agenda-post-item .agenda-post-title {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+.agenda-post-item .post-meta {
+    margin-bottom: 10px;
+}
+
+.agenda-post-item .post-meta {
+    font-size: 12px;
+    line-height: 1.2;
+    color: #000;
+}
