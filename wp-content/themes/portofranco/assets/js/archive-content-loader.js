@@ -253,7 +253,7 @@ const archiveContentLoader = (() => {
     /**
      * Crea il contenitore mobile dopo il link cliccato
      */
-    const createMobileContentArea = (clickedLink) => {
+    const createMobileContentArea = (clickedLink, postType) => {
         // Rimuovi eventuali contenitori mobile esistenti con animazione
         const existingMobileContent = document.querySelector(config.selectors.mobileContentArea);
         if (existingMobileContent) {
@@ -265,8 +265,16 @@ const archiveContentLoader = (() => {
         mobileContentArea.id = 'mob-main-textarea';
         mobileContentArea.className = 'mobile-content-area slide-content';
         
-        // Inserisci dopo il link cliccato
-        clickedLink.parentNode.insertBefore(mobileContentArea, clickedLink.nextSibling);
+        if (postType === 'agenda') {            
+            // Inserisci prima del contenitore principale #main-textarea
+            const mainTextarea = document.querySelector('#main-textarea');
+            if (mainTextarea) {
+                mainTextarea.insertAdjacentElement('beforebegin', mobileContentArea);
+            }
+        } else {
+            // Inserisci dopo il link cliccato
+            clickedLink.parentNode.insertBefore(mobileContentArea, clickedLink.nextSibling);
+        }
         
         return mobileContentArea;
     };
@@ -439,7 +447,7 @@ const archiveContentLoader = (() => {
         
         if (state.isMobile) {
             // Su mobile, crea il contenitore dopo il link cliccato
-            targetContentArea = createMobileContentArea(clickedLink);
+            targetContentArea = createMobileContentArea(clickedLink, postType);
         } else {
             // Su desktop, usa il contenitore esistente
             targetContentArea = elements.contentArea;
