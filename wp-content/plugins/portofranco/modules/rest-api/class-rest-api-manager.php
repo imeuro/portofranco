@@ -154,9 +154,66 @@ class PF_REST_API_Manager {
                     $post_id = get_the_ID();
                     
                     $inizio_evento = get_field('inizio_evento', $post_id);
-                    if ($inizio_evento && 
-                        isset($inizio_evento['anno']) && $inizio_evento['anno'] == $year &&
-                        isset($inizio_evento['mese']) && $inizio_evento['mese'] == $month) {
+                    $anno = null;
+                    $mese = null;
+                    
+                    if ($inizio_evento) {
+                        // Prova diverse strutture possibili per anno
+                        if (is_array($inizio_evento)) {
+                            if (isset($inizio_evento['anno'])) {
+                                $anno = $inizio_evento['anno'];
+                            } elseif (isset($inizio_evento['year'])) {
+                                $anno = $inizio_evento['year'];
+                            } elseif (isset($inizio_evento['data']['anno'])) {
+                                $anno = $inizio_evento['data']['anno'];
+                            }
+                            
+                            // Prova diverse strutture possibili per mese
+                            if (isset($inizio_evento['mese'])) {
+                                $mese = $inizio_evento['mese'];
+                            } elseif (isset($inizio_evento['month'])) {
+                                $mese = $inizio_evento['month'];
+                            } elseif (isset($inizio_evento['data']['mese'])) {
+                                $mese = $inizio_evento['data']['mese'];
+                            }
+                            
+                            // Se il mese è una stringa (es. "novembre"), convertilo in numero
+                            if (is_string($mese)) {
+                                $mesi_nomi = array(
+                                    'gennaio' => 1, 'febbraio' => 2, 'marzo' => 3, 'aprile' => 4,
+                                    'maggio' => 5, 'giugno' => 6, 'luglio' => 7, 'agosto' => 8,
+                                    'settembre' => 9, 'ottobre' => 10, 'novembre' => 11, 'dicembre' => 12
+                                );
+                                $mese_lower = strtolower($mese);
+                                if (isset($mesi_nomi[$mese_lower])) {
+                                    $mese = $mesi_nomi[$mese_lower];
+                                }
+                            }
+                        } elseif (is_string($inizio_evento)) {
+                            // Se è una stringa, potrebbe essere una data
+                            $date = DateTime::createFromFormat('Y-m-d', $inizio_evento);
+                            if ($date) {
+                                $anno = $date->format('Y');
+                                $mese = $date->format('n'); // Mese senza zero iniziale
+                            }
+                        }
+                    }
+                    
+                    // Se non troviamo anno/mese nel campo inizio_evento, prova altri campi
+                    if (!$anno) {
+                        $anno = get_field('anno', $post_id);
+                    }
+                    if (!$anno) {
+                        $anno = get_field('year', $post_id);
+                    }
+                    if (!$mese) {
+                        $mese = get_field('mese', $post_id);
+                    }
+                    if (!$mese) {
+                        $mese = get_field('month', $post_id);
+                    }
+                    
+                    if ($anno == $year && $mese == $month) {
                         $filtered_posts[] = $post_id;
                     }
                 }
@@ -192,9 +249,74 @@ class PF_REST_API_Manager {
                 // Se non ci sono meta fields diretti, prova con ACF
                 if (empty($event_year) || empty($event_month)) {
                     $inizio_evento = function_exists('get_field') ? get_field('inizio_evento', $post_id) : null;
-                    if ($inizio_evento && is_array($inizio_evento)) {
-                        $event_year = isset($inizio_evento['anno']) ? $inizio_evento['anno'] : $event_year;
-                        $event_month = isset($inizio_evento['mese']) ? $inizio_evento['mese'] : $event_month;
+                    
+                    if ($inizio_evento) {
+                        // Prova diverse strutture possibili per anno
+                        if (is_array($inizio_evento)) {
+                            if (isset($inizio_evento['anno'])) {
+                                $event_year = $inizio_evento['anno'];
+                            } elseif (isset($inizio_evento['year'])) {
+                                $event_year = $inizio_evento['year'];
+                            } elseif (isset($inizio_evento['data']['anno'])) {
+                                $event_year = $inizio_evento['data']['anno'];
+                            }
+                            
+                            // Prova diverse strutture possibili per mese
+                            if (isset($inizio_evento['mese'])) {
+                                $event_month = $inizio_evento['mese'];
+                            } elseif (isset($inizio_evento['month'])) {
+                                $event_month = $inizio_evento['month'];
+                            } elseif (isset($inizio_evento['data']['mese'])) {
+                                $event_month = $inizio_evento['data']['mese'];
+                            }
+                            
+                            // Se il mese è una stringa (es. "novembre"), convertilo in numero
+                            if (is_string($event_month)) {
+                                $mesi_nomi = array(
+                                    'gennaio' => 1, 'febbraio' => 2, 'marzo' => 3, 'aprile' => 4,
+                                    'maggio' => 5, 'giugno' => 6, 'luglio' => 7, 'agosto' => 8,
+                                    'settembre' => 9, 'ottobre' => 10, 'novembre' => 11, 'dicembre' => 12
+                                );
+                                $mese_lower = strtolower($event_month);
+                                if (isset($mesi_nomi[$mese_lower])) {
+                                    $event_month = $mesi_nomi[$mese_lower];
+                                }
+                            }
+                        } elseif (is_string($inizio_evento)) {
+                            // Se è una stringa, potrebbe essere una data
+                            $date = DateTime::createFromFormat('Y-m-d', $inizio_evento);
+                            if ($date) {
+                                $event_year = $date->format('Y');
+                                $event_month = $date->format('n'); // Mese senza zero iniziale
+                            }
+                        }
+                    }
+                    
+                    // Se ancora non troviamo anno/mese, prova altri campi
+                    if (empty($event_year)) {
+                        $event_year = get_field('anno', $post_id);
+                    }
+                    if (empty($event_year)) {
+                        $event_year = get_field('year', $post_id);
+                    }
+                    if (empty($event_month)) {
+                        $event_month = get_field('mese', $post_id);
+                    }
+                    if (empty($event_month)) {
+                        $event_month = get_field('month', $post_id);
+                    }
+                    
+                    // Se il mese è una stringa (es. "novembre"), convertilo in numero
+                    if (is_string($event_month)) {
+                        $mesi_nomi = array(
+                            'gennaio' => 1, 'febbraio' => 2, 'marzo' => 3, 'aprile' => 4,
+                            'maggio' => 5, 'giugno' => 6, 'luglio' => 7, 'agosto' => 8,
+                            'settembre' => 9, 'ottobre' => 10, 'novembre' => 11, 'dicembre' => 12
+                        );
+                        $mese_lower = strtolower($event_month);
+                        if (isset($mesi_nomi[$mese_lower])) {
+                            $event_month = $mesi_nomi[$mese_lower];
+                        }
                     }
                 }
                 
