@@ -88,11 +88,33 @@ class PF_Plugin {
         // Load Archive Fields module
         $this->load_module('archive-fields');
         
+        // Load migration script for archive descriptions
+        $this->load_migration_script();
+        
         // Load REST API module
         $this->load_module('rest-api');
         
         // Load Custom Order module
         $this->load_module('custom-order');
+    }
+    
+    /**
+     * Load migration script
+     */
+    private function load_migration_script() {
+        $migration_file = PF_PLUGIN_DIR . 'modules/archive-fields/migrate-descriptions.php';
+        
+        if (file_exists($migration_file)) {
+            require_once $migration_file;
+        }
+        
+        // Carica anche il file di test in modalità debug
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $test_file = PF_PLUGIN_DIR . 'modules/archive-fields/test-multilingual.php';
+            if (file_exists($test_file)) {
+                require_once $test_file;
+            }
+        }
     }
     
     /**
