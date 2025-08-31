@@ -218,8 +218,7 @@ body.home {
     top: -5px;
     left: 10px;
     display: inline-block;
-    background: #000
-
+    background: #000;
 }
 .side-archive-year .year-label[aria-expanded="false"]:after {
     width: 12px;

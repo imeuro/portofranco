@@ -8,6 +8,7 @@ get_header();
 function portofranco_get_agenda_years() {
     global $wpdb;
     
+    // Prima prova con meta fields diretti
     $query = "SELECT DISTINCT pm.meta_value as year 
          FROM {$wpdb->postmeta} pm 
          INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID 
@@ -36,6 +37,44 @@ function portofranco_get_agenda_years() {
         $years = $wpdb->get_col($wpdb->prepare($query, 'agenda'));
     }
     
+    // Se non ci sono anni dai meta fields diretti, prova con i campi ACF
+    if (empty($years) && function_exists('get_field')) {
+        $years = array();
+        
+        // Query per ottenere tutti i post agenda
+        $agenda_query = new WP_Query(array(
+            'post_type' => 'agenda',
+            'post_status' => 'publish',
+            'posts_per_page' => -1
+        ));
+        
+        if ($agenda_query->have_posts()) {
+            while ($agenda_query->have_posts()) {
+                $agenda_query->the_post();
+                $post_id = get_the_ID();
+                
+                // Verifica se il post è nella lingua corrente
+                if (function_exists('pll_current_language')) {
+                    $current_lang = pll_current_language();
+                    if ($current_lang && pll_get_post_language($post_id) !== $current_lang) {
+                        continue;
+                    }
+                }
+                
+                // Recupera il campo ACF inizio_evento
+                $inizio_evento = get_field('inizio_evento', $post_id);
+                if ($inizio_evento && isset($inizio_evento['anno']) && !empty($inizio_evento['anno'])) {
+                    $years[] = $inizio_evento['anno'];
+                }
+            }
+            wp_reset_postdata();
+        }
+        
+        // Rimuovi duplicati e ordina
+        $years = array_unique($years);
+        sort($years);
+    }
+    
     return $years;
 }
 
@@ -45,6 +84,7 @@ function portofranco_get_agenda_years() {
 function portofranco_has_agenda_posts_for_month($year, $month) {
     global $wpdb;
     
+    // Prima prova con meta fields diretti
     $query = "SELECT COUNT(*) 
          FROM {$wpdb->postmeta} pm_anno 
          INNER JOIN {$wpdb->postmeta} pm_mese ON pm_anno.post_id = pm_mese.post_id 
@@ -72,6 +112,41 @@ function portofranco_has_agenda_posts_for_month($year, $month) {
         $count = $wpdb->get_var($wpdb->prepare($query, 'agenda', $year, $month));
     }
     
+    // Se non ci sono risultati dai meta fields diretti, prova con i campi ACF
+    if ($count == 0 && function_exists('get_field')) {
+        // Query per ottenere tutti i post agenda
+        $agenda_query = new WP_Query(array(
+            'post_type' => 'agenda',
+            'post_status' => 'publish',
+            'posts_per_page' => -1
+        ));
+        
+        if ($agenda_query->have_posts()) {
+            while ($agenda_query->have_posts()) {
+                $agenda_query->the_post();
+                $post_id = get_the_ID();
+                
+                // Verifica se il post è nella lingua corrente
+                if (function_exists('pll_current_language')) {
+                    $current_lang = pll_current_language();
+                    if ($current_lang && pll_get_post_language($post_id) !== $current_lang) {
+                        continue;
+                    }
+                }
+                
+                // Recupera il campo ACF inizio_evento
+                $inizio_evento = get_field('inizio_evento', $post_id);
+                if ($inizio_evento && 
+                    isset($inizio_evento['anno']) && $inizio_evento['anno'] == $year &&
+                    isset($inizio_evento['mese']) && $inizio_evento['mese'] == $month) {
+                    $count = 1;
+                    break;
+                }
+            }
+            wp_reset_postdata();
+        }
+    }
+    
     return $count > 0;
 }
 
@@ -88,33 +163,44 @@ function portofranco_get_agenda_month_archive_url($year, $month) {
 // Recupera gli anni disponibili
 $years = portofranco_get_agenda_years();
 
-// Debug temporaneo - rimuovere dopo il test
+// Debug temporaneo per verificare la struttura dei campi ACF
 if (empty($years)) {
-    // Verifica se ci sono post agenda
+    // Verifica se ci sono post agenda e come sono strutturati i campi
     $test_query = new WP_Query(array(
         'post_type' => 'agenda',
-        'posts_per_page' => -1,
+        'posts_per_page' => 5,
         'post_status' => 'publish'
     ));
     
     if ($test_query->have_posts()) {
         echo '<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">';
-        echo '<h3>Debug: Post Agenda trovati</h3>';
-        echo '<p>Numero post: ' . $test_query->found_posts . '</p>';
+        echo '<h3>Debug: Struttura campi ACF Agenda</h3>';
         
         while ($test_query->have_posts()) {
             $test_query->the_post();
-            $anno = get_field('inizio_evento_anno');
-            $mese = get_field('inizio_evento_mese');
-            echo '<p>Post ID: ' . get_the_ID() . ' - Titolo: ' . get_the_title() . ' - Anno: ' . ($anno ? $anno : 'NULL') . ' - Mese: ' . ($mese ? $mese : 'NULL') . '</p>';
+            $post_id = get_the_ID();
+            
+            // Verifica campi ACF
+            $inizio_evento = function_exists('get_field') ? get_field('inizio_evento', $post_id) : null;
+            $fine_evento = function_exists('get_field') ? get_field('fine_evento', $post_id) : null;
+            
+            // Verifica meta fields diretti
+            $anno_direct = get_post_meta($post_id, 'inizio_evento_anno', true);
+            $mese_direct = get_post_meta($post_id, 'inizio_evento_mese', true);
+            
+            echo '<p><strong>Post ID: ' . $post_id . ' - Titolo: ' . get_the_title() . '</strong></p>';
+            echo '<p>Campo ACF inizio_evento: ' . (is_array($inizio_evento) ? print_r($inizio_evento, true) : 'NULL') . '</p>';
+            echo '<p>Campo ACF fine_evento: ' . (is_array($fine_evento) ? print_r($fine_evento, true) : 'NULL') . '</p>';
+            echo '<p>Meta direct anno: ' . ($anno_direct ? $anno_direct : 'NULL') . '</p>';
+            echo '<p>Meta direct mese: ' . ($mese_direct ? $mese_direct : 'NULL') . '</p>';
+            echo '<hr>';
         }
         echo '</div>';
         wp_reset_postdata();
-    } else {
-        echo '<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">';
-        echo '<h3>Debug: Nessun post agenda trovato</h3>';
-        echo '</div>';
     }
+    
+    // Se non ci sono anni, mostra un messaggio informativo
+    $years = array();
 }
 
 // Array dei mesi in italiano

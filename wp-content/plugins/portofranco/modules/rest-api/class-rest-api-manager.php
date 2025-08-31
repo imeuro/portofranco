@@ -106,7 +106,8 @@ class PF_REST_API_Manager {
         $year = $request->get_param('year');
         $month = $request->get_param('month');
         
-        // Query per recuperare i post dell'agenda usando i custom fields corretti
+        // Query per recuperare i post dell'agenda
+        // Prima prova con meta fields diretti
         $args = array(
             'post_type' => 'agenda',
             'post_status' => 'publish',
@@ -132,6 +133,51 @@ class PF_REST_API_Manager {
         );
         
         $query = new WP_Query($args);
+        
+        // Se non ci sono risultati, prova con una query più ampia e filtra per ACF
+        if (!$query->have_posts() && function_exists('get_field')) {
+            $args = array(
+                'post_type' => 'agenda',
+                'post_status' => 'publish',
+                'posts_per_page' => -1,
+                'orderby' => 'date',
+                'order' => 'ASC'
+            );
+            
+            $query = new WP_Query($args);
+            
+            // Filtra i risultati per anno e mese usando i campi ACF
+            if ($query->have_posts()) {
+                $filtered_posts = array();
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $post_id = get_the_ID();
+                    
+                    $inizio_evento = get_field('inizio_evento', $post_id);
+                    if ($inizio_evento && 
+                        isset($inizio_evento['anno']) && $inizio_evento['anno'] == $year &&
+                        isset($inizio_evento['mese']) && $inizio_evento['mese'] == $month) {
+                        $filtered_posts[] = $post_id;
+                    }
+                }
+                wp_reset_postdata();
+                
+                // Ricrea la query con i post filtrati
+                if (!empty($filtered_posts)) {
+                    $args = array(
+                        'post_type' => 'agenda',
+                        'post_status' => 'publish',
+                        'posts_per_page' => -1,
+                        'post__in' => $filtered_posts,
+                        'orderby' => 'date',
+                        'order' => 'ASC'
+                    );
+                    $query = new WP_Query($args);
+                }
+            }
+        }
+        
+        $query = new WP_Query($args);
         $posts = array();
         
         if ($query->have_posts()) {
@@ -139,9 +185,18 @@ class PF_REST_API_Manager {
                 $query->the_post();
                 $post_id = get_the_ID();
                 
-                // Recupera anno e mese dell'evento
+                // Recupera anno e mese dell'evento - prima prova meta fields diretti, poi ACF
                 $event_year = get_post_meta($post_id, 'inizio_evento_anno', true);
                 $event_month = get_post_meta($post_id, 'inizio_evento_mese', true);
+                
+                // Se non ci sono meta fields diretti, prova con ACF
+                if (empty($event_year) || empty($event_month)) {
+                    $inizio_evento = function_exists('get_field') ? get_field('inizio_evento', $post_id) : null;
+                    if ($inizio_evento && is_array($inizio_evento)) {
+                        $event_year = isset($inizio_evento['anno']) ? $inizio_evento['anno'] : $event_year;
+                        $event_month = isset($inizio_evento['mese']) ? $inizio_evento['mese'] : $event_month;
+                    }
+                }
                 
                 // Recupera start_date e end_date (campi ACF)
                 $start_date = function_exists('get_field') ? get_field('inizio_evento', $post_id) : get_post_meta($post_id, 'start_date', true);
