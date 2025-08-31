@@ -29,6 +29,7 @@
         </a>
       </h1>
     </div>
+    
     <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="Menu principale">
       <div class="menu-pre-mobile">
         <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
@@ -41,18 +42,35 @@
           'menu_id'        => 'primary-menu',
         ) );
       ?>
+
+            <!-- Selettore lingua -->
+    <?php if (function_exists('pll_the_languages')): ?>
+    <div class="language-switcher">
+      <?php
+        pll_the_languages(array(
+          'dropdown' => 0,
+          'show_flags' => 0,
+          'show_names' => 1,
+          'hide_if_empty' => 0,
+          'force_home' => 0,
+          'hide_if_no_translation' => 0,
+          'raw' => 0
+        ));
+      ?>
+    </div>
+    <?php endif; ?>
       <div class="menu-post-mobile">
-          <h3 class="footer-label small-label">CONTATTI</h3>
+          <h3 class="footer-label small-label"><?php _e('CONTATTI', 'portofranco'); ?></h3>
           <p>
               <a href="mailto:info@portofranco.eu">info@portofranco.eu</a>
           <br>
               <a href="https://wa.me/393317907368">+39 331 7907368</a>
           <br>
-              <a href="https://www.instagram.com/portofranco/">Instagram</a>
+              <a href="https://www.instagram.com/_portofranco_/">Instagram</a>
           <br>
-              <a href="#">Iscriviti alla newsletter</a>
+              <a href="#"><?php _e('Iscriviti alla newsletter', 'portofranco'); ?></a>
           </p>
       </div>
     </nav>
 
-  </header> 
+  </header>

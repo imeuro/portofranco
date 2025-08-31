@@ -1,0 +1,31 @@
+# Copyright (C) 2024 Portofranco
+# This file is distributed under the same license as the Portofranco package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Portofranco 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/portofranco\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: Portofranco Team <info@portofranco.eu>\n"
+"Language-Team: English <info@portofranco.eu>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: header.php:12
+msgid "Salta al contenuto"
+msgstr "Skip to content"
+
+#: header.php:51
+msgid "CONTATTI"
+msgstr "CONTACTS"
+
+#: header.php:57
+msgid "Iscriviti alla newsletter"
+msgstr "Subscribe to newsletter"
+
+#: functions.php:12
+msgid "Menu Principale"
+msgstr "Main Menu"

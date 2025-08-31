@@ -290,3 +290,54 @@ body.home {
     }
 
 }
+
+/* ========================================
+   LANGUAGE SWITCHER STYLES
+   ======================================== */
+
+/* Language Switcher */
+.language-switcher {
+  position: absolute;
+  bottom: 18px;
+  right: 12px;
+  z-index: 1000;
+}
+
+.language-switcher ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 10px;
+}
+
+.language-switcher li {
+  margin: 0;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.language-switcher a {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 3px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 1000px) {
+  .language-switcher {
+    position: fixed;
+    top: calc(100dvh - 100px);
+    bottom: initial;
+    right: initial;
+    left: 0;
+    z-index: 1000;
+  }
+  .home .language-switcher a {
+    color: #fff;
+  }
+}

@@ -59,9 +59,11 @@ modules/custom-order/
 - Compatibile con il sistema di caricamento dinamico esistente
 - Non interferisce con altre funzionalità del tema
 - Responsive design per dispositivi mobili
+- **Compatibile con Polylang**: L'ordinamento viene applicato automaticamente a tutte le traduzioni
 
 ## Note Tecniche
 - Utilizza jQuery UI Sortable per il drag & drop
 - Salvataggio tramite AJAX per esperienza utente fluida
 - Meta query ottimizzate per le performance
 - Fallback graceful per post senza ordine personalizzato
+- **Integrazione Polylang**: Quando si ordina un post, l'ordine viene applicato automaticamente a tutte le sue traduzioni

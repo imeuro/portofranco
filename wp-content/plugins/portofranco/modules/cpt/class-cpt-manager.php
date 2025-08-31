@@ -81,7 +81,7 @@ class PF_CPT_Manager {
             'show_in_menu'       => true,
             'query_var'          => 'artisti',
             'rewrite'            => array(
-                'slug' => 'artisti',
+                'slug' => $this->get_rewrite_slug('artisti'),
                 'with_front' => false,
                 'feeds' => true,
                 'pages' => true
@@ -137,7 +137,7 @@ class PF_CPT_Manager {
             'show_in_menu'       => true,
             'query_var'          => 'agenda',
             'rewrite'            => array(
-                'slug' => 'agenda',
+                'slug' => $this->get_rewrite_slug('agenda'),
                 'with_front' => false,
                 'feeds' => true,
                 'pages' => true
@@ -195,5 +195,26 @@ class PF_CPT_Manager {
      */
     public function remove_comments_dashboard_widget() {
         remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
+    }
+    
+    /**
+     * Get rewrite slug based on current language
+     */
+    private function get_rewrite_slug($post_type) {
+        // Controlla se Polylang è attivo
+        if (function_exists('pll_current_language')) {
+            $current_lang = pll_current_language();
+            
+            switch ($post_type) {
+                case 'artisti':
+                    return $current_lang === 'en' ? 'artists' : 'artisti';
+                case 'agenda':
+                    return $current_lang === 'en' ? 'events' : 'agenda';
+                default:
+                    return $post_type;
+            }
+        }
+        
+        return $post_type;
     }
 } 

@@ -47,6 +47,14 @@ add_action( 'wp_enqueue_scripts', 'portofranco_enqueue_scripts' );
 
 // Forza l'uso dei template specifici per i custom post types
 function portofranco_custom_archive_template( $template ) {
+    // Controlla se siamo nell'archivio artisti in inglese
+    if ( preg_match('/\/en\/artisti/', $_SERVER['REQUEST_URI']) ) {
+        $custom_template = locate_template( 'archive-artisti-en.php' );
+        if ( $custom_template ) {
+            return $custom_template;
+        }
+    }
+    
     if ( is_post_type_archive( 'artisti' ) ) {
         $custom_template = locate_template( 'archive-artisti.php' );
         if ( $custom_template ) {
@@ -95,3 +103,74 @@ function portofranco_get_post_slug($post_id = null) {
     }
     return get_post_field('post_name', $post_id);
 }
+
+// Riga 80: Supporto per traduzioni avanzato
+function portofranco_load_textdomain() {
+  load_theme_textdomain( 'portofranco', get_template_directory() . '/languages' );
+  
+  // Carica anche le traduzioni del plugin
+  if (function_exists('load_plugin_textdomain')) {
+    load_plugin_textdomain( 'pf', false, dirname(plugin_basename(__FILE__)) . '/languages' );
+  }
+}
+add_action( 'after_setup_theme', 'portofranco_load_textdomain' );
+
+// Riga 90: Funzione per ottenere URL corretto per lingua
+function portofranco_get_language_url($url = '') {
+  if (function_exists('pll_home_url')) {
+    return pll_home_url();
+  }
+  return home_url($url);
+}
+
+// Riga 100: Aggiungi hreflang tags per SEO multilingua
+function portofranco_add_hreflang_tags() {
+  if (!function_exists('pll_the_languages')) {
+    return;
+  }
+  
+  $languages = pll_the_languages(array('raw' => 1, 'hide_if_empty' => 0));
+  
+  foreach ($languages as $lang) {
+    if (!empty($lang['url'])) {
+      echo '<link rel="alternate" hreflang="' . esc_attr($lang['slug']) . '" href="' . esc_url($lang['url']) . '" />' . "\n";
+    }
+  }
+  
+  // Aggiungi hreflang x-default
+  $default_lang = pll_default_language();
+  if ($default_lang && isset($languages[$default_lang]['url'])) {
+    echo '<link rel="alternate" hreflang="x-default" href="' . esc_url($languages[$default_lang]['url']) . '" />' . "\n";
+  }
+}
+add_action('wp_head', 'portofranco_add_hreflang_tags');
+
+// Riga 120: Modifica i permalink per supportare le traduzioni
+function portofranco_modify_permalinks($permalink, $post) {
+  if (function_exists('pll_get_post_language') && function_exists('pll_get_post_translations')) {
+    $lang = pll_get_post_language($post->ID);
+    if ($lang) {
+      // Per i custom post types, gestisci gli slug diversi
+      if ($post->post_type === 'artisti' && $lang === 'en') {
+        $permalink = str_replace('/artisti/', '/artists/', $permalink);
+      } elseif ($post->post_type === 'agenda' && $lang === 'en') {
+        $permalink = str_replace('/agenda/', '/events/', $permalink);
+      }
+    }
+  }
+  return $permalink;
+}
+add_filter('post_link', 'portofranco_modify_permalinks', 10, 2);
+add_filter('post_type_link', 'portofranco_modify_permalinks', 10, 2);
+
+// Riga 140: Aggiungi meta tags per lingua corrente
+function portofranco_add_language_meta_tags() {
+  if (function_exists('pll_current_language')) {
+    $current_lang = pll_current_language();
+    if ($current_lang) {
+      echo '<meta property="og:locale" content="' . esc_attr($current_lang) . '" />' . "\n";
+      echo '<meta property="og:locale:alternate" content="' . esc_attr($current_lang === 'it' ? 'en' : 'it') . '" />' . "\n";
+    }
+  }
+}
+add_action('wp_head', 'portofranco_add_language_meta_tags');

@@ -454,11 +454,13 @@ nav#site-navigation .menu-post-mobile a {
 @media (min-width: 1000px) {
     #main {
         z-index: 100;
+        left: 460px;
+        width: calc(100vw - 460px);
     }
     #main article {
         align-items: flex-start;
         justify-content: flex-start;
-        margin: 100px 20px 60px 460px;
+        margin: 100px 20px 60px 0;
         gap: 0 10px;
     }
 
@@ -502,7 +504,7 @@ nav#site-navigation .menu-post-mobile a {
 
 @media (min-width: 1400px) {
     #main article {
-        margin: 100px 20px 60px 460px;
+        margin: 100px 20px 60px 0;
         gap: 0 20px;
     }
     .side-content {

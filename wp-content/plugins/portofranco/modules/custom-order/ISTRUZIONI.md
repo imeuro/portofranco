@@ -44,6 +44,7 @@ Se preferisci impostare l'ordine manualmente:
 ### Compatibilità
 - Funziona perfettamente con il sistema di caricamento dinamico esistente
 - Non interferisce con altre funzionalità del sito
+- **Compatibile con Polylang**: L'ordinamento viene applicato automaticamente a tutte le traduzioni
 
 ## 🔧 Test e Verifica
 
@@ -56,6 +57,7 @@ Per verificare che tutto funzioni correttamente:
 1. Vai alla pagina degli artisti del sito
 2. Verifica che gli artisti appaiano nell'ordine impostato
 3. Se hai modificato l'ordine, potrebbe essere necessario svuotare la cache
+4. **Con Polylang**: L'ordine sarà lo stesso in tutte le lingue
 
 ## 🛠️ Risoluzione Problemi
 

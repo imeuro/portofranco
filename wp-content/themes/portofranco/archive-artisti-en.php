@@ -1,11 +1,14 @@
 <?php
-// Template archivio artisti
+// Template archivio artisti in inglese
+echo "<!-- DEBUG: Template archive-artisti-en.php caricato -->\n";
+echo "<!-- URL: " . $_SERVER['REQUEST_URI'] . " -->\n";
+
 get_header();
 
-// Query personalizzata per ottenere tutti gli artisti con ordine personalizzato
+// Query personalizzata per ottenere tutti gli artisti in inglese
 $query_args = array(
     'post_type' => 'artisti',
-    'posts_per_page' => -1, // Mostra tutti i post
+    'posts_per_page' => -1,
     'post_status' => 'publish',
     'meta_key' => '_custom_order',
     'orderby' => array(
@@ -22,25 +25,19 @@ $query_args = array(
             'key' => '_custom_order',
             'compare' => 'NOT EXISTS'
         )
-    )
+    ),
+    'lang' => 'en' // Forza la lingua inglese
 );
 
-// Aggiungi filtro per lingua se Polylang è attivo
-if (function_exists('pll_current_language')) {
-    $current_lang = pll_current_language();
-    if ($current_lang) {
-        $query_args['lang'] = $current_lang;
-    }
-}
-
-// Fallback: rileva la lingua dall'URL se Polylang non la rileva
-if (empty($query_args['lang']) && preg_match('/^\/(en)\//', $_SERVER['REQUEST_URI'], $matches)) {
-    $query_args['lang'] = $matches[1];
-}
-
 $artisti_query = new WP_Query($query_args);
+
+// Debug della query
+echo "<!-- DEBUG: Query args: " . print_r($query_args, true) . " -->\n";
+echo "<!-- DEBUG: Found posts: " . $artisti_query->found_posts . " -->\n";
+echo "<!-- DEBUG: Have posts: " . ($artisti_query->have_posts() ? 'Sì' : 'No') . " -->\n";
 ?>
-<!-- Template: archive-artisti.php -->
+
+<!-- Template: archive-artisti-en.php -->
 <main id="main" tabindex="-1" role="main">
   
   <?php if ( $artisti_query->have_posts() ) : ?>
@@ -86,4 +83,5 @@ $artisti_query = new WP_Query($query_args);
     </div>
   <?php endif; ?>
 </main>
-<?php get_footer(); ?> 
+
+<?php get_footer(); ?>

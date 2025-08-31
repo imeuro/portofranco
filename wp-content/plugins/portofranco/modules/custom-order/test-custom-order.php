@@ -47,16 +47,34 @@ class PF_Custom_Order_Test {
         if (!empty($artisti_posts)) {
             echo "<p style='color: green;'>✓ Trovati " . count($artisti_posts) . " post di tipo 'artisti'</p>";
             
-            // Test 4: Verifica che alcuni post abbiano ordine personalizzato
-            $posts_with_order = 0;
+                    // Test 4: Verifica che alcuni post abbiano ordine personalizzato
+        $posts_with_order = 0;
+        foreach ($artisti_posts as $post) {
+            $custom_order = get_post_meta($post->ID, '_custom_order', true);
+            if ($custom_order) {
+                $posts_with_order++;
+            }
+        }
+        
+        echo "<p style='color: blue;'>ℹ " . $posts_with_order . " post hanno ordine personalizzato</p>";
+        
+        // Test 4.1: Verifica Polylang se attivo
+        if (function_exists('pll_current_language')) {
+            $current_lang = pll_current_language();
+            echo "<p style='color: blue;'>ℹ Lingua corrente: " . ($current_lang ? $current_lang : 'Non rilevata') . "</p>";
+            
+            // Conta post con traduzioni
+            $posts_with_translations = 0;
             foreach ($artisti_posts as $post) {
-                $custom_order = get_post_meta($post->ID, '_custom_order', true);
-                if ($custom_order) {
-                    $posts_with_order++;
+                if (function_exists('pll_get_post_translations')) {
+                    $translations = pll_get_post_translations($post->ID);
+                    if (count($translations) > 1) {
+                        $posts_with_translations++;
+                    }
                 }
             }
-            
-            echo "<p style='color: blue;'>ℹ " . $posts_with_order . " post hanno ordine personalizzato</p>";
+            echo "<p style='color: blue;'>ℹ " . $posts_with_translations . " post hanno traduzioni</p>";
+        }
             
         } else {
             echo "<p style='color: orange;'>⚠ Nessun post di tipo 'artisti' trovato</p>";

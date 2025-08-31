@@ -102,26 +102,34 @@ class PF_Custom_Order_Manager {
             wp_die(__('Post type non valido', 'pf'));
         }
         
-        // Ottieni tutti i post del tipo specificato
-        $posts = get_posts(array(
+        // Ottieni tutti i post del tipo specificato (solo in italiano se Polylang è attivo)
+        $query_args = array(
             'post_type' => $post_type,
             'post_status' => 'publish',
             'posts_per_page' => -1,
-            'meta_key' => '_custom_order',
-            'orderby' => 'meta_value_num',
-            'order' => 'ASC'
-        ));
+            'orderby' => array(
+                'meta_value_num' => 'ASC',
+                'title' => 'ASC'
+            ),
+            'meta_query' => array(
+                'relation' => 'OR',
+                array(
+                    'key' => '_custom_order',
+                    'compare' => 'EXISTS'
+                ),
+                array(
+                    'key' => '_custom_order',
+                    'compare' => 'NOT EXISTS'
+                )
+            )
+        );
         
-        // Se non ci sono ordini personalizzati, ordina alfabeticamente
-        if (empty($posts)) {
-            $posts = get_posts(array(
-                'post_type' => $post_type,
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'orderby' => 'title',
-                'order' => 'ASC'
-            ));
+        // Filtra per lingua italiana se Polylang è attivo
+        if (function_exists('pll_current_language')) {
+            $query_args['lang'] = 'it';
         }
+        
+        $posts = get_posts($query_args);
         
         ?>
         <div class="wrap">
@@ -147,6 +155,24 @@ class PF_Custom_Order_Manager {
                                         echo sprintf(__('Ordine: %d', 'pf'), $custom_order);
                                     } else {
                                         echo __('Ordine alfabetico', 'pf');
+                                    }
+                                    
+                                    // Mostra informazioni sulle traduzioni se Polylang è attivo
+                                    if (function_exists('pll_get_post_translations')) {
+                                        $translations = pll_get_post_translations($post->ID);
+                                        $current_lang = pll_get_post_language($post->ID);
+                                        $available_langs = array();
+                                        
+                                        foreach ($translations as $lang => $post_id) {
+                                            if ($lang !== $current_lang) {
+                                                $lang_name = $lang === 'en' ? 'Inglese' : ucfirst($lang);
+                                                $available_langs[] = $lang_name;
+                                            }
+                                        }
+                                        
+                                        if (!empty($available_langs)) {
+                                            echo '<br><small>' . sprintf(__('Disponibile in: %s', 'pf'), implode(', ', $available_langs)) . '</small>';
+                                        }
                                     }
                                     ?>
                                 </div>
@@ -199,6 +225,16 @@ class PF_Custom_Order_Manager {
             $post = get_post($post_id);
             if ($post && $post->post_type === $post_type) {
                 update_post_meta($post_id, '_custom_order', $position);
+                
+                // Se Polylang è attivo, applica l'ordine anche alle traduzioni
+                if (function_exists('pll_get_post_translations')) {
+                    $translations = pll_get_post_translations($post_id);
+                    foreach ($translations as $lang => $translated_post_id) {
+                        if ($translated_post_id != $post_id) {
+                            update_post_meta($translated_post_id, '_custom_order', $position);
+                        }
+                    }
+                }
             }
         }
         
@@ -213,28 +249,9 @@ class PF_Custom_Order_Manager {
         if (!is_admin() && $query->is_main_query()) {
             foreach ($this->supported_post_types as $post_type) {
                 if (is_post_type_archive($post_type)) {
-                    $query->set('meta_key', '_custom_order');
-                    $query->set('orderby', 'meta_value_num');
-                    $query->set('order', 'ASC');
-                    
-                    // Fallback per post senza ordine personalizzato
-                    $query->set('meta_query', array(
-                        'relation' => 'OR',
-                        array(
-                            'key' => '_custom_order',
-                            'compare' => 'EXISTS'
-                        ),
-                        array(
-                            'key' => '_custom_order',
-                            'compare' => 'NOT EXISTS'
-                        )
-                    ));
-                    
-                    // Ordine secondario per titolo
-                    $query->set('orderby', array(
-                        'meta_value_num' => 'ASC',
-                        'title' => 'ASC'
-                    ));
+                    // Non interferire se Polylang ha già impostato la lingua
+                    // Il template archive-artisti.php gestisce già la query personalizzata
+                    return;
                 }
             }
         }
@@ -271,6 +288,19 @@ class PF_Custom_Order_Manager {
         <p class="description">
             <?php _e('Lascia vuoto per utilizzare l\'ordine alfabetico. I numeri più bassi appaiono per primi.', 'pf'); ?>
         </p>
+        
+        <?php
+        // Mostra informazioni sulle traduzioni se Polylang è attivo
+        if (function_exists('pll_get_post_translations')) {
+            $translations = pll_get_post_translations($post->ID);
+            if (count($translations) > 1) {
+                echo '<p class="description" style="color: #0073aa;">';
+                echo '<strong>' . __('Nota:', 'pf') . '</strong> ';
+                echo sprintf(__('Questo ordine verrà applicato anche alle %d traduzioni di questo post.', 'pf'), count($translations) - 1);
+                echo '</p>';
+            }
+        }
+        ?>
         <?php
     }
     
@@ -298,8 +328,29 @@ class PF_Custom_Order_Manager {
             $custom_order = sanitize_text_field($_POST['custom_order']);
             if ($custom_order === '') {
                 delete_post_meta($post_id, '_custom_order');
+                
+                // Se Polylang è attivo, rimuovi l'ordine anche dalle traduzioni
+                if (function_exists('pll_get_post_translations')) {
+                    $translations = pll_get_post_translations($post_id);
+                    foreach ($translations as $lang => $translated_post_id) {
+                        if ($translated_post_id != $post_id) {
+                            delete_post_meta($translated_post_id, '_custom_order');
+                        }
+                    }
+                }
             } else {
-                update_post_meta($post_id, '_custom_order', intval($custom_order));
+                $order_value = intval($custom_order);
+                update_post_meta($post_id, '_custom_order', $order_value);
+                
+                // Se Polylang è attivo, applica l'ordine anche alle traduzioni
+                if (function_exists('pll_get_post_translations')) {
+                    $translations = pll_get_post_translations($post_id);
+                    foreach ($translations as $lang => $translated_post_id) {
+                        if ($translated_post_id != $post_id) {
+                            update_post_meta($translated_post_id, '_custom_order', $order_value);
+                        }
+                    }
+                }
             }
         }
     }

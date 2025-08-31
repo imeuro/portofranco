@@ -8,18 +8,33 @@ get_header();
 function portofranco_get_agenda_years() {
     global $wpdb;
     
-    $years = $wpdb->get_col($wpdb->prepare(
-        "SELECT DISTINCT pm.meta_value as year 
+    $query = "SELECT DISTINCT pm.meta_value as year 
          FROM {$wpdb->postmeta} pm 
          INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID 
          WHERE pm.meta_key = 'inizio_evento_anno' 
          AND p.post_type = %s 
          AND p.post_status = 'publish' 
          AND pm.meta_value IS NOT NULL 
-         AND pm.meta_value != '' 
-         ORDER BY year ASC",
-        'agenda'
-    ));
+         AND pm.meta_value != ''";
+    
+    // Aggiungi filtro per lingua se Polylang è attivo
+    if (function_exists('pll_current_language')) {
+        $current_lang = pll_current_language();
+        if ($current_lang) {
+            $query .= " AND p.ID IN (SELECT object_id FROM {$wpdb->prefix}term_relationships tr 
+                        INNER JOIN {$wpdb->prefix}term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id 
+                        INNER JOIN {$wpdb->prefix}terms t ON tt.term_id = t.term_id 
+                        WHERE tt.taxonomy = 'post_translations' AND t.slug LIKE %s)";
+            $query .= " ORDER BY year ASC";
+            $years = $wpdb->get_col($wpdb->prepare($query, 'agenda', $current_lang . '%'));
+        } else {
+            $query .= " ORDER BY year ASC";
+            $years = $wpdb->get_col($wpdb->prepare($query, 'agenda'));
+        }
+    } else {
+        $query .= " ORDER BY year ASC";
+        $years = $wpdb->get_col($wpdb->prepare($query, 'agenda'));
+    }
     
     return $years;
 }
@@ -30,8 +45,7 @@ function portofranco_get_agenda_years() {
 function portofranco_has_agenda_posts_for_month($year, $month) {
     global $wpdb;
     
-    $count = $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) 
+    $query = "SELECT COUNT(*) 
          FROM {$wpdb->postmeta} pm_anno 
          INNER JOIN {$wpdb->postmeta} pm_mese ON pm_anno.post_id = pm_mese.post_id 
          INNER JOIN {$wpdb->posts} p ON pm_anno.post_id = p.ID 
@@ -40,11 +54,23 @@ function portofranco_has_agenda_posts_for_month($year, $month) {
          AND p.post_type = %s 
          AND p.post_status = 'publish' 
          AND pm_anno.meta_value = %d 
-         AND pm_mese.meta_value = %d",
-        'agenda',
-        $year,
-        $month
-    ));
+         AND pm_mese.meta_value = %d";
+    
+    // Aggiungi filtro per lingua se Polylang è attivo
+    if (function_exists('pll_current_language')) {
+        $current_lang = pll_current_language();
+        if ($current_lang) {
+            $query .= " AND p.ID IN (SELECT object_id FROM {$wpdb->prefix}term_relationships tr 
+                        INNER JOIN {$wpdb->prefix}term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id 
+                        INNER JOIN {$wpdb->prefix}terms t ON tt.term_id = t.term_id 
+                        WHERE tt.taxonomy = 'post_translations' AND t.slug LIKE %s)";
+            $count = $wpdb->get_var($wpdb->prepare($query, 'agenda', $year, $month, $current_lang . '%'));
+        } else {
+            $count = $wpdb->get_var($wpdb->prepare($query, 'agenda', $year, $month));
+        }
+    } else {
+        $count = $wpdb->get_var($wpdb->prepare($query, 'agenda', $year, $month));
+    }
     
     return $count > 0;
 }
