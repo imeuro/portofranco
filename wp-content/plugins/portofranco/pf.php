@@ -91,6 +91,8 @@ class PF_Plugin {
         // Load REST API module
         $this->load_module('rest-api');
         
+        // Load Custom Order module
+        $this->load_module('custom-order');
     }
     
     /**
@@ -116,6 +118,11 @@ class PF_Plugin {
             // Correzione per il modulo REST API
             if ($module_name === 'rest-api') {
                 $class_name = 'PF_REST_API_Manager';
+            }
+            
+            // Correzione per il modulo Custom Order
+            if ($module_name === 'custom-order') {
+                $class_name = 'PF_Custom_Order_Manager';
             }
             
             if (class_exists($class_name)) {

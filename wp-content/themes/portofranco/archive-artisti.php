@@ -2,13 +2,27 @@
 // Template archivio artisti
 get_header();
 
-// Query personalizzata per ottenere tutti gli artisti ordinati alfabeticamente
+// Query personalizzata per ottenere tutti gli artisti con ordine personalizzato
 $artisti_query = new WP_Query(array(
     'post_type' => 'artisti',
     'posts_per_page' => -1, // Mostra tutti i post
     'post_status' => 'publish',
-    'orderby' => 'title',
-    'order' => 'ASC' // Ordine alfabetico A-Z
+    'meta_key' => '_custom_order',
+    'orderby' => array(
+        'meta_value_num' => 'ASC',
+        'title' => 'ASC'
+    ),
+    'meta_query' => array(
+        'relation' => 'OR',
+        array(
+            'key' => '_custom_order',
+            'compare' => 'EXISTS'
+        ),
+        array(
+            'key' => '_custom_order',
+            'compare' => 'NOT EXISTS'
+        )
+    )
 ));
 ?>
 <!-- Template: archive-artisti.php -->
