@@ -57,7 +57,7 @@ $artisti_query = new WP_Query($query_args);
           </ul>
         </div>
 
-        <div id="main-textarea" class="entry-content big-text">
+        <div id="main-textarea" class="entry-content mid-text">
           <?php
           $description = portofranco_get_archive_description('artisti');
           if ($description) {

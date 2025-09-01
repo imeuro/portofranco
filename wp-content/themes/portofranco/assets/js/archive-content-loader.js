@@ -328,6 +328,7 @@ const archiveContentLoader = (() => {
         // Se è già attivo, ripristina lo stato iniziale
         if (isAlreadyActive) {
             // Rimuovi le classi active
+            elements.list.classList.remove('active');
             link.classList.remove('active');
             link.closest('.side-archive-item').classList.remove('active');
             
@@ -355,6 +356,7 @@ const archiveContentLoader = (() => {
         });
         
         // Aggiungi le classi active all'elemento cliccato
+        elements.list.classList.add('active');
         link.classList.add('active');
         link.closest('.side-archive-item').classList.add('active');
         // Aggiungi l'icona di chiusura

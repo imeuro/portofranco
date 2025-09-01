@@ -62,35 +62,6 @@ function portofranco_get_agenda_month_archive_url($year, $month) {
 // Recupera gli anni disponibili
 $years = portofranco_get_agenda_years();
 
-// Debug temporaneo - rimuovere dopo il test
-if (empty($years)) {
-    // Verifica se ci sono post agenda
-    $test_query = new WP_Query(array(
-        'post_type' => 'agenda',
-        'posts_per_page' => -1,
-        'post_status' => 'publish'
-    ));
-    
-    if ($test_query->have_posts()) {
-        echo '<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">';
-        echo '<h3>Debug: Post Agenda trovati</h3>';
-        echo '<p>Numero post: ' . $test_query->found_posts . '</p>';
-        
-        while ($test_query->have_posts()) {
-            $test_query->the_post();
-            $anno = get_field('inizio_evento_anno');
-            $mese = get_field('inizio_evento_mese');
-            echo '<p>Post ID: ' . get_the_ID() . ' - Titolo: ' . get_the_title() . ' - Anno: ' . ($anno ? $anno : 'NULL') . ' - Mese: ' . ($mese ? $mese : 'NULL') . '</p>';
-        }
-        echo '</div>';
-        wp_reset_postdata();
-    } else {
-        echo '<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">';
-        echo '<h3>Debug: Nessun post agenda trovato</h3>';
-        echo '</div>';
-    }
-}
-
 // Array dei mesi in italiano
 $months = array(
     1 => 'Gennaio',
@@ -143,7 +114,7 @@ $months = array(
           </ul>
         </div>
 
-        <div id="main-textarea" class="entry-content big-text">
+        <div id="main-textarea" class="entry-content mid-text">
           <?php
           $description = portofranco_get_archive_description('agenda');
           if ($description) {

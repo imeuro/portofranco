@@ -99,8 +99,12 @@ body.home {
 }
 
 /* Elementi attivi nella lista */
-.side-archive-item.inactive a {
+
+.active .side-archive-item a {
     color: #0003;
+}
+.active .side-archive-item.active a {
+    color: #000;
 }
 
 /* Contenuto dinamico */
