@@ -497,16 +497,16 @@ figure.wp-block-image :where(figcaption) {
 
     #main figure.wp-block-gallery figcaption.blocks-gallery-caption {
         position: absolute;
-        left: -300px;
+        left: -270px;
         top: 0;
-        width: 280px;
+        width: 250px;
         text-align: left;
         font-size: 12px;
         line-height: 1.6;
     }
     #main figure.wp-block-gallery.has-nested-images {
         gap: 5px;
-        margin: 10px -20px;
+        margin: 10px -20px 10px 0;
     }
 }
 
@@ -524,6 +524,10 @@ figure.wp-block-image :where(figcaption) {
     }
     .entry-content {
         flex: 1 0 calc(100% - 360px);
+    }
+    #main figure.wp-block-gallery figcaption.blocks-gallery-caption {
+        left: -360px;
+        width: 300px;
     }
 }
 /*
