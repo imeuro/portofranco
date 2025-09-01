@@ -79,7 +79,7 @@ $artisti_query = new WP_Query($query_args);
     <div class="artisti-grid">
       <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
         <h1 class="page-title small-label"><?php _e('Artisti', 'portofranco'); ?></h1>
-        <div class="entry-content big-text">
+        <div class="entry-content mid-text">
           <p><?php _e('Nessun artista trovato.', 'portofranco'); ?></p>
         </div>
       </article>

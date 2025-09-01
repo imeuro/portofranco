@@ -131,7 +131,7 @@ $months = array(
     <div class="agenda-grid">
       <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
         <h1 class="page-title small-label"><?php _e('Agenda', 'portofranco'); ?></h1>
-        <div class="entry-content big-text">
+        <div class="entry-content mid-text">
           <p><?php _e('Nessun evento trovato.', 'portofranco'); ?></p>
         </div>
       </article>

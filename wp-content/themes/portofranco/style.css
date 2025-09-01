@@ -426,6 +426,12 @@ nav#site-navigation .menu-post-mobile a {
 }
 
 
+figure.wp-block-image :where(figcaption) {
+    font-size: 15px;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
 /* ARTISTA */
 .side-content {
     font-size: 30px;

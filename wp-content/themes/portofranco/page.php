@@ -18,7 +18,7 @@ get_header();
         </div>
       <?php } ?>
 
-      <div class="entry-content big-text">
+      <div class="entry-content mid-text">
         <?php the_content(); ?>
       </div>
 
