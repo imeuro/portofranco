@@ -327,8 +327,13 @@ body.home {
   padding: 3px 12px;
   font-size: 14px;
   font-weight: 500;
-  color: #000;
+  color: #0003;
   transition: all 0.3s ease;
+}
+
+.language-switcher a:hover,
+.language-switcher .current-lang a {
+  color: #000;
 }
 
 @media (min-width: 1000px) {
