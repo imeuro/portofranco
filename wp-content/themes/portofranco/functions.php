@@ -174,3 +174,52 @@ function portofranco_add_language_meta_tags() {
   }
 }
 add_action('wp_head', 'portofranco_add_language_meta_tags');
+
+// Riga 150: Funzioni per la gestione della newsletter
+function portofranco_get_current_language() {
+    // Supporto per Polylang
+    if (function_exists('pll_current_language')) {
+        return pll_current_language();
+    }
+    
+    // Supporto per WPML
+    if (defined('ICL_LANGUAGE_CODE')) {
+        return ICL_LANGUAGE_CODE;
+    }
+    
+    // Fallback: controlla l'URL per determinare la lingua
+    $current_url = $_SERVER['REQUEST_URI'];
+    if (strpos($current_url, '/en/') !== false) {
+        return 'en';
+    }
+    
+    return 'it'; // Default italiano
+}
+
+// Riga 170: Aggiungi supporto per Contact Form 7 multilingua
+function portofranco_cf7_language_support($tag, $unused) {
+    if (isset($tag['name']) && $tag['name'] === 'language') {
+        $current_lang = portofranco_get_current_language();
+        if (is_array($tag)) {
+            $tag['values'] = array($current_lang);
+            if (class_exists('WPCF7_Pipes')) {
+                $tag['pipes'] = new WPCF7_Pipes(array($current_lang));
+            }
+        }
+    }
+    return $tag;
+}
+add_filter('wpcf7_form_tag_data_option', 'portofranco_cf7_language_support', 10, 2);
+
+// Riga 180: Personalizza messaggi Contact Form 7 in base alla lingua
+// NOTA: I messaggi vanno configurati manualmente nel pannello admin di Contact Form 7
+// per evitare conflitti con il funzionamento interno del plugin
+
+// Riga 200: Aggiungi stili personalizzati per Contact Form 7
+function portofranco_cf7_enqueue_styles() {
+    if (function_exists('wpcf7_enqueue_scripts')) {
+        // Assicurati che Contact Form 7 carichi i suoi stili
+        wpcf7_enqueue_scripts();
+    }
+}
+add_action('wp_enqueue_scripts', 'portofranco_cf7_enqueue_styles');

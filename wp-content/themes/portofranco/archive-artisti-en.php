@@ -1,7 +1,5 @@
 <?php
 // Template archivio artisti in inglese
-echo "<!-- DEBUG: Template archive-artisti-en.php caricato -->\n";
-echo "<!-- URL: " . $_SERVER['REQUEST_URI'] . " -->\n";
 
 get_header();
 
@@ -30,11 +28,6 @@ $query_args = array(
 );
 
 $artisti_query = new WP_Query($query_args);
-
-// Debug della query
-echo "<!-- DEBUG: Query args: " . print_r($query_args, true) . " -->\n";
-echo "<!-- DEBUG: Found posts: " . $artisti_query->found_posts . " -->\n";
-echo "<!-- DEBUG: Have posts: " . ($artisti_query->have_posts() ? 'Sì' : 'No') . " -->\n";
 ?>
 
 <!-- Template: archive-artisti-en.php -->

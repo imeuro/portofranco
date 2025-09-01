@@ -89,7 +89,7 @@ class PF_Plugin {
         $this->load_module('archive-fields');
         
         // Load migration script for archive descriptions
-        $this->load_migration_script();
+        // $this->load_migration_script();
         
         // Load REST API module
         $this->load_module('rest-api');
@@ -100,7 +100,7 @@ class PF_Plugin {
     
     /**
      * Load migration script
-     */
+     
     private function load_migration_script() {
         $migration_file = PF_PLUGIN_DIR . 'modules/archive-fields/migrate-descriptions.php';
         
@@ -116,6 +116,7 @@ class PF_Plugin {
             }
         }
     }
+     */
     
     /**
      * Load a specific module

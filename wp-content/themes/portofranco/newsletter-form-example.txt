@@ -1,0 +1,49 @@
+CODICE FORM CONTACT FORM 7 - NEWSLETTER
+========================================
+
+Copia questo codice nel form Contact Form 7:
+
+<div class="newsletter-form">
+    <div class="form-group">
+        [email* newsletter-email placeholder "La tua email"]
+        [hidden language default:get "lang"]
+    </div>
+    [submit "Iscriviti"]
+</div>
+
+MESSAGGI DI SUCCESSO:
+====================
+
+IMPORTANTE: Configura questi messaggi nel tab "Messages" del form:
+
+Messaggio di successo (IT):
+Grazie per esserti iscritto alla newsletter!
+
+Messaggio di successo (EN):
+Thank you for subscribing to our newsletter!
+
+Per messaggi condizionali, usa:
+[if language equals "en"]Thank you for subscribing![else]Grazie per esserti iscritto![/if]
+
+MESSAGGI DI ERRORE:
+===================
+
+Messaggio di errore (IT):
+Si è verificato un errore. Riprova.
+
+Messaggio di errore (EN):
+An error occurred. Please try again.
+
+CONFIGURAZIONE AGGIUNTIVA:
+==========================
+
+1. Vai in "Mail" tab
+2. Configura l'email di notifica (opzionale)
+3. Vai in "Messages" tab
+4. Personalizza i messaggi sopra
+5. Salva il form
+6. Copia l'ID del form (es: 123)
+7. Sostituisci NEWSLETTER_FORM_ID nel file about-end-content.php
+
+NOTA: Il campo "language" viene gestito automaticamente dal tema
+e passerà "it" o "en" in base alla lingua corrente.

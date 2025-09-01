@@ -20,6 +20,13 @@ get_header();
 
       <div class="entry-content mid-text">
         <?php the_content(); ?>
+        
+        <?php
+        if (is_page('about') || is_page('about-eng')) {
+          $lang = is_page('about') ? 'ita' : 'eng';
+          include(get_template_directory() . '/about-end-content.php');
+        } 
+        ?>
       </div>
 
     </article>
