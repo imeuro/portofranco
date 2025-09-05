@@ -18,17 +18,19 @@ get_header();
         </div>
       <?php } ?>
 
-      <div class="entry-content mid-text">
-        <?php the_content(); ?>
-        
-        <?php
-        if (is_page('about') || is_page('about-eng')) {
+      <?php if (is_page('about') || is_page('about-eng')) { ?>
+        <div class="entry-content big-text">
+          <?php 
+          the_content();
           $lang = is_page('about') ? 'ita' : 'eng';
           include(get_template_directory() . '/about-end-content.php');
-        } 
-        ?>
-      </div>
-
+          ?>
+        </div>
+      <?php } else { ?>
+        <div class="entry-content mid-text">
+          <?php the_content(); ?>
+        </div>
+      <?php } ?>
     </article>
   <?php endwhile; endif; ?>
 </main>

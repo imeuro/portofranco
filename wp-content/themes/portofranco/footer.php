@@ -21,7 +21,7 @@
             <li class="left-column small-label">social</li>
             <li class="right-column big-label space-bottom">
                 <a href="https://www.instagram.com/_portofranco_/">Instagram</a><br>
-                <a href="#">Iscriviti alla newsletter</a>
+                <a href="<?php echo get_permalink(get_page_by_path('about')).'#newsletter'; ?>">Iscriviti alla newsletter</a>
             </li>
             <li class="left-column small-label"></li>
             <li class="right-column small-label space-bottom">

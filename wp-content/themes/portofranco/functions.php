@@ -19,8 +19,10 @@ add_action( 'after_setup_theme', 'portofranco_setup' );
 
 // Riga 20: Includo CSS custom portofranco
 function portofranco_enqueue_styles() {
+  // Carica Helvetica Neue
+  wp_enqueue_style( 'helvetica-neue-cdn-font', 'https://fonts.cdnfonts.com/css/helvetica-neue-55', array(), null );
   // Carica Google Fonts (Inter)
-  wp_enqueue_style( 'google-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap', array(), null );
+  // wp_enqueue_style( 'google-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap', array(), null );
   
   // Carica prima lo style.css del tema
   wp_enqueue_style( 'portofranco-style', get_stylesheet_uri(), array(), filemtime(get_stylesheet_directory() . '/style.css') );

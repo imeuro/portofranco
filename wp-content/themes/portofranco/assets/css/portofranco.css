@@ -33,8 +33,9 @@ body.home {
 }
 
 .homepage-image img {
-  width: 100%;
+  width: 101%;
   height: 100%;
+  max-width: 101%;
   object-fit: cover;
   object-position: center;
 }
@@ -267,7 +268,7 @@ body.home {
 }
 
 .agenda-post-item .post-content {
-    padding: 10px;
+    padding: 10px 0;
     font-size: 16px;
     font-weight: 400;
     line-height: 1.2;
@@ -327,13 +328,13 @@ body.home {
   padding: 3px 12px;
   font-size: 14px;
   font-weight: 500;
-  color: #0003;
+  color: #6F6F6F;
   transition: all 0.3s ease;
 }
 
 .language-switcher a:hover,
 .language-switcher .current-lang a {
-  color: #000;
+  color: #fff;
 }
 
 @media (min-width: 1000px) {
@@ -344,9 +345,24 @@ body.home {
     right: initial;
     left: 0;
     z-index: 1000;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
   }
-  .home .language-switcher a {
-    color: #fff;
+  .language-switcher li {
+      text-transform: none;
+  }
+  .language-switcher li:first-of-type a:after {
+      content: "|";
+      display: inline;
+      position: relative;
+      right: -15px;
+  }
+  body:not(.home) .language-switcher a:hover,
+  body:not(.home) .language-switcher  .current-lang a {
+    color: #000;
   }
 }
 
@@ -366,13 +382,13 @@ body.home {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-width: 330px;
+    max-width: 100%;
 }
 
 .wpcf7-form input[type="email"],
 .wpcf7-form input[type="text"] {
     padding: 0.75rem;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #000;
     font-size: 1rem;
     font-style: normal;
     background-color: #fff;
@@ -383,30 +399,30 @@ body.home {
 .wpcf7-form input[type="email"]:focus,
 .wpcf7-form input[type="text"]:focus {
     outline: none;
-    border-color: #000;
+    border-color: #0003;
 }
 
-.wpcf7-form input[type="email"]::placeholder {
-    color: #999;
-    font-style: italic;
+.wpcf7-form input[type="email"]::placeholder,
+.wpcf7-form input[type="text"]::placeholder {
+    color: #C3C3C3;
 }
 
 .wpcf7-form input[type="submit"] {
-    padding: 0.75rem 1.5rem;
     background-color: #000;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-family: 'Inter', sans-serif;
+    border-radius: 0;
+    width: 100%;
+    font-size: 10px;
     font-weight: 500;
+    padding: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     align-self: flex-start;
 }
 
 .wpcf7-form input[type="submit"]:hover {
-    background-color: #333;
+    background-color: #000b;
 }
 
 .wpcf7-form input[type="submit"]:disabled {
@@ -419,7 +435,6 @@ body.home {
     padding: 0.75rem;
     border-radius: 4px;
     font-size: 0.9rem;
-    font-family: 'Inter', sans-serif;
     margin-top: 0.5rem;
     border: none;
 }
@@ -464,6 +479,7 @@ body.home {
     
     .wpcf7-form .form-group {
         flex: 1;
+        max-width: 330px;
     }
     
     .wpcf7-form input[type="submit"] {
@@ -475,13 +491,9 @@ body.home {
 @media (min-width: 1000px) {
     .wpcf7-form input[type="email"],
     .wpcf7-form input[type="text"] {
-        padding: 0 0px 0.5rem 0;
-        font-size: 1.4rem;
+        padding: 0;
+        font-size: 30px;
+        line-height: 40px;
         margin-bottom: 1rem;
-    }
-    
-    .wpcf7-form input[type="submit"] {
-        padding: 1rem 2rem;
-        font-size: 1.1rem;
     }
 }
