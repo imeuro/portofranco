@@ -7,8 +7,8 @@ msgstr ""
 "POT-Creation-Date: 2024-01-01 12:00+0000\n"
 "PO-Revision-Date: 2024-01-01 12:00+0000\n"
 "Last-Translator: Portofranco Team <info@portofranco.eu>\n"
-"Language-Team: English <info@portofranco.eu>\n"
-"Language: en_US\n"
+"Language-Team: English (UK) <info@portofranco.eu>\n"
+"Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid "Salta al contenuto"
 msgstr "Skip to content"
 
-#: header.php:51
+#: header.php:63 footer.php:14
 msgid "CONTATTI"
 msgstr "CONTACTS"
 
@@ -37,3 +37,17 @@ msgstr "Artists"
 #: archive-artisti-en.php:73
 msgid "Nessun artista trovato."
 msgstr "No artists found."
+
+#: footer.php:19
+msgid "indirizzo"
+msgstr "address"
+
+#: footer.php:24
+msgid "iscriviti alla newsletter"
+msgstr "subscribe to newsletter"
+
+#: footer.php:28
+msgid "Termini & Condizioni"
+msgstr "Terms & Conditions"
+
+

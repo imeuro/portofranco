@@ -8,7 +8,7 @@
         <ul class="footer-contacts">
             <li class="left-column"></li>
             <li class="right-column">
-                <h3 class="footer-label small-label">CONTATTI</h3>
+                <h3 class="footer-label small-label"><?php _e('CONTATTI', 'portofranco'); ?></h3>
             </li>
             <li class="left-column small-label">mail</li>
             <li class="right-column big-label">
@@ -16,16 +16,16 @@
             </li>
             <li class="left-column small-label">whatsapp</li>
             <li class="right-column big-label"><a href="https://wa.me/393317907368">+39 331 7907368</a></li>
-            <li class="left-column small-label">indirizzo</li>
+            <li class="left-column small-label"><?php _e('indirizzo', 'portofranco'); ?></li>
             <li class="right-column big-label">Palazzo Soranzo Novello<br>Corso 29 Aprile, 23<br>31033 Castelfranco Veneto TV</li>
             <li class="left-column small-label">social</li>
             <li class="right-column big-label space-bottom">
-                <a href="https://www.instagram.com/_portofranco_/">Instagram</a><br>
-                <a href="<?php echo get_permalink(get_page_by_path('about')).'#newsletter'; ?>">Iscriviti alla newsletter</a>
+                <a href="https://www.instagram.com/_portofranco_/">instagram</a><br>
+                <a href="<?php echo get_permalink(get_page_by_path('about')).'#newsletter'; ?>"><?php _e('iscriviti alla newsletter', 'portofranco'); ?></a>
             </li>
             <li class="left-column small-label"></li>
             <li class="right-column small-label space-bottom">
-                <a href="#">Termini & Condizioni</a><br>
+                <a href="#"><?php _e('Termini & Condizioni', 'portofranco'); ?></a><br>
                 <a href="#">Privacy Policy</a><br>
                 <a href="#">Cookies</a><br><br>
                 &copy; Portofranco <?php echo date('Y'); ?>

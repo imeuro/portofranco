@@ -637,7 +637,7 @@ ul.page-table li.right-column {
         align-items: center;
         justify-content: space-between;
     }
-    
+
     ul.page-table li.left-column {
         flex: 0 0 230px;
     }
@@ -645,9 +645,6 @@ ul.page-table li.right-column {
         flex: 0 0 calc(100% - 300px);
         line-height: 1.2;
     }
-
-    ul.footer-contacts,
-
 }
 @media (min-width: 1400px) {
     ul.page-table li.right-column {
