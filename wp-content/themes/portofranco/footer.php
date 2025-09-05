@@ -25,9 +25,9 @@
             </li>
             <li class="left-column small-label"></li>
             <li class="right-column small-label space-bottom">
-                <a href="#"><?php _e('Termini & Condizioni', 'portofranco'); ?></a><br>
-                <a href="#">Privacy Policy</a><br>
-                <a href="#">Cookies</a><br><br>
+                <a href="<?php echo portofranco_get_page_link('termini-condizioni', 'terms-conditions-en'); ?>"><?php _e('Termini & Condizioni', 'portofranco'); ?></a><br>
+                <a href="<?php echo portofranco_get_page_link('privacy-policy', 'privacy-policy-en'); ?>">Privacy Policy</a><br>
+                <a href="<?php echo portofranco_get_page_link('cookies', 'cookies-en'); ?>">Cookies</a><br><br>
                 &copy; Portofranco <?php echo date('Y'); ?>
             </li>
         </ul>

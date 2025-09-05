@@ -117,6 +117,67 @@ function portofranco_load_textdomain() {
 }
 add_action( 'after_setup_theme', 'portofranco_load_textdomain' );
 
+// Riga 85: Forza la lingua corretta per le traduzioni - SOLUZIONE DEFINITIVA
+function portofranco_force_textdomain() {
+  global $l10n;
+  
+  // Determina se siamo in inglese
+  $is_english = false;
+  
+  // Controlla URL
+  if (strpos($_SERVER['REQUEST_URI'], '/en/') !== false) {
+    $is_english = true;
+  }
+  
+  // Controlla Polylang se disponibile
+  if (function_exists('pll_current_language')) {
+    $current_lang = pll_current_language();
+    if ($current_lang === 'en') {
+      $is_english = true;
+    }
+  }
+  
+  // Se siamo in inglese, forza il caricamento delle traduzioni inglesi
+  if ($is_english) {
+    // Rimuovi il textdomain esistente
+    if (isset($l10n['portofranco'])) {
+      unset($l10n['portofranco']);
+    }
+    
+    // Carica direttamente il file .mo inglese
+    $mofile = get_template_directory() . '/languages/portofranco-en_GB.mo';
+    if (file_exists($mofile)) {
+      load_textdomain('portofranco', $mofile);
+    }
+  }
+}
+add_action('init', 'portofranco_force_textdomain');
+add_action('wp', 'portofranco_force_textdomain');
+
+// Riga 90: Funzione helper per i link multilingua
+function portofranco_get_page_link($page_slug_it, $page_slug_en = null) {
+  // Se non è specificato lo slug inglese, usa quello italiano con -en
+  if (!$page_slug_en) {
+    $page_slug_en = $page_slug_it . '-en';
+  }
+  
+  // Determina se siamo in inglese
+  $is_english = false;
+  if (strpos($_SERVER['REQUEST_URI'], '/en/') !== false) {
+    $is_english = true;
+  }
+  if (function_exists('pll_current_language') && pll_current_language() === 'en') {
+    $is_english = true;
+  }
+  
+  // Restituisci il link appropriato
+  if ($is_english) {
+    return get_permalink(get_page_by_path($page_slug_en));
+  } else {
+    return get_permalink(get_page_by_path($page_slug_it));
+  }
+}
+
 // Riga 90: Funzione per ottenere URL corretto per lingua
 function portofranco_get_language_url($url = '') {
   if (function_exists('pll_home_url')) {
@@ -176,6 +237,33 @@ function portofranco_add_language_meta_tags() {
   }
 }
 add_action('wp_head', 'portofranco_add_language_meta_tags');
+
+// Riga 149: Gestione menu Polylang
+function portofranco_nav_menu_args($args) {
+    if (!function_exists('pll_current_language')) {
+        return $args;
+    }
+    
+    // Se stiamo richiedendo il menu primary, usiamo quello della lingua corrente
+    if (isset($args['theme_location']) && $args['theme_location'] === 'primary') {
+        $current_lang = pll_current_language();
+        
+        // Debug: aggiungi log per vedere cosa succede
+        error_log("Current language: " . $current_lang);
+        
+        // Forza il menu in base alla lingua
+        if ($current_lang === 'en') {
+            $args['menu'] = 14; // Menu inglese
+            error_log("Using English menu (ID: 14)");
+        } else {
+            $args['menu'] = 2;  // Menu italiano (default)
+            error_log("Using Italian menu (ID: 2)");
+        }
+    }
+    
+    return $args;
+}
+add_filter('wp_nav_menu_args', 'portofranco_nav_menu_args');
 
 // Riga 150: Funzioni per la gestione della newsletter
 function portofranco_get_current_language() {
