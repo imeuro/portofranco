@@ -29,3 +29,11 @@ msgstr "Subscribe to newsletter"
 #: functions.php:12
 msgid "Menu Principale"
 msgstr "Main Menu"
+
+#: archive-artisti-en.php:40 archive-artisti-en.php:71
+msgid "Artisti"
+msgstr "Artists"
+
+#: archive-artisti-en.php:73
+msgid "Nessun artista trovato."
+msgstr "No artists found."

@@ -37,7 +37,7 @@ $artisti_query = new WP_Query($query_args);
     <div class="artisti-grid">
 
       <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
-        <h1 class="page-title small-label"><?php _e('Artisti', 'portofranco'); ?></h1>
+        <h1 class="page-title small-label">Artists</h1>
 
         <div class="side-content">
           <ul id="side-archive-list" class="side-content-inner" data-post-type="artisti">
@@ -68,9 +68,9 @@ $artisti_query = new WP_Query($query_args);
   <?php else : ?>
     <div class="artisti-grid">
       <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
-        <h1 class="page-title small-label"><?php _e('Artisti', 'portofranco'); ?></h1>
+        <h1 class="page-title small-label">Artists</h1>
         <div class="entry-content mid-text">
-          <p><?php _e('Nessun artista trovato.', 'portofranco'); ?></p>
+          <p>No artists found.</p>
         </div>
       </article>
     </div>
