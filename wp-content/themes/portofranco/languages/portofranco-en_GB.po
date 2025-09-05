@@ -50,4 +50,12 @@ msgstr "subscribe to newsletter"
 msgid "Termini & Condizioni"
 msgstr "Terms & Conditions"
 
+#: about-end-content.php:75
+msgid "La tua email"
+msgstr "Your email"
+
+#: about-end-content.php:78
+msgid "Iscriviti"
+msgstr "Subscribe"
+
 

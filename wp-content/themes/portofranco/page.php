@@ -21,6 +21,13 @@ get_header();
       <?php if (is_page('about') || is_page('about-eng')) { ?>
         <div class="entry-content big-text">
           <?php 
+          // Se siamo nella pagina about-eng, forza il caricamento delle traduzioni inglesi
+          if (is_page('about-eng')) {
+            // Forza il caricamento del textdomain inglese
+            unload_textdomain('portofranco');
+            load_textdomain('portofranco', get_template_directory() . '/languages/portofranco-en_GB.mo');
+          }
+          
           the_content();
           $lang = is_page('about') ? 'ita' : 'eng';
           include(get_template_directory() . '/about-end-content.php');

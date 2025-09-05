@@ -2,7 +2,7 @@
     <ul class="page-table">
         <li class="left-column"></li>
         <li class="right-column">
-            <h3 class="footer-label small-label"><?php echo $lang == 'ita' ? 'CONTATTI' : 'CONTACTS'; ?></h3>
+            <h3 class="footer-label small-label"><?php _e('CONTATTI', 'portofranco'); ?></h3>
         </li>
         <li class="left-column small-label">mail</li>
         <li class="right-column mid-label">
@@ -10,7 +10,7 @@
         </li>
         <li class="left-column small-label">whatsapp</li>
         <li class="right-column mid-label"><a href="https://wa.me/393317907368">+39 331 7907368</a></li>
-        <li class="left-column small-label"><?php echo $lang == 'ita' ? 'indirizzo' : 'address'; ?></li>
+        <li class="left-column small-label"><?php _e('indirizzo', 'portofranco'); ?></li>
         <li class="right-column mid-label">Palazzo Soranzo Novello<br>Corso 29 Aprile, 23<br>31033 Castelfranco Veneto TV</li>
     </ul>
 
@@ -65,17 +65,26 @@
             <?php 
             // Mostra il form Contact Form 7 se disponibile
             if (function_exists('wpcf7_contact_form')) {
-                // ID del form da sostituire con quello reale dopo la creazione
-                echo do_shortcode('[contact-form-7 id="db66d6b" title="Newsletter"]');
+                // Determina la lingua corrente
+                $current_lang = function_exists('pll_current_language') ? pll_current_language() : (get_locale() == 'en_GB' ? 'en' : 'it');
+                $is_english = ($current_lang === 'en' || is_page('about-eng') || get_locale() == 'en_GB');
+                
+                if ($is_english) {
+                    // Form inglese
+                    echo do_shortcode('[contact-form-7 id="a593dbf" title="Newsletter EN"]');
+                } else {
+                    // Form italiano
+                    echo do_shortcode('[contact-form-7 id="db66d6b" title="Newsletter"]');
+                }
             } else {
                 // Fallback se Contact Form 7 non è attivo
                 ?>
                 <form class="newsletter-form">
                     <div class="form-group">
-                        <input type="email" placeholder="<?php echo $lang == 'ita' ? 'La tua email' : 'Your email'; ?>" required>
-                        <input type="hidden" name="language" value="<?php echo $lang; ?>">
+                        <input type="email" placeholder="<?php esc_attr_e('La tua email', 'portofranco'); ?>" required>
+                        <input type="hidden" name="language" value="<?php echo function_exists('pll_current_language') ? pll_current_language() : (get_locale() == 'en_GB' ? 'en' : 'it'); ?>">
                     </div>
-                    <button type="submit"><?php echo $lang == 'ita' ? 'Iscriviti' : 'Subscribe'; ?></button>
+                    <button type="submit"><?php _e('Iscriviti', 'portofranco'); ?></button>
                 </form>
                 <?php
             }
