@@ -613,41 +613,42 @@ window.archiveContentLoader = archiveContentLoader;
 
 // Gestione toggle anni/mesi nell'archivio agenda
 document.addEventListener('DOMContentLoaded', function () {
-    // Verifica se siamo nella pagina Agenda
-    const isAgendaPage = document.querySelector('#side-archive-list[data-post-type="agenda"]');
+    // Verifica se siamo nella pagina Agenda o Artisti
+    const isAccordionPage = document.querySelector('#side-archive-list[data-post-type="agenda"], #side-archive-list[data-post-type="artisti"]');
     
-    if (!isAgendaPage) return;
+    if (!isAccordionPage) return;
 
-    const yearLabels = document.querySelectorAll('.side-archive-year .year-label');
+    const accordionItems = document.querySelectorAll('.accordion-item .accordion-item-label');
 
-    yearLabels.forEach(function (yearLabel) {
-        yearLabel.addEventListener('click', function () {
-            const yearItem = this.closest('.side-archive-year');
-            const monthsList = yearItem.querySelector('.months-list');
+    accordionItems.forEach(function (accordionItem) {
+        accordionItem.addEventListener('click', function () {
+            const accordionItem = this.closest('.accordion-item');
+            const accordionList = accordionItem.querySelector('.accordion-list');
             const isExpanded = this.getAttribute('aria-expanded') === 'true';
 
             // Chiudi tutti gli anni prima
-            const allYearLabels = document.querySelectorAll('.side-archive-year .year-label');
-            const allMonthsLists = document.querySelectorAll('.side-archive-year .months-list');
+            const allAccordionItems = document.querySelectorAll('.accordion-item');
+            const allAccordionLists = document.querySelectorAll('.accordion-item .accordion-list');
 
-            allYearLabels.forEach(function (label) {
+            allAccordionItems.forEach(function (label) {
                 label.setAttribute('aria-expanded', 'false');
+                label.firstElementChild.setAttribute('aria-expanded', 'false');
             });
 
-            allMonthsLists.forEach(function (list) {
+            allAccordionLists.forEach(function (list) {
                 list.classList.remove('expanded');
             });
 
             // Se l'anno cliccato era chiuso, aprilo
             if (!isExpanded) {
-                monthsList.classList.add('expanded');
+                accordionList.classList.add('expanded');
                 this.setAttribute('aria-expanded', 'true');
             }
             // Se l'anno cliccato era aperto, rimane chiuso (comportamento toggle)
         });
 
         // Gestione tastiera per accessibilità
-        yearLabel.addEventListener('keydown', function (event) {
+        accordionItem.addEventListener('keydown', function (event) {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 this.click();

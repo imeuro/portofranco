@@ -209,13 +209,13 @@ body.home {
     justify-content: space-between;
 }
 
-.side-archive-year .year-label {
+.accordion-item .accordion-item-label {
     cursor: pointer;
     width: 100%;
     display: inline-block;
 }
-.side-archive-year .year-label[aria-expanded="true"]:after,
-.side-archive-year .year-label[aria-expanded="false"]:after {
+.accordion-item .accordion-item-label[aria-expanded="true"]:after,
+.accordion-item .accordion-item-label[aria-expanded="false"]:after {
     content: '';
     width: 12px;
     height: 2px;
@@ -225,7 +225,7 @@ body.home {
     display: inline-block;
     background: #000;
 }
-.side-archive-year .year-label[aria-expanded="false"]:after {
+.accordion-item .accordion-item-label[aria-expanded="false"]:after {
     width: 12px;
     height: 12px;
     background: url('../img/close.svg') no-repeat center center;
@@ -233,22 +233,22 @@ body.home {
     transform: rotate(45deg);
     top: -1px;
 }
-.months-list {
+.accordion-list {
     margin-left: 12px;
     margin-top: 5px;
     margin-bottom: 12px;
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out;
+    transition: max-height 0.5s ease-in-out, opacity 0.2s ease-in-out;
 }
 
-.months-list.expanded {
-    max-height: 500px; /* Altezza massima stimata per il contenuto */
+.accordion-list.expanded {
+    max-height: 100dvh; /* Altezza massima stimata per il contenuto */
     opacity: 1;
 }
 
-.side-archive-month {
+.side-archive-item {
     margin-bottom: 3px;
     font-size: 18px;
     font-weight: 400;
@@ -258,7 +258,7 @@ body.home {
     display: inline-block;
 }
 
-.side-archive-month a {
+.side-archive-item a {
     text-decoration: none;
     color: #000;
 }

@@ -90,11 +90,11 @@ $months = array(
         <div class="side-content">
           <ul id="side-archive-list" class="side-content-inner" data-post-type="agenda">
             <?php foreach ( $years as $year ) : ?>              
-              <li class="side-archive-year side-archive-year-desktop">
-                <span class="year-label" tabindex="0" role="button" aria-expanded="false" aria-controls="months-<?php echo esc_attr($year); ?>"><?php echo esc_html($year); ?></span>
-                <ul id="months-<?php echo esc_attr($year); ?>" class="months-list">
+              <li class="accordion-item">
+                <span class="accordion-item-label" tabindex="0" role="button" aria-expanded="false" aria-controls="item-<?php echo esc_attr($year); ?>"><?php echo esc_html($year); ?></span>
+                <ul id="item-<?php echo esc_attr($year); ?>" class="accordion-list accordion-list">
                   <?php foreach ( $months as $month_num => $month_name ) : ?>
-                    <li class="side-archive-month side-archive-item">
+                    <li class="side-archive-item accordion-item">
                       <?php if ( portofranco_has_agenda_posts_for_month($year, $month_num) ) : ?>
                         <a href="<?php echo esc_url(portofranco_get_agenda_month_archive_url($year, $month_num)); ?>" 
                            rel="bookmark" 

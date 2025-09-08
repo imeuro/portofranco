@@ -32,6 +32,7 @@ class PF_CPT_Manager {
      */
     public function register_post_types() {
         $this->register_artisti_post_type();
+        $this->register_special_projects_post_type();
         $this->register_agenda_post_type();
     }
     
@@ -96,6 +97,62 @@ class PF_CPT_Manager {
         );
         
         register_post_type('artisti', $args);
+    }
+
+    /**
+     * Register 'special-projects' custom post type
+     */
+    private function register_special_projects_post_type() {
+        $labels = array(
+            'name'                  => _x('Special Projects', 'Post type general name', 'pf'),
+            'singular_name'         => _x('Special Project', 'Post type singular name', 'pf'),
+            'menu_name'             => _x('Special Projects', 'Admin Menu text', 'pf'),
+            'name_admin_bar'        => _x('Special Project', 'Add New on Toolbar', 'pf'),
+            'add_new'               => __('Aggiungi Nuovo', 'pf'),
+            'add_new_item'          => __('Aggiungi Nuovo Special Project', 'pf'),
+            'new_item'              => __('Nuovo Special Project', 'pf'),
+            'edit_item'             => __('Modifica Special Project', 'pf'),
+            'view_item'             => __('Visualizza Special Project', 'pf'),
+            'all_items'             => __('Tutti gli Special Projects', 'pf'),
+            'search_items'          => __('Cerca Special Projects', 'pf'),
+            'parent_item_colon'     => __('Special Projects Padre:', 'pf'),
+            'not_found'             => __('Nessuno special project trovato.', 'pf'),
+            'not_found_in_trash'    => __('Nessuno special project trovato nel cestino.', 'pf'),
+            'featured_image'        => _x('Immagine del Special Project', 'Overrides the "Featured Image" phrase for this post type.', 'pf'),
+            'set_featured_image'    => _x('Imposta immagine del special project', 'Overrides the "Set featured image" phrase for this post type.', 'pf'),
+            'remove_featured_image' => _x('Rimuovi immagine del special project', 'Overrides the "Remove featured image" phrase for this post type.', 'pf'),
+            'use_featured_image'    => _x('Usa come immagine del special project', 'Overrides the "Use as featured image" phrase for this post type.', 'pf'),
+            'archives'              => _x('Archivio Special Projects', 'The post type archive label used in nav menus.', 'pf'),
+            'insert_into_item'      => _x('Inserisci nel special project', 'Overrides the "Insert into post" phrase (used when inserting media into a post).', 'pf'),
+            'uploaded_to_this_item' => _x('Caricato in questo special project', 'Overrides the "Uploaded to this post" phrase (used when viewing media attached to a post).', 'pf'),
+            'filter_items_list'     => _x('Filtra lista special projects', 'Screen reader text for the filter links.', 'pf'),
+            'items_list_navigation' => _x('Navigazione lista special projects', 'Screen reader text for the pagination.', 'pf'),
+            'items_list'            => _x('Lista special projects', 'Screen reader text for the items list.', 'pf'),
+        );
+        
+        $args = array(
+            'labels'             => $labels,
+            'public'             => true,
+            'publicly_queryable' => true,
+            'show_ui'            => true,
+            'show_in_menu'       => true,
+            'query_var'          => 'special-projects',
+            'rewrite'            => array(
+                'slug' => $this->get_rewrite_slug('special-projects'),
+                'with_front' => false,
+                'feeds' => true,
+                'pages' => true
+            ),
+            'capability_type'    => 'post',
+            'has_archive'        => true,
+            'hierarchical'       => false,
+            'menu_position'      => 7,
+            'menu_icon'          => 'dashicons-star-filled',
+            'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
+            'show_in_rest'       => true, // Abilitato per REST API
+        );
+        
+        register_post_type('special-projects', $args);
     }
 
     /**
@@ -208,6 +265,8 @@ class PF_CPT_Manager {
             switch ($post_type) {
                 case 'artisti':
                     return $current_lang === 'en' ? 'artists' : 'artisti';
+                case 'special-projects':
+                    return $current_lang === 'en' ? 'special-projects' : 'special-projects';
                 case 'agenda':
                     return $current_lang === 'en' ? 'events' : 'agenda';
                 default:

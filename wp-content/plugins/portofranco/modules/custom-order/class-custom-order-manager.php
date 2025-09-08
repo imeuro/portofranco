@@ -19,7 +19,7 @@ class PF_Custom_Order_Manager {
     /**
      * Supported post types
      */
-    private $supported_post_types = array('artisti');
+    private $supported_post_types = array('artisti','special-projects');
     
     /**
      * Constructor
