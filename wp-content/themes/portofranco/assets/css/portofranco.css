@@ -397,6 +397,7 @@ body.home {
 .wpcf7-form input[type="text"] {
     padding: 0.75rem;
     border-bottom: 1px solid #000;
+    border-radius: 0;
     font-size: 1rem;
     font-style: normal;
     background-color: #fff;
