@@ -614,7 +614,8 @@ ul.page-table li.right-column {
 }
 
  ul#newsletter {
-     margin-top: 40px;
+    margin-top: 40px;
+    scroll-margin-top: 40px;
  }
 
 @media (min-width: 1000px) {
