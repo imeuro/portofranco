@@ -248,7 +248,8 @@ nav#site-navigation {
 .menu-active #site-navigation {
     left: -12px;
 }
-nav#site-navigation .menu-main-ita-container { width: 100%; }
+nav#site-navigation .menu-main-ita-container,
+nav#site-navigation .menu-main-eng-container { width: 100%; }
 .menu-icon line { transition: all 0.3s ease-out; }
 .menu-active svg.menu-icon line.top {
     transform: rotate(45deg) translateX(-2px);

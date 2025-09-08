@@ -334,8 +334,9 @@ body.home {
 
 .language-switcher a:hover,
 .language-switcher .current-lang a {
-  color: #fff;
+  color: #000;
 }
+
 
 @media (min-width: 1000px) {
   .language-switcher {
@@ -360,6 +361,12 @@ body.home {
       position: relative;
       right: -15px;
   }
+
+  .language-switcher a:hover,
+  .language-switcher .current-lang a {
+      color: #fff;
+  }
+  
   body:not(.home) .language-switcher a:hover,
   body:not(.home) .language-switcher  .current-lang a {
     color: #000;
