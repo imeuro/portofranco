@@ -341,7 +341,7 @@ body.home {
 @media (min-width: 1000px) {
   .language-switcher {
     position: fixed;
-    top: calc(100dvh - 100px);
+    top: calc(100dvh - 62px);
     bottom: initial;
     right: initial;
     left: 0;
@@ -366,7 +366,7 @@ body.home {
   .language-switcher .current-lang a {
       color: #fff;
   }
-  
+
   body:not(.home) .language-switcher a:hover,
   body:not(.home) .language-switcher  .current-lang a {
     color: #000;
@@ -504,8 +504,8 @@ body.home {
     .wpcf7 form input[type="email"],
     .wpcf7 form input[type="text"] {
         padding: 0;
-        font-size: 30px;
-        line-height: 40px;
+        font-size: 20px;
+        line-height: 30px;
         margin-bottom: 1rem;
     }
 }
