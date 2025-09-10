@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Portofranco 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/portofranco\n"
-"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"POT-Creation-Date: 2024-09-10 12:00+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,18 +12,102 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: header.php:12
-msgid "Salta al contenuto"
+#: 404.php:7
+msgid "Pagina non trovata"
 msgstr ""
 
-#: header.php:51
+#: 404.php:8
+msgid "Spiacenti, la pagina che cerchi non esiste."
+msgstr ""
+
+#: 404.php:9
+msgid "Torna alla home"
+msgstr ""
+
+#: about-end-content.php:5 footer.php:11 header.php:63
 msgid "CONTATTI"
 msgstr ""
 
-#: header.php:57
-msgid "Iscriviti alla newsletter"
+#: about-end-content.php:13 footer.php:19
+msgid "indirizzo"
+msgstr ""
+
+#: about-end-content.php:84
+msgid "La tua email"
+msgstr ""
+
+#: about-end-content.php:87
+msgid "Iscriviti"
+msgstr ""
+
+#: archive-agenda.php:88 archive-agenda.php:133
+msgid "Agenda"
+msgstr ""
+
+#: archive-agenda.php:101
+msgid "Eventi di %s %d"
+msgstr ""
+
+#: archive-agenda.php:135
+msgid "Nessun evento trovato."
+msgstr ""
+
+#: archive-artisti.php:75 archive-artisti.php:82 index-artisti.php:7
+msgid "Artisti"
+msgstr ""
+
+#: archive-artisti.php:89 index-artisti.php:50
+msgid "Nessun artista trovato."
+msgstr ""
+
+#: archive-artisti.php:105
+msgid "Nessuno special project trovato."
+msgstr ""
+
+#: archive.php:23 search.php:20
+msgid "Nessun contenuto trovato."
+msgstr ""
+
+#: footer.php:24
+msgid "iscriviti alla newsletter"
+msgstr ""
+
+#: footer.php:28
+msgid "Termini & Condizioni"
 msgstr ""
 
 #: functions.php:12
 msgid "Menu Principale"
+msgstr ""
+
+#: header.php:12
+msgid "Salta al contenuto"
+msgstr ""
+
+#: header.php:71
+msgid "Iscriviti alla newsletter"
+msgstr ""
+
+#: index-artisti.php:35
+msgid "Leggi di più su"
+msgstr ""
+
+#: index-artisti.php:36
+msgid "Leggi di più"
+msgstr ""
+
+#: index-artisti.php:45
+msgid "Vedi tutti gli artisti"
+msgstr ""
+
+#: search.php:7
+msgid "Risultati per: %s"
+msgstr ""
+
+#: single-agenda.php:23 single-artisti.php:22
+msgid "Pubblicato il"
+msgstr ""
+
+#: single.php:14
+msgid "di"
 msgstr ""

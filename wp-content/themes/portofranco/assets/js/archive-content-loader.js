@@ -632,7 +632,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             allAccordionItems.forEach(function (label) {
                 label.setAttribute('aria-expanded', 'false');
-                label.firstElementChild.setAttribute('aria-expanded', 'false');
+                if (label.firstElementChild) {
+                    label.firstElementChild.setAttribute('aria-expanded', 'false');
+                }
             });
 
             allAccordionLists.forEach(function (list) {

@@ -262,6 +262,10 @@ body.home {
     text-decoration: none;
     color: #000;
 }
+.side-archive-item.outsider-artist a {
+    text-decoration: none;
+    color: #EEB9B9;
+}
 
 .month-no-events {
     color: #0003;
