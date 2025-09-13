@@ -613,10 +613,14 @@ ul.page-table li.right-column {
     line-height: 1.2;
 }
 
- ul#newsletter {
+ul#newsletter {
     margin-top: 40px;
     scroll-margin-top: 40px;
- }
+}
+
+ul#partners figure.wp-block-image.size-medium {
+    flex-grow: 0;
+}
 
 @media (min-width: 1000px) {
     footer .footer-content {
@@ -640,12 +644,13 @@ ul.page-table li.right-column {
     ul.page-table {
         display: flex;
         flex-flow: row wrap;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
     }
 
     ul.page-table li.left-column {
         flex: 0 0 230px;
+        margin-bottom: 10px;
     }
     ul.page-table li.right-column {
         flex: 0 0 calc(100% - 300px);

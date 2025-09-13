@@ -39,7 +39,7 @@
         <li class="right-column mid-label">Alessia Romano</li>
 
         <li class="left-column small-label">Production Coordinator</li>
-        <li class="right-column mid-label">Alberto Iazzi</li>
+        <li class="right-column mid-label">Crates</li>
 
         <li class="left-column small-label">Web Developer</li>
         <li class="right-column mid-label">Mauro Fioravanzi</li>
@@ -58,9 +58,24 @@
 
     </ul>
 
+    <?php
+    // Query per ottenere la pagina "partners"
+    $partners_page = get_page_by_path('partners');
+    if ($partners_page) { ?>
+    <ul class="page-table" id="partners">
+        <li class="left-column small-label">Partners</li>
+        <li class="right-column mid-label">
+        <?php 
+            // Ottiene il contenuto della pagina
+            $content = apply_filters('the_content', $partners_page->post_content);
+            echo $content;
+        ?>
+        </li>
+    </ul>
+    <?php } ?>
 
     <ul class="page-table" id="newsletter">
-        <li class="left-column small-label">Newsletter</li>
+        <li class="left-column small-label"><?php _e('iscriviti alla newsletter', 'portofranco'); ?></li>
         <li class="right-column mid-label">
             <?php 
             // Mostra il form Contact Form 7 se disponibile
