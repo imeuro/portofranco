@@ -530,6 +530,13 @@ figure.wp-block-image :where(figcaption) {
         gap: 5px;
         margin: 10px -20px 10px 0;
     }
+    #main figure.wp-block-gallery.has-nested-images figure.wp-block-image {
+        max-height: 200px;
+    }
+    #main figure.wp-block-gallery.has-nested-images figure.wp-block-image img {
+        max-height: 200px;
+        max-width: 200px !important;
+    }
 }
 
 @media (min-width: 1400px) {
@@ -650,7 +657,7 @@ ul#partners figure.wp-block-image.size-medium {
 
     ul.page-table li.left-column {
         flex: 0 0 230px;
-        margin-bottom: 10px;
+        margin-top: 10px;
     }
     ul.page-table li.right-column {
         flex: 0 0 calc(100% - 300px);
