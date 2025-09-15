@@ -1,9 +1,7 @@
 <div class="about-end-content">
-    <ul class="page-table">
-        <li class="left-column"></li>
-        <li class="right-column">
-            <h3 class="footer-label small-label"><?php _e('CONTATTI', 'portofranco'); ?></h3>
-        </li>
+    <ul class="page-table" id="item-info">
+        <li class="left-column"><h3 class="footer-label small-label"><?php _e('CONTATTI', 'portofranco'); ?></h3></li>
+        <li class="right-column"></li>
         <li class="left-column small-label">mail</li>
         <li class="right-column mid-label">
             <a href="mailto:info@portofranco.eu">info@portofranco.eu</a>
@@ -14,11 +12,9 @@
         <li class="right-column mid-label">Palazzo Soranzo Novello<br>Corso 29 Aprile, 23<br>31033 Castelfranco Veneto TV</li>
     </ul>
 
-    <ul class="page-table">
-        <li class="left-column"></li>
-        <li class="right-column">
-            <h3 class="footer-label small-label">TEAM</h3>
-        </li>
+    <ul class="page-table" id="item-team">
+        <li class="left-column"><h3 class="footer-label small-label">TEAM</h3></li>
+        <li class="right-column"></li>
 
         <li class="left-column small-label">Artistic Director</li>
         <li class="right-column mid-label">Rossella Farinotti</li>
@@ -62,8 +58,9 @@
     // Query per ottenere la pagina "partners"
     $partners_page = get_page_by_path('partners');
     if ($partners_page) { ?>
-    <ul class="page-table" id="partners">
-        <li class="left-column small-label">Partners</li>
+    <ul class="page-table" id="item-partners" data-scroll="partners">
+        <li class="left-column"><h3 class="footer-label small-label">Partners</h3></li>
+        <li class="right-column"></li>
         <li class="right-column mid-label">
         <?php 
             // Ottiene il contenuto della pagina
@@ -74,8 +71,9 @@
     </ul>
     <?php } ?>
 
-    <ul class="page-table" id="newsletter">
-        <li class="left-column small-label"><?php _e('iscriviti alla newsletter', 'portofranco'); ?></li>
+    <ul class="page-table" id="item-newsletter">
+        <li class="left-column"><h3 class="footer-label small-label"><?php _e('iscriviti alla newsletter', 'portofranco'); ?></h3></li>
+        <li class="right-column"></li>
         <li class="right-column mid-label">
             <?php 
             // Mostra il form Contact Form 7 se disponibile

@@ -19,7 +19,25 @@ get_header();
       <?php } ?>
 
       <?php if (is_page('about') || is_page('about-eng')) { ?>
-        <div class="entry-content big-text">
+        <div class="side-content">
+          <ul id="side-archive-list" class="side-content-inner" data-post-type="about">
+            <li class="accordion-item">
+              <span class="accordion-item-label" tabindex="0" role="button" aria-expanded="false" aria-controls="item-team">Team</span>
+            </li>
+            <li class="accordion-item">
+              <span class="accordion-item-label" tabindex="0" role="button" aria-expanded="false" aria-controls="item-partners">Partners</span>
+            </li>
+            <li class="accordion-item">
+              <span class="accordion-item-label" tabindex="0" role="button" aria-expanded="false" aria-controls="item-info">Info</span>
+            </li>
+            <li class="accordion-item">
+              <span class="accordion-item-label" tabindex="0" role="button" aria-expanded="false" aria-controls="item-newsletter">Newsletter</span>
+            </li>
+
+          </ul>
+        </div>
+
+        <div class="entry-content big-text" id="about-page">
           <?php 
           // Se siamo nella pagina about-eng, forza il caricamento delle traduzioni inglesi
           if (is_page('about-eng')) {
@@ -27,8 +45,9 @@ get_header();
             unload_textdomain('portofranco');
             load_textdomain('portofranco', get_template_directory() . '/languages/portofranco-en_GB.mo');
           }
-          
+          echo '<div class="about-page-content">';
           the_content();
+          echo '</div>';
           $lang = is_page('about') ? 'ita' : 'eng';
           include(get_template_directory() . '/about-end-content.php');
           ?>

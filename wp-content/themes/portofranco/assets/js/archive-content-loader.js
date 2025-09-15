@@ -680,3 +680,94 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+// Gestione selezione sezioni nella pagina About
+document.addEventListener('DOMContentLoaded', function () {
+    const aboutList = document.querySelector('#side-archive-list[data-post-type="about"]');
+    if (!aboutList) return;
+
+    const labels = aboutList.querySelectorAll('.accordion-item .accordion-item-label');
+    const aboutPageContent = document.querySelector('#about-page .about-page-content');
+    const aboutEndContent = document.querySelector('.about-end-content');
+    const DURATION = (window.archiveContentLoader && window.archiveContentLoader.config && window.archiveContentLoader.config.animation && window.archiveContentLoader.config.animation.duration) || 300;
+
+    const fadeOut = (el) => new Promise((resolve) => {
+        if (!el) { resolve(); return; }
+        el.style.transition = `opacity ${DURATION}ms ease-out`;
+        el.style.opacity = '1';
+        // Forza reflow
+        void el.offsetHeight;
+        el.style.opacity = '0';
+        setTimeout(() => {
+            el.style.display = 'none';
+            resolve();
+        }, DURATION);
+    });
+
+    const fadeIn = (el) => new Promise((resolve) => {
+        if (!el) { resolve(); return; }
+        el.style.display = '';
+        el.style.transition = `opacity ${DURATION}ms ease-out`;
+        el.style.opacity = '0';
+        // Forza reflow
+        void el.offsetHeight;
+        el.style.opacity = '1';
+        setTimeout(() => resolve(), DURATION);
+    });
+
+    const hideAllTables = () => {
+        if (!aboutEndContent) return;
+        aboutEndContent.querySelectorAll('.page-table').forEach((ul) => {
+            ul.setAttribute('aria-hidden', 'true');
+            ul.style.display = 'none';
+        });
+    };
+
+    // Nascondi tutte le tabelle di default all'avvio
+    hideAllTables();
+
+    labels.forEach((label) => {
+        label.addEventListener('click', async function () {
+            const targetId = this.getAttribute('aria-controls');
+            if (!targetId || !aboutEndContent) return;
+
+            const target = aboutEndContent.querySelector(`#${targetId}`);
+            if (!target) return;
+
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+            if (isExpanded) {
+                // Toggle off: chiudi la tabella e ripristina il testo iniziale
+                await fadeOut(target);
+                hideAllTables();
+                labels.forEach((l) => l.setAttribute('aria-expanded', 'false'));
+                if (aboutPageContent) {
+                    await fadeIn(aboutPageContent);
+                }
+                return;
+            }
+
+            // Aggiorna stato aria-expanded sui label
+            labels.forEach((l) => l.setAttribute('aria-expanded', 'false'));
+            this.setAttribute('aria-expanded', 'true');
+
+            // Nascondi il contenuto principale con fade-out (solo la prima volta visibile)
+            if (aboutPageContent && aboutPageContent.style.display !== 'none') {
+                await fadeOut(aboutPageContent);
+            }
+
+            // Nascondi tutte le tabelle e mostra solo quella richiesta
+            hideAllTables();
+            target.removeAttribute('aria-hidden');
+            await fadeIn(target);
+        });
+
+        // Accessibilità tastiera
+        label.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.click();
+            }
+        });
+    });
+});

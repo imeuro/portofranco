@@ -530,10 +530,10 @@ figure.wp-block-image :where(figcaption) {
         gap: 5px;
         margin: 10px -20px 10px 0;
     }
-    #main figure.wp-block-gallery.has-nested-images figure.wp-block-image {
+    #main #item-partners figure.wp-block-gallery.has-nested-images figure.wp-block-image {
         max-height: 200px;
     }
-    #main figure.wp-block-gallery.has-nested-images figure.wp-block-image img {
+    #main #item-partners figure.wp-block-gallery.has-nested-images figure.wp-block-image img {
         max-height: 200px;
         max-width: 200px !important;
     }
@@ -587,6 +587,7 @@ ul.page-table {
     align-items: center;
     margin: 50px 0;
 }
+.about-end-content ul.page-table { margin-top: 0;}
 
 ul.footer-contacts li.left-column,
 ul.page-table li.left-column {
