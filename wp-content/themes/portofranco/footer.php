@@ -14,8 +14,6 @@
             <li class="right-column big-label">
                 <a href="mailto:info@portofranco.eu">info@portofranco.eu</a>
             </li>
-            <li class="left-column small-label">whatsapp</li>
-            <li class="right-column big-label"><a href="https://wa.me/393317907368">+39 331 7907368</a></li>
             <li class="left-column small-label"><?php _e('indirizzo', 'portofranco'); ?></li>
             <li class="right-column big-label">Palazzo Soranzo Novello<br>Corso 29 Aprile, 23<br>31033 Castelfranco Veneto TV</li>
             <li class="left-column small-label">social</li>
