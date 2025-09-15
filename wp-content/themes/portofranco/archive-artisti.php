@@ -99,7 +99,7 @@ $special_proj_query = new WP_Query($query_special_proj);
               <ul id="item-special_proj" class="accordion-list accordion-list">
                 <?php if ( $special_proj_query->have_posts() ) : ?>
                   <?php while ( $special_proj_query->have_posts() ) : $special_proj_query->the_post(); ?>
-                    <li class="<?php if (portofranco_get_post_slug() == 'alice-ronchi') { echo 'outsider-artist '; } ?>side-archive-item accordion-item"><a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>" data-artist-id="<?php the_ID(); ?>" data-artist-slug="<?php echo portofranco_get_post_slug(); ?>" ><?php the_title(); ?></a></li>
+                    <li class="<?php echo (portofranco_get_post_slug() == 'alice-ronchi' || portofranco_get_post_slug() == 'alice-ronchi-2') ? 'outsider-artist ' : ''; ?>side-archive-item accordion-item"><a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>" data-artist-id="<?php the_ID(); ?>" data-artist-slug="<?php echo portofranco_get_post_slug(); ?>" ><?php the_title(); ?></a></li>
                   <?php endwhile; ?>
                 <?php else : ?>
                   <li class="side-archive-item accordion-item"><?php _e('Nessuno special project trovato.', 'portofranco'); ?></li>

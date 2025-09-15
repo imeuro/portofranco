@@ -57,6 +57,12 @@ class PF_REST_API_Manager {
                         return is_numeric($param) && $param >= 1 && $param <= 12;
                     }
                 ),
+                'lang' => array(
+                    'validate_callback' => function($param, $request, $key) {
+                        return in_array($param, array('it', 'en'), true);
+                    },
+                    'required' => false
+                ),
             ),
         ));
     }
@@ -105,6 +111,7 @@ class PF_REST_API_Manager {
     public function get_agenda_posts($request) {
         $year = $request->get_param('year');
         $month = $request->get_param('month');
+        $lang = $request->get_param('lang');
         
         // Query per recuperare i post dell'agenda
         // Prima prova con meta fields diretti
@@ -131,6 +138,11 @@ class PF_REST_API_Manager {
             'meta_key' => 'inizio_evento_anno',
             'order' => 'ASC'
         );
+
+        // Se Polylang è attivo e la lingua è passata, aggiungi filtro lingua
+        if ($lang && function_exists('pll_current_language')) {
+            $args['lang'] = $lang;
+        }
         
         $query = new WP_Query($args);
         
@@ -143,6 +155,9 @@ class PF_REST_API_Manager {
                 'orderby' => 'date',
                 'order' => 'ASC'
             );
+            if ($lang && function_exists('pll_current_language')) {
+                $args['lang'] = $lang;
+            }
             
             $query = new WP_Query($args);
             
@@ -229,6 +244,9 @@ class PF_REST_API_Manager {
                         'orderby' => 'date',
                         'order' => 'ASC'
                     );
+                    if ($lang && function_exists('pll_current_language')) {
+                        $args['lang'] = $lang;
+                    }
                     $query = new WP_Query($args);
                 }
             }

@@ -37,6 +37,22 @@ const getWordPressBasePath = () => {
 
 const archiveContentLoader = (() => {
     /**
+     * Rileva la lingua corrente (Polylang/WPML/URL)
+     */
+    const getCurrentLanguage = () => {
+        // Da variabile localizzata WP se presente
+        if (window.portofrancoAjax && window.portofrancoAjax.lang) {
+            return window.portofrancoAjax.lang;
+        }
+        // Polylang espone spesso classi o url /en/
+        const path = window.location.pathname;
+        if (/^\/en(\/|$)/.test(path) || path.includes('/en/')) {
+            return 'en';
+        }
+        // WPML potrebbe usare parametri o costanti lato server, qui fallback
+        return 'it';
+    };
+    /**
      * Determina se siamo su dispositivo mobile
      */
     const isMobile = () => {
@@ -77,13 +93,15 @@ const archiveContentLoader = (() => {
             // Per altri post types, usa endpoint per post singoli
             endpoint = `post-content/${params.postId}`;
         }
-        
+        // Aggiungi querystring lingua
+        const lang = getCurrentLanguage();
+        const query = `?lang=${encodeURIComponent(lang)}`;
+
         // Se l'URL base è relativo, costruisci l'URL completo
         if (baseUrl.startsWith('/')) {
-            return `${window.location.origin}${baseUrl}${endpoint}`;
+            return `${window.location.origin}${baseUrl}${endpoint}${query}`;
         }
-        
-        return `${baseUrl}${endpoint}`;
+        return `${baseUrl}${endpoint}${query}`;
     };
 
     // Configurazione
@@ -408,7 +426,11 @@ const archiveContentLoader = (() => {
             console.log('Archive Content Loader: URL richiesta:', apiUrl);
             
             // Effettua la richiesta API
-            const response = await fetch(apiUrl);
+            const headers = {};
+            if (window.portofrancoAjax && window.portofrancoAjax.nonce) {
+                headers['X-WP-Nonce'] = window.portofrancoAjax.nonce;
+            }
+            const response = await fetch(apiUrl, { headers });
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
