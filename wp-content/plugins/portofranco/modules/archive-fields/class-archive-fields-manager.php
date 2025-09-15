@@ -33,6 +33,10 @@ class PF_Archive_Fields_Manager {
         add_action('admin_menu', array($this, 'add_archive_settings_pages'));
         add_action('admin_init', array($this, 'register_archive_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+        // Allinea le capability per la pagina di salvataggio options.php
+        foreach ($this->supported_post_types as $post_type) {
+            add_filter("option_page_capability_{$post_type}_archive_settings", array($this, 'filter_option_page_capability'));
+        }
     }
     
     /**
@@ -80,7 +84,16 @@ class PF_Archive_Fields_Manager {
             // Registra le opzioni per ogni lingua
             foreach ($this->supported_languages as $lang) {
                 $option_name = "{$post_type}_archive_description_{$lang}";
-                register_setting("{$post_type}_archive_settings", $option_name);
+                register_setting(
+                    "{$post_type}_archive_settings",
+                    $option_name,
+                    array(
+                        'type' => 'string',
+                        'capability' => 'edit_posts',
+                        'sanitize_callback' => 'wp_kses_post',
+                        'default' => ''
+                    )
+                );
             }
             
             // Ottieni l'oggetto post type
@@ -232,6 +245,13 @@ class PF_Archive_Fields_Manager {
         if (strpos($hook, '-archive-settings') !== false) {
             wp_enqueue_editor();
         }
+    }
+    
+    /**
+     * Forza la capability corretta per il salvataggio via options.php
+     */
+    public function filter_option_page_capability($capability) {
+        return 'edit_posts';
     }
     
     /**
