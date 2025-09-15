@@ -496,7 +496,7 @@ body.home {
     
     .wpcf7 form .form-group {
         flex: 1;
-        max-width: 330px;
+        /* max-width: 330px; */
     }
     
     .wpcf7 form input[type="submit"] {

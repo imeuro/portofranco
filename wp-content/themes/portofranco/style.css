@@ -502,11 +502,14 @@ figure.wp-block-image :where(figcaption) {
     }
 
     .archive .side-content,
-    .archive .entry-content {
+    .archive .entry-content,
+    .about-page .entry-content,
+    .about-page .side-content {
         max-height: calc(100dvh - 155px);
         overflow: scroll;
     }
-    .archive .entry-content {
+    .archive .entry-content,
+    .about-page .entry-content {
         padding-right: 20px;
         margin-right: -15px;
     }

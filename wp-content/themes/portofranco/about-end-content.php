@@ -6,8 +6,6 @@
         <li class="right-column mid-label">
             <a href="mailto:info@portofranco.eu">info@portofranco.eu</a>
         </li>
-        <li class="left-column small-label">whatsapp</li>
-        <li class="right-column mid-label"><a href="https://wa.me/393317907368">+39 331 7907368</a></li>
         <li class="left-column small-label"><?php _e('indirizzo', 'portofranco'); ?></li>
         <li class="right-column mid-label">Palazzo Soranzo Novello<br>Corso 29 Aprile, 23<br>31033 Castelfranco Veneto TV</li>
     </ul>
@@ -59,7 +57,7 @@
     $partners_page = get_page_by_path('partners');
     if ($partners_page) { ?>
     <ul class="page-table" id="item-partners" data-scroll="partners">
-        <li class="left-column"><h3 class="footer-label small-label">Partners</h3></li>
+        <li class="left-column"><h3 class="footer-label small-label">In collaborazione con</h3></li>
         <li class="right-column"></li>
         <li class="right-column mid-label">
         <?php 
@@ -72,9 +70,8 @@
     <?php } ?>
 
     <ul class="page-table" id="item-newsletter">
-        <li class="left-column"><h3 class="footer-label small-label"><?php _e('iscriviti alla newsletter', 'portofranco'); ?></h3></li>
-        <li class="right-column"></li>
-        <li class="right-column mid-label">
+        <li>
+            <h3 class="footer-label small-label"><?php _e('iscriviti alla newsletter', 'portofranco'); ?></h3>
             <?php 
             // Mostra il form Contact Form 7 se disponibile
             if (function_exists('wpcf7_contact_form')) {

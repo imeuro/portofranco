@@ -3,10 +3,12 @@
 get_header();
 ?>
 <main id="main" tabindex="-1" role="main">
-  <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+  <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); 
+  $post_class = is_page('about') || is_page('about-eng') ? 'about-page' : '';
+  ?>
 
 
-    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
+    <article id="post-<?php the_ID(); ?>" <?php post_class($post_class); ?> tabindex="0">
       <h1 class="page-title small-label"><?php the_title(); ?></h1>
       <?php
       $show_side_content = get_field('show_side_content');
