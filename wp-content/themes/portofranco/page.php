@@ -39,7 +39,7 @@ get_header();
           </ul>
         </div>
 
-        <div class="entry-content big-text" id="about-page">
+        <div class="entry-content mid-text" id="about-page">
           <?php 
           // Se siamo nella pagina about-eng, forza il caricamento delle traduzioni inglesi
           if (is_page('about-eng')) {

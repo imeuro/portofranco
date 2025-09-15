@@ -445,8 +445,9 @@ figure.wp-block-image :where(figcaption) {
     margin-bottom: 1.5rem;
 }
 
-/* ARTISTA */
-.side-content {
+/* ARCHIVI E PAGINE */
+.side-content,
+.entry-content {
     margin-bottom: 20px;
     width: 100%;
     display: block;
@@ -485,7 +486,7 @@ figure.wp-block-image :where(figcaption) {
     }
 
     .side-content {
-        flex: 0 0 240px;
+        flex: 0 0 200px;
         margin: 0 20px 40px 0;
     }
 
@@ -656,25 +657,26 @@ ul#partners figure.wp-block-image.size-medium {
         display: flex;
         flex-flow: row wrap;
         align-items: flex-start;
-        justify-content: space-between;
+        justify-content: flex-start;
+        gap: 0 40px;
     }
 
     ul.page-table li.left-column {
         flex: 0 0 230px;
         margin-top: 10px;
     }
-    ul.page-table li.right-column {
+    /* ul.page-table li.right-column {
         flex: 0 0 calc(100% - 300px);
         line-height: 1.2;
-    }
+    } */
 
     ul#newsletter {
         align-items: flex-start;
     }
 }
-@media (min-width: 1400px) {
+/* @media (min-width: 1400px) {
     ul.page-table li.right-column {
         flex: 0 0 calc(100% - 450px);
         line-height: 1.2;
     }
-}
+} */
