@@ -64,8 +64,6 @@
           <p>
               <a href="mailto:info@portofranco.eu">info@portofranco.eu</a>
           <br>
-              <a href="https://wa.me/393317907368">+39 331 7907368</a>
-          <br>
               <a href="https://www.instagram.com/_portofranco_/">Instagram</a>
           <br>
               <a href="<?php echo portofranco_get_page_link('about', 'about-en') ; ?>#newsletter"><?php _e('Iscriviti alla newsletter', 'portofranco'); ?></a>
