@@ -1,0 +1,57 @@
+# Copyright (C) 2025 Portofranco
+# This file is distributed under the same license as the Portofranco package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Portofranco 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/portofranco\n"
+"POT-Creation-Date: 2025-09-16 12:00+0000\n"
+"PO-Revision-Date: 2025-09-16 12:00+0000\n"
+"Last-Translator: Portofranco Team <info@portofranco.eu>\n"
+"Language-Team: Italiano <info@portofranco.eu>\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: about-end-content.php:3 footer.php:11 header.php:63
+msgid "CONTATTI"
+msgstr "CONTATTI"
+
+#: about-end-content.php:9 footer.php:19
+msgid "indirizzo"
+msgstr "indirizzo"
+
+#: about-end-content.php:13
+msgid "COME RAGGIUNGERE"
+msgstr "COME RAGGIUNGERE"
+
+#: about-end-content.php:17
+msgid "IN TRENO"
+msgstr "IN TRENO"
+
+#: about-end-content.php:45
+msgid "IN AUTO"
+msgstr "IN AUTO"
+
+#: about-end-content.php:71
+msgid "ACCOMODATION"
+msgstr "ACCOMODATION"
+
+#: footer.php:24 about-end-content.php:140
+msgid "iscriviti alla newsletter"
+msgstr "iscriviti alla newsletter"
+
+#: about-end-content.php:126
+msgid "In collaborazione con"
+msgstr "In collaborazione con"
+
+#: about-end-content.php:160
+msgid "La tua email"
+msgstr "La tua email"
+
+#: about-end-content.php:163
+msgid "Iscriviti"
+msgstr "Iscriviti"
+
+

@@ -6,10 +6,74 @@
         <li class="right-column mid-label">
             <a href="mailto:info@portofranco.eu">info@portofranco.eu</a>
         </li>
-        <li class="left-column small-label">whatsapp</li>
-        <li class="right-column mid-label"><a href="https://wa.me/393317907368">+39 331 7907368</a></li>
         <li class="left-column small-label"><?php _e('indirizzo', 'portofranco'); ?></li>
         <li class="right-column mid-label"><a href="https://www.google.com/maps?q=Palazzo+Soranzo+Novello,+Corso+29+Aprile,+23,+31033+Castelfranco+Veneto+TV" target="_blank" rel="noopener noreferrer">Palazzo Soranzo Novello<br>Corso 29 Aprile, 23<br>31033 Castelfranco Veneto TV</a></li>
+        <li class="left-column small-label"></li>
+        <li class="right-column mid-label"></li>
+        <li class="left-column small-label"><h3 class="footer-label small-label"><?php _e('COME RAGGIUNGERE', 'portofranco'); ?></h3></li>
+        <li class="right-column mid-label">
+            <p>Palazzo Soranzo Novello, Castelfranco Veneto:</p>
+        </li>
+        <li class="left-column small-label"><h3 class="footer-label small-label"><?php _e('IN TRENO', 'portofranco'); ?></h3></li>
+        <li class="right-column mid-label">
+            <?php if (is_page('about')) : ?>
+                <p>Da Milano<br>
+                •⁠  ⁠Collegamenti quotidiani con Trenitalia e Italo<br>
+                •⁠  ⁠Durata media del viaggio: 3 h<br>
+                <br>
+                    Da Venezia<br>
+                •⁠  ⁠Treni regionali diretti ogni ora<br>
+                •⁠  ⁠Durata media del viaggio: 50 min<br>
+                <br>
+
+                Palazzo Soranzo Novello è poi comodamente raggiungibile a piedi dalla stazione, dista 10 minuti.<br>
+                </p>
+            <?php else : ?>
+                <p>From Milan<br>
+                •⁠  ⁠Daily connections with Trenitalia and Italo<br>
+                •⁠  ⁠Travel time: 3 hours<br>
+                <br>
+                    From Venice<br>
+                •⁠  ⁠Regional trains direct every hour<br>
+                •⁠  ⁠Travel time: 50 minutes<br>
+                <br>
+
+                Palazzo Soranzo Novello is easily accessible by foot from the station, a 10-minute walk away.<br>
+                </p>
+            <?php endif; ?>
+        </li>
+        <li class="left-column small-label"><h3 class="footer-label small-label"><?php _e('IN AUTO', 'portofranco'); ?></h3></li>
+        <li class="right-column mid-label">
+            <?php if (is_page('about')) : ?>
+            <p>Da Milano<br>
+            •⁠  ⁠Durata media del viaggio: quasi 3 ore<br>
+            <br>
+                Da Venezia<br>
+            •⁠  ⁠Durata media del viaggio: 50 minuti<br>
+            <br>
+
+            Vicino a Palazzo Soranzo Novello c’è un comodo parcheggio presso Piazza Giorgione.<br>
+            </p>
+            <?php else: ?>
+            <p>From Milan<br>
+                •⁠  ⁠Travel time: almost 3 hours<br>
+                <br>
+                    From Venice<br>
+                •⁠  ⁠Travel time: 50 minutes<br>
+                <br>
+
+                There is a convenient parking lot near Palazzo Soranzo Novello, at Piazza Giorgione.<br>
+            </p>
+            <?php endif; ?>
+        </li>
+        <li class="left-column small-label"></li>
+        <li class="right-column mid-label"></li>
+        <li class="left-column small-label"><h3 class="footer-label small-label"><?php _e('ACCOMODATION', 'portofranco'); ?></h3></li>
+        <li class="right-column mid-label">
+            <p>
+                <a href="<?php echo wp_get_attachment_url(473); ?>" target="_blank" rel="noopener noreferrer">Hotel Castelfranco Veneto (PDF)</a>
+            </p>
+        </li>
     </ul>
 
     <ul class="page-table" id="item-team">
@@ -31,11 +95,11 @@
         <li class="left-column small-label">Programme Coordinator</li>
         <li class="right-column mid-label">Daniele Costa</li>   
 
-        <li class="left-column small-label">Communication Coordinator</li>
+        <li class="left-column small-label">Communication Manager</li>
         <li class="right-column mid-label">Alessia Romano</li>
 
-        <li class="left-column small-label">Production Coordinator</li>
-        <li class="right-column mid-label">Crates</li>
+        <li class="left-column small-label">Exhibition Design</li>
+        <li class="right-column mid-label">HeyCrates</li>
 
         <li class="left-column small-label">Web Developer</li>
         <li class="right-column mid-label">Mauro Fioravanzi</li>
@@ -59,7 +123,7 @@
     $partners_page = get_page_by_path('partners');
     if ($partners_page) { ?>
     <ul class="page-table" id="item-partners" data-scroll="partners">
-        <li class="left-column"><h3 class="footer-label small-label">In collaborazione con</h3></li>
+        <li class="left-column"><h3 class="footer-label small-label"><?php _e('In collaborazione con', 'portofranco'); ?></h3></li>
         <li class="right-column"></li>
         <li class="right-column mid-label">
         <?php 

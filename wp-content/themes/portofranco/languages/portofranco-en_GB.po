@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Portofranco 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/portofranco\n"
-"POT-Creation-Date: 2024-09-10 12:00+0000\n"
-"PO-Revision-Date: 2024-09-10 12:00+0000\n"
+"POT-Creation-Date: 2025-09-16 12:00+0000\n"
+"PO-Revision-Date: 2025-09-16 12:00+0000\n"
 "Last-Translator: Portofranco Team <info@portofranco.eu>\n"
 "Language-Team: English (UK) <info@portofranco.eu>\n"
 "Language: en_GB\n"
@@ -26,19 +26,19 @@ msgstr "Sorry, the page you are looking for does not exist."
 msgid "Torna alla home"
 msgstr "Go back to home"
 
-#: about-end-content.php:5 footer.php:11 header.php:63
+#: about-end-content.php:3 footer.php:11 header.php:63
 msgid "CONTATTI"
 msgstr "CONTACTS"
 
-#: about-end-content.php:13 footer.php:19
+#: about-end-content.php:9 footer.php:19
 msgid "indirizzo"
 msgstr "address"
 
-#: about-end-content.php:84
+#: about-end-content.php:160
 msgid "La tua email"
 msgstr "Your email"
 
-#: about-end-content.php:87
+#: about-end-content.php:163
 msgid "Iscriviti"
 msgstr "Subscribe"
 
@@ -70,9 +70,29 @@ msgstr "No special projects found."
 msgid "Nessun contenuto trovato."
 msgstr "No content found."
 
-#: footer.php:24
+#: footer.php:24 about-end-content.php:140
 msgid "iscriviti alla newsletter"
 msgstr "subscribe to newsletter"
+
+#: about-end-content.php:126
+msgid "In collaborazione con"
+msgstr "In collaboration with"
+
+#: about-end-content.php:13
+msgid "COME RAGGIUNGERE"
+msgstr "HOW TO GET THERE"
+
+#: about-end-content.php:17
+msgid "IN TRENO"
+msgstr "BY TRAIN"
+
+#: about-end-content.php:45
+msgid "IN AUTO"
+msgstr "BY CAR"
+
+#: about-end-content.php:71
+msgid "ACCOMODATION"
+msgstr "ACCOMMODATION"
 
 #: footer.php:28
 msgid "Termini & Condizioni"
