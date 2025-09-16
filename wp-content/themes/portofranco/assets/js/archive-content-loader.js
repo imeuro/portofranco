@@ -497,12 +497,13 @@ const archiveContentLoader = (() => {
                                         </div>
                                     ` : ''}
                                     <div class="post-content">
-                                        <h2 class="agenda-post-title"><a href="${post.link}">${post.title}</a></h2>
+                                        <h2 class="agenda-post-title">${post.title}</h2>
                                         <div class="post-meta">
                                             <time>${post.formatted_date}</time>
                                         </div>
-                                        <div class="post-excerpt">
-                                            ${post.excerpt}
+                                        <span class="post-read-more" role="button" tabindex="0" aria-expanded="false">${getCurrentLanguage() === 'en' ? 'Read more' : 'Leggi di più'}</span>
+                                        <div class="post-excerpt" aria-hidden="true">
+                                            ${post.content}
                                         </div>
                                     </div>
                                 </div>
@@ -528,6 +529,9 @@ const archiveContentLoader = (() => {
         
         // Aggiorna il contenuto
         targetContentArea.innerHTML = newContent;
+
+        // Inizializza gestione "Leggi di più" con event delegation
+        initReadMoreToggle(targetContentArea);
         
         // Applica animazione appropriata
         if (state.isMobile) {
@@ -591,6 +595,8 @@ const archiveContentLoader = (() => {
                 
                 elements.contentArea.style.opacity = '0';
                 elements.contentArea.innerHTML = state.originalContent;
+                // Reinizializza gestione "Leggi di più" anche sul contenuto originale
+                initReadMoreToggle(elements.contentArea);
                 
                 setTimeout(() => {
                     elements.contentArea.style.opacity = '1';
@@ -611,6 +617,42 @@ const archiveContentLoader = (() => {
         });
         
 
+    };
+
+    /**
+     * Inizializza il toggle "Leggi di più" per gli estratti dei post agenda
+     */
+    const initReadMoreToggle = (rootEl) => {
+        if (!rootEl) return;
+
+        // Delegation per click
+        rootEl.addEventListener('click', function (e) {
+            const trigger = e.target.closest('.post-read-more');
+            if (!trigger) return;
+
+            const postContent = trigger.closest('.post-content');
+            if (!postContent) return;
+
+            const excerpt = postContent.querySelector('.post-excerpt');
+            if (!excerpt) return;
+
+            // Mostra estratto e aggiorna accessibilità
+            excerpt.classList.add('is-visible');
+            excerpt.setAttribute('aria-hidden', 'false');
+            trigger.setAttribute('aria-expanded', 'true');
+
+            // Nascondi il bottone
+            trigger.style.display = 'none';
+        });
+
+        // Delegation per tastiera (Enter/Space)
+        rootEl.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const trigger = e.target.closest('.post-read-more');
+            if (!trigger) return;
+            e.preventDefault();
+            trigger.click();
+        });
     };
 
     /**

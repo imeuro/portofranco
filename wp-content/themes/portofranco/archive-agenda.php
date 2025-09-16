@@ -142,66 +142,61 @@ if ($portofranco_current_lang === 'en') {
         12 => 'Dicembre'
     );
 }
+// Definizione stagione fissa 2025-2026 con mesi Novembre–Febbraio
+$season_start_year = 2025;
+$season_end_year = 2026;
+$season_label = $season_start_year . '-' . $season_end_year;
+$season_months = array(
+    array('month' => 11, 'year' => $season_start_year, 'label' => $months[11]),
+    array('month' => 12, 'year' => $season_start_year, 'label' => $months[12]),
+    array('month' => 1,  'year' => $season_end_year,   'label' => $months[1]),
+    array('month' => 2,  'year' => $season_end_year,   'label' => $months[2]),
+);
 ?>
 <!-- Template: archive-agenda.php -->
 <main id="main" tabindex="-1" role="main">
-  
-  <?php if ( !empty($years) ) : ?>
-    <div class="agenda-grid">
+  <div class="agenda-grid">
 
-      <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
-        <h1 class="page-title small-label"><?php _e('Agenda', 'portofranco'); ?></h1>
+    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
+      <h1 class="page-title small-label"><?php _e('Agenda', 'portofranco'); ?></h1>
 
-        <div class="side-content">
-          <ul id="side-archive-list" class="side-content-inner" data-post-type="agenda">
-            <?php foreach ( $years as $year ) : ?>              
-              <li class="accordion-item">
-                <span class="accordion-item-label" tabindex="0" role="button" aria-expanded="false" aria-controls="item-<?php echo esc_attr($year); ?>"><?php echo esc_html($year); ?></span>
-                <ul id="item-<?php echo esc_attr($year); ?>" class="accordion-list accordion-list">
-                  <?php foreach ( $months as $month_num => $month_name ) : ?>
-                    <li class="side-archive-item accordion-item">
-                      <?php if ( portofranco_has_agenda_posts_for_month($year, $month_num, $portofranco_current_lang) ) : ?>
-                        <a href="<?php echo esc_url(portofranco_get_agenda_month_archive_url($year, $month_num)); ?>" 
-                           rel="bookmark" 
-                           title="<?php echo esc_attr(sprintf(__('Eventi di %s %d', 'portofranco'), $month_name, $year)); ?>"
-                           data-year="<?php echo esc_attr($year); ?>"
-                           data-month="<?php echo esc_attr($month_num); ?>">
-                          <?php echo esc_html($month_name); ?>
-                        </a>
-                      <?php else : ?>
-                        <span class="month-no-events"><?php echo esc_html($month_name); ?></span>
-                      <?php endif; ?>
-                    </li>
-                  <?php endforeach; ?>
-                </ul>
-              </li>
-            <?php endforeach; ?>
-          </ul>
-        </div>
+      <div class="side-content">
+        <ul id="side-archive-list" class="side-content-inner" data-post-type="agenda">
+          <li class="accordion-item">
+            <span class="accordion-item-label" tabindex="0" role="button" aria-expanded="true" aria-controls="item-season-<?php echo esc_attr($season_label); ?>"><?php echo esc_html($season_label); ?></span>
+            <ul id="item-season-<?php echo esc_attr($season_label); ?>" class="accordion-list accordion-list expanded">
+              <?php foreach ( $season_months as $sm ) : ?>
+                <li class="side-archive-item accordion-item">
+                  <?php if ( portofranco_has_agenda_posts_for_month($sm['year'], $sm['month'], $portofranco_current_lang) ) : ?>
+                    <a href="<?php echo esc_url(portofranco_get_agenda_month_archive_url($sm['year'], $sm['month'])); ?>" 
+                       rel="bookmark" 
+                       title="<?php echo esc_attr(sprintf(__('Eventi di %s %d', 'portofranco'), $sm['label'], $sm['year'])); ?>"
+                       data-year="<?php echo esc_attr($sm['year']); ?>"
+                       data-month="<?php echo esc_attr($sm['month']); ?>">
+                      <?php echo esc_html($sm['label']); ?>
+                    </a>
+                  <?php else : ?>
+                    <span class="month-no-events"><?php echo esc_html($sm['label']); ?></span>
+                  <?php endif; ?>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          </li>
+        </ul>
+      </div>
 
-        <div id="main-textarea" class="entry-content mid-text">
-          <?php
-          $description = portofranco_get_archive_description('agenda');
-          if ($description) {
-              echo wpautop($description);
-          }
-          ?>
-        </div>
+      <div id="main-textarea" class="entry-content mid-text">
+        <?php
+        $description = portofranco_get_archive_description('agenda');
+        if ($description) {
+            echo wpautop($description);
+        }
+        ?>
+      </div>
 
-      </article>
+    </article>
 
-    </div>
-    
-  <?php else : ?>
-    <div class="agenda-grid">
-      <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> tabindex="0">
-        <h1 class="page-title small-label"><?php _e('Agenda', 'portofranco'); ?></h1>
-        <div class="entry-content mid-text">
-          <p><?php _e('Nessun evento trovato.', 'portofranco'); ?></p>
-        </div>
-      </article>
-    </div>
-  <?php endif; ?>
+  </div>
 </main>
 
 <?php get_footer(); ?> 

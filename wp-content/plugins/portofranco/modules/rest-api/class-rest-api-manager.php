@@ -343,7 +343,7 @@ class PF_REST_API_Manager {
                 $end_date = function_exists('get_field') ? get_field('fine_evento', $post_id) : get_post_meta($post_id, 'end_date', true);
                 
                 // Costruisci la data formattata
-                $formatted_date = $start_date['giorno'] . ' ' . $start_date['mese']['label'] . ' ' . $start_date['anno'] . ' dalle ' . $start_date['ora'];
+                $formatted_date = 'Dalle ' . $start_date['ora'] . ' del ' . $start_date['giorno'] . ' ' . $start_date['mese']['label'] . ' ' . $start_date['anno'];
                 
 
                 if ($end_date && $end_date['ora']) {
