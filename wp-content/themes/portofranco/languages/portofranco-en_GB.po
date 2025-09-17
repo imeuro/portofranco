@@ -134,5 +134,9 @@ msgstr "Published on"
 msgid "di"
 msgstr "by"
 
+#: about-end-content.php:11
+msgid "ORARI D’APERTURA"
+msgstr "OPENING HOURS"
+
 
 

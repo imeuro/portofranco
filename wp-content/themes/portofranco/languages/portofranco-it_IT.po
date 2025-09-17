@@ -54,4 +54,8 @@ msgstr "La tua email"
 msgid "Iscriviti"
 msgstr "Iscriviti"
 
+#: about-end-content.php:11
+msgid "ORARI D’APERTURA"
+msgstr "ORARI D’APERTURA"
+
 

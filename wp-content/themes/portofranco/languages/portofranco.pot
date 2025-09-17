@@ -40,6 +40,10 @@ msgstr ""
 msgid "Iscriviti"
 msgstr ""
 
+#: about-end-content.php:11
+msgid "ORARI D’APERTURA"
+msgstr ""
+
 #: archive-agenda.php:88 archive-agenda.php:133
 msgid "Agenda"
 msgstr ""

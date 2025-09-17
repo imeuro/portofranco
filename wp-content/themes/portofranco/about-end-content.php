@@ -10,6 +10,18 @@
         <li class="right-column mid-label"><a href="https://www.google.com/maps?q=Palazzo+Soranzo+Novello,+Corso+29+Aprile,+23,+31033+Castelfranco+Veneto+TV" target="_blank" rel="noopener noreferrer">Palazzo Soranzo Novello<br>Corso 29 Aprile, 23<br>31033 Castelfranco Veneto TV</a></li>
         <li class="left-column small-label"></li>
         <li class="right-column mid-label"></li>
+        <li class="left-column small-label"><?php _e('ORARI D’APERTURA', 'portofranco'); ?></li>
+        <li class="right-column mid-label">
+            <?php if (is_page('about')) : ?>
+            <p>lunedì-martedì-mercoledì: chiuso<br>
+            giovedì - venerdì - sabato - domenica: 10:00-19:00</p>
+            <?php else : ?>
+            <p>Monday-Tuesday-Wednesday: closed<br>
+            Thursday - Friday - Saturday - Sunday: 10:00-19:00</p>
+            <?php endif; ?>
+        </li>
+        <li class="left-column small-label"></li>
+        <li class="right-column mid-label"></li>
         <li class="left-column small-label"><h3 class="footer-label small-label"><?php _e('COME RAGGIUNGERE', 'portofranco'); ?></h3></li>
         <li class="right-column mid-label">
             <p>Palazzo Soranzo Novello, Castelfranco Veneto:</p>
