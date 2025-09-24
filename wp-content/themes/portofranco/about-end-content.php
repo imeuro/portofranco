@@ -94,7 +94,7 @@
         <li class="left-column"><h3 class="footer-label small-label">TEAM</h3></li>
         <li class="right-column"></li>
 
-        <li class="left-column small-label">Artistic Director</li>
+        <li class="left-column small-label"><?php _e('Curatrice', 'portofranco'); ?></li>
         <li class="right-column mid-label">Rossella Farinotti</li>
 
         <li class="left-column small-label">Project Manager</li>
@@ -124,10 +124,10 @@
         <li class="left-column small-label">Press Office</li>
         <li class="right-column mid-label">Lara Facco</li>
 
-        <li class="left-column small-label">Direttore Museo Casa Giorgione</li>
+        <li class="left-column small-label"><?php _e('Direttore Museo Casa Giorgione', 'portofranco'); ?></li>
         <li class="right-column mid-label">Matteo Melchiorre</li>
 
-        <li class="left-column small-label">Responsabile segreteria Museo Casa Giorgione</li>
+        <li class="left-column small-label"><?php _e('Responsabile segreteria Museo Casa Giorgione', 'portofranco'); ?></li>
         <li class="right-column mid-label">Marta Favaron</li>
 
     </ul>

@@ -14,6 +14,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: 404.php:7
+msgid "Pagina non trovata"
+msgstr ""
+
+#: 404.php:8
+msgid "Spiacenti, la pagina che cerchi non esiste."
+msgstr ""
+
+#: 404.php:9
+msgid "Torna alla home"
+msgstr ""
+
 #: about-end-content.php:3 footer.php:11 header.php:63
 msgid "CONTATTI"
 msgstr "CONTATTI"
@@ -21,6 +33,66 @@ msgstr "CONTATTI"
 #: about-end-content.php:9 footer.php:19
 msgid "indirizzo"
 msgstr "indirizzo"
+
+#: about-end-content.php:160
+msgid "La tua email"
+msgstr "La tua email"
+
+#: about-end-content.php:163
+msgid "Iscriviti"
+msgstr "Iscriviti"
+
+#: about-end-content.php:11
+msgid "ORARI D’APERTURA"
+msgstr "ORARI D’APERTURA"
+
+#: about-end-content.php:97
+msgid "Curatrice"
+msgstr "Curator"
+
+#: about-end-content.php:127
+msgid "Direttore Museo Casa Giorgione"
+msgstr "Drector of Museo Casa Giorgione"
+
+#: about-end-content.php:130
+msgid "Responsabile segreteria Museo Casa Giorgione"
+msgstr "Head of administration of Museo Casa Giorgione"
+
+#: archive-agenda.php:88 archive-agenda.php:133
+msgid "Agenda"
+msgstr ""
+
+#: archive-agenda.php:101
+msgid "Eventi di %s %d"
+msgstr ""
+
+#: archive-agenda.php:135
+msgid "Nessun evento trovato."
+msgstr ""
+
+#: archive-artisti.php:75 archive-artisti.php:82 index-artisti.php:7
+msgid "Artisti"
+msgstr ""
+
+#: archive-artisti.php:89 index-artisti.php:50
+msgid "Nessun artista trovato."
+msgstr ""
+
+#: archive-artisti.php:105
+msgid "Nessuno special project trovato."
+msgstr ""
+
+#: archive.php:23 search.php:20
+msgid "Nessun contenuto trovato."
+msgstr ""
+
+#: footer.php:24 about-end-content.php:140
+msgid "iscriviti alla newsletter"
+msgstr "iscriviti alla newsletter"
+
+#: about-end-content.php:126
+msgid "In collaborazione con"
+msgstr "In collaborazione con"
 
 #: about-end-content.php:13
 msgid "COME RAGGIUNGERE"
@@ -38,24 +110,43 @@ msgstr "IN AUTO"
 msgid "ACCOMODATION"
 msgstr "ACCOMODATION"
 
-#: footer.php:24 about-end-content.php:140
-msgid "iscriviti alla newsletter"
+#: footer.php:28
+msgid "Termini & Condizioni"
+msgstr ""
+
+#: functions.php:12
+msgid "Menu Principale"
+msgstr ""
+
+#: header.php:12
+msgid "Salta al contenuto"
+msgstr ""
+
+#: header.php:71
+#, fuzzy
+msgid "Iscriviti alla newsletter"
 msgstr "iscriviti alla newsletter"
 
-#: about-end-content.php:126
-msgid "In collaborazione con"
-msgstr "In collaborazione con"
+#: index-artisti.php:35
+msgid "Leggi di più su"
+msgstr ""
 
-#: about-end-content.php:160
-msgid "La tua email"
-msgstr "La tua email"
+#: index-artisti.php:36
+msgid "Leggi di più"
+msgstr ""
 
-#: about-end-content.php:163
-msgid "Iscriviti"
-msgstr "Iscriviti"
+#: index-artisti.php:45
+msgid "Vedi tutti gli artisti"
+msgstr ""
 
-#: about-end-content.php:11
-msgid "ORARI D’APERTURA"
-msgstr "ORARI D’APERTURA"
+#: search.php:7
+msgid "Risultati per: %s"
+msgstr ""
 
+#: single-agenda.php:23 single-artisti.php:22
+msgid "Pubblicato il"
+msgstr ""
 
+#: single.php:14
+msgid "di"
+msgstr ""

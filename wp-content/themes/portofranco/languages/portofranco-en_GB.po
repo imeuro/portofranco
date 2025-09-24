@@ -42,6 +42,22 @@ msgstr "Your email"
 msgid "Iscriviti"
 msgstr "Subscribe"
 
+#: about-end-content.php:11
+msgid "ORARI D’APERTURA"
+msgstr "OPENING HOURS"
+
+#: about-end-content.php:97
+msgid "Curatrice"
+msgstr "Curator"
+
+#: about-end-content.php:127
+msgid "Direttore Museo Casa Giorgione"
+msgstr "Drector of Museo Casa Giorgione"
+
+#: about-end-content.php:130
+msgid "Responsabile segreteria Museo Casa Giorgione"
+msgstr "Head of administration of Museo Casa Giorgione"
+
 #: archive-agenda.php:88 archive-agenda.php:133
 msgid "Agenda"
 msgstr "Events"
@@ -133,10 +149,3 @@ msgstr "Published on"
 #: single.php:14
 msgid "di"
 msgstr "by"
-
-#: about-end-content.php:11
-msgid "ORARI D’APERTURA"
-msgstr "OPENING HOURS"
-
-
-
