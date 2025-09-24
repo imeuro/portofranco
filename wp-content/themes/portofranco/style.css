@@ -621,8 +621,9 @@ ul.page-table li.left-column {
     min-height: 20px
 }
 ul.page-table li.right-column {
-    flex: 0 0 calc(100% - 300px);
+    flex: 1 0 calc(100% - 300px);
     line-height: 1.2;
+    text-align: center;
 }
 
 ul#newsletter {
@@ -662,13 +663,12 @@ ul#partners figure.wp-block-image.size-medium {
     }
 
     ul.page-table li.left-column {
-        flex: 0 0 230px;
+        flex: 0 1 150px;
         margin-top: 10px;
     }
-    /* ul.page-table li.right-column {
-        flex: 0 0 calc(100% - 300px);
-        line-height: 1.2;
-    } */
+    ul.page-table li.right-column {
+        text-align: left;
+    }
 
     ul#newsletter {
         align-items: flex-start;
