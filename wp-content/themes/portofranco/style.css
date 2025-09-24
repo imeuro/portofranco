@@ -459,7 +459,7 @@ figure.wp-block-image :where(figcaption) {
 .side-archive-item .close-icon {
     position: absolute;
     right: 0;
-    top: 16px;
+    top: 6px;
     width: 16px;
     height: 16px;
     cursor: pointer;
