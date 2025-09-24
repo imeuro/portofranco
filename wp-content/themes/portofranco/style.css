@@ -491,8 +491,8 @@ figure.wp-block-image :where(figcaption) {
     }
 
     .side-archive-item .close-icon {
-        top: 8px;
-        right: 48px;
+        top: 9px;
+        right: 0px;
         width: 12px;
         height: 12px;
         cursor: pointer;
@@ -553,7 +553,7 @@ figure.wp-block-image :where(figcaption) {
         font-size: 20px;
     }
     .side-archive-item .close-icon {
-        top: 10px;
+        right: 40px;
     }
     .entry-content {
         flex: 1 0 calc(100% - 360px);
