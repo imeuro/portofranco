@@ -39,15 +39,21 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Debug: Stampa tutti i campi del form per capire i nomi
             console.debug('[NEWSLETTER] Tutti i campi del form:', form.querySelectorAll('input, select, textarea'));
-            form.querySelectorAll('input, select, textarea').forEach(field => {
-                console.debug('[NEWSLETTER] Campo:', field.name, field.type, field.value);
+            form.querySelectorAll('input, select, textarea').forEach((field, index) => {
+                console.debug(`[NEWSLETTER] Campo ${index}:`, {
+                    name: field.name,
+                    type: field.type,
+                    value: field.value,
+                    placeholder: field.placeholder,
+                    className: field.className
+                });
             });
             
-            // Estrai i dati dal form - selettori più generici
-            const nameField = form.querySelector('input[name*="name"]');
-            const surnameField = form.querySelector('input[name*="surname"]');
-            const phoneField = form.querySelector('input[name*="phone"], input[type="tel"]');
-            const languageField = form.querySelector('input[name="language"], select[name="language"]');
+            // Estrai i dati dal form - selettori più generici per Contact Form 7
+            const nameField = form.querySelector('input[type="text"]:not([name*="email"]):not([name*="phone"]):not([name*="tel"])');
+            const surnameField = form.querySelector('input[type="text"]:nth-of-type(2)'); // Secondo campo text
+            const phoneField = form.querySelector('input[type="tel"]');
+            const languageField = form.querySelector('input[type="hidden"]'); // Spesso la lingua è in un campo hidden
             
             // Estrai i dati dal form
             const email = emailField.value;
