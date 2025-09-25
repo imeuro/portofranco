@@ -40,7 +40,7 @@
                 •⁠  ⁠Durata media del viaggio: 50 min<br>
                 <br>
 
-                Palazzo Soranzo Novello è poi comodamente raggiungibile a piedi dalla stazione, dista 10 minuti.<br>
+                Dalla stazione Palazzo Soranzo novello dista 10 minuti.<br>
                 </p>
             <?php else : ?>
                 <p>From Milan<br>
@@ -60,7 +60,7 @@
         <li class="right-column mid-label">
             <?php if (is_page('about')) : ?>
             <p>Da Milano<br>
-            •⁠  ⁠Durata media del viaggio: quasi 3 ore<br>
+            •⁠  ⁠Durata media del viaggio: 3 ore<br>
             <br>
                 Da Venezia<br>
             •⁠  ⁠Durata media del viaggio: 50 minuti<br>
