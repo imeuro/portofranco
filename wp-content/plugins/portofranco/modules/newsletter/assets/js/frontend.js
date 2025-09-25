@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Ascolta l'evento submit di qualsiasi form che contenga un campo email
     document.addEventListener('submit', function(event) {
         const form = event.target;
-        const emailField = form.querySelector('input[type="email"]');
+        const emailField = form.querySelector('input[name="newsletter-email"]');
         
         // Verifica se è un form newsletter (contiene campo email)
         if (!emailField) {
@@ -37,7 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Contact Form 7 potrebbe non aver ancora aggiunto le classi di successo
             console.debug('[NEWSLETTER] Form validato (nessun errore), procedo con il salvataggio');
             
-            // Estrai i dati dal form
+            // Debug: Stampa tutti i campi del form per capire i nomi
+            console.debug('[NEWSLETTER] Tutti i campi del form:', form.querySelectorAll('input, select, textarea'));
+            form.querySelectorAll('input, select, textarea').forEach(field => {
+                console.debug('[NEWSLETTER] Campo:', field.name, field.type, field.value);
+            });
+            
+            // Estrai i dati dal form - selettori più generici
             const nameField = form.querySelector('input[name*="name"]');
             const surnameField = form.querySelector('input[name*="surname"]');
             const phoneField = form.querySelector('input[name*="phone"], input[type="tel"]');
