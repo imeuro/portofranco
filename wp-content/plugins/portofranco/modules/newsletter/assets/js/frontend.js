@@ -18,6 +18,28 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.debug('[NEWSLETTER] Form submit intercettato', form);
         
+        // Salva i valori dei campi PRIMA che Contact Form 7 li resetti
+        const nameField = form.querySelector('input[name="newsletter-name"]');
+        const surnameField = form.querySelector('input[name="newsletter-surname"]');
+        const phoneField = form.querySelector('input[name="newsletter-phone"]');
+        const languageField = form.querySelector('input[name="language"]');
+        
+        // Estrai i valori SUBITO, prima che Contact Form 7 processi il form
+        const email = emailField.value;
+        const name = nameField ? nameField.value : '';
+        const surname = surnameField ? surnameField.value : '';
+        const phone = phoneField ? phoneField.value : '';
+        const language = languageField ? languageField.value : 'ITA';
+        const source = 'website_form';
+        
+        console.debug('[NEWSLETTER] Dati estratti SUBITO:', {email, name, surname, phone, language, source});
+        
+        // Verifica che l'email non sia vuota
+        if (!email || email.trim() === '') {
+            console.debug('[NEWSLETTER] Email vuota, salto il salvataggio');
+            return;
+        }
+        
         // Aspetta che Contact Form 7 processi il form
         setTimeout(function() {
             console.debug('[NEWSLETTER] Verifico validazione dopo submit');
@@ -34,42 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Se non ci sono errori di validazione, procedi con il salvataggio
-            // Contact Form 7 potrebbe non aver ancora aggiunto le classi di successo
             console.debug('[NEWSLETTER] Form validato (nessun errore), procedo con il salvataggio');
-            
-            // Debug: Stampa tutti i campi del form per capire i nomi
-            console.debug('[NEWSLETTER] Tutti i campi del form:', form.querySelectorAll('input, select, textarea'));
-            form.querySelectorAll('input, select, textarea').forEach((field, index) => {
-                console.debug(`[NEWSLETTER] Campo ${index}:`, {
-                    name: field.name,
-                    type: field.type,
-                    value: field.value,
-                    placeholder: field.placeholder,
-                    className: field.className
-                });
-            });
-            
-            // Estrai i dati dal form - selettori più generici per Contact Form 7
-            const nameField = form.querySelector('input[type="text"]:not([name*="email"]):not([name*="phone"]):not([name*="tel"])');
-            const surnameField = form.querySelector('input[type="text"]:nth-of-type(2)'); // Secondo campo text
-            const phoneField = form.querySelector('input[type="tel"]');
-            const languageField = form.querySelector('input[type="hidden"]'); // Spesso la lingua è in un campo hidden
-            
-            // Estrai i dati dal form
-            const email = emailField.value;
-            const name = nameField ? nameField.value : '';
-            const surname = surnameField ? surnameField.value : '';
-            const phone = phoneField ? phoneField.value : '';
-            const language = languageField ? languageField.value : 'ITA';
-            const source = 'website_form';
-            
-            console.debug('[NEWSLETTER] Dati estratti:', {email, name, surname, phone, language, source});
-            
-            // Verifica che l'email non sia vuota
-            if (!email || email.trim() === '') {
-                console.debug('[NEWSLETTER] Email vuota, salto il salvataggio');
-                return;
-            }
             
             // Salva i dati nel nostro database
             const formData = new FormData();
