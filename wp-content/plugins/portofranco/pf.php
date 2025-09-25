@@ -96,6 +96,9 @@ class PF_Plugin {
         
         // Load Custom Order module
         $this->load_module('custom-order');
+        
+        // Load Newsletter module
+        $this->load_module('newsletter');
     }
     
     /**
@@ -146,6 +149,11 @@ class PF_Plugin {
             // Correzione per il modulo Custom Order
             if ($module_name === 'custom-order') {
                 $class_name = 'PF_Custom_Order_Manager';
+            }
+            
+            // Correzione per il modulo Newsletter
+            if ($module_name === 'newsletter') {
+                $class_name = 'PF_Newsletter_Manager';
             }
             
             if (class_exists($class_name)) {

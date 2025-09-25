@@ -1,0 +1,200 @@
+/* Newsletter Admin Styles */
+
+.pf-newsletter-stats {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.pf-newsletter-stats .stat-box {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.pf-newsletter-stats .stat-box h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pf-newsletter-stats .stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #0073aa;
+    display: block;
+}
+
+.pf-newsletter-actions {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.pf-newsletter-actions .button {
+    margin-right: 10px;
+}
+
+.pf-newsletter-table {
+    margin-top: 20px;
+}
+
+.pf-newsletter-table .status-active {
+    color: #46b450;
+    font-weight: bold;
+}
+
+.pf-newsletter-table .status-inactive {
+    color: #dc3232;
+    font-weight: bold;
+}
+
+.pf-newsletter-table .status-pending {
+    color: #ffb900;
+    font-weight: bold;
+}
+
+.pf-newsletter-table .language-ITA {
+    color: #0073aa;
+    font-weight: bold;
+    background-color: #e1f5fe;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.pf-newsletter-table .language-ENG {
+    color: #d63384;
+    font-weight: bold;
+    background-color: #fce4ec;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+/* Modal styles */
+.pf-modal {
+    display: none;
+    position: fixed;
+    z-index: 100000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.pf-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.pf-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.pf-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.pf-modal-close:hover {
+    color: #000;
+}
+
+.pf-form-group {
+    margin-bottom: 15px;
+}
+
+.pf-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.pf-form-group input,
+.pf-form-group select,
+.pf-form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.pf-form-group textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.pf-modal-footer {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+}
+
+.pf-modal-footer .button {
+    margin-left: 10px;
+}
+
+/* Loading spinner */
+.pf-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0073aa;
+    border-radius: 50%;
+    animation: pf-spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes pf-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pf-newsletter-stats {
+        flex-direction: column;
+    }
+    
+    .pf-newsletter-stats .stat-box {
+        min-width: auto;
+    }
+    
+    .pf-modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .pf-newsletter-actions .button {
+        display: block;
+        margin: 5px 0;
+        width: 100%;
+    }
+}
