@@ -33,14 +33,14 @@
             <?php if (is_page('about')) : ?>
                 <p>Da Milano<br>
                 •⁠  ⁠Collegamenti quotidiani con Trenitalia e Italo<br>
-                •⁠  ⁠Durata media del viaggio: 3 h<br>
+                •⁠  ⁠Durata media del viaggio: 3 ore<br>
                 <br>
                     Da Venezia<br>
                 •⁠  ⁠Treni regionali diretti ogni ora<br>
-                •⁠  ⁠Durata media del viaggio: 50 min<br>
+                •⁠  ⁠Durata media del viaggio: 50 minuti<br>
                 <br>
 
-                Dalla stazione Palazzo Soranzo novello dista 10 minuti.<br>
+                Dalla stazione Palazzo Soranzo Novello dista 10 minuti.<br>
                 </p>
             <?php else : ?>
                 <p>From Milan<br>
