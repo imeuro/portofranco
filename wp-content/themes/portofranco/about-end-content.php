@@ -134,11 +134,18 @@
 
     <?php
     // Query per ottenere la pagina "partners"
-    $partners_page = get_page_by_path('partners');
+    if (function_exists('pll_get_post_language') && function_exists('pll_get_post_translations')) {
+        $lang = pll_get_post_language($post->ID);
+        if ($lang === 'en') {
+            $partners_page = get_page_by_path('partners-eng', OBJECT, 'page');
+        } else {
+            $partners_page = get_page_by_path('partners', OBJECT, 'page');
+        }
+    }
     if ($partners_page) { ?>
     <ul class="page-table" id="item-partners" data-scroll="partners">
-        <li class="left-column"><h3 class="footer-label small-label"><?php _e('In collaborazione con', 'portofranco'); ?></h3></li>
-        <li class="right-column"></li>
+        <!-- <li class="left-column"><h3 class="footer-label small-label"><?php // _e('In collaborazione con', 'portofranco'); ?></h3></li>
+        <li class="right-column"></li> -->
         <li class="right-column mid-label">
         <?php 
             // Ottiene il contenuto della pagina
