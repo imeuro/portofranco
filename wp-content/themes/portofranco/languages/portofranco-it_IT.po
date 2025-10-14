@@ -149,4 +149,28 @@ msgstr ""
 
 #: single.php:14
 msgid "di"
-msgstr ""
+msgstr "di"
+
+#: footer.php:11
+msgid "APERTURA"
+msgstr "APERTURA"
+
+#: footer.php:14
+msgid "PERIODO"
+msgstr "PERIODO"
+
+#: footer.php:17
+msgid "dal 15 novembre 2025 al 14 febbraio 2026"
+msgstr "dal 15 novembre 2025 al 14 febbraio 2026"
+
+#: footer.php:20
+msgid "ORARI"
+msgstr "ORARI"
+
+#: footer.php:23
+msgid "lunedì-martedì-mercoledì: chiuso"
+msgstr "lunedì-martedì-mercoledì: chiuso"
+
+#: footer.php:24
+msgid "giovedì - venerdì - sabato - domenica: 10:00-19:00"
+msgstr "giovedì - venerdì - sabato - domenica: 10:00-19:00"

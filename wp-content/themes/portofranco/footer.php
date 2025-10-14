@@ -8,6 +8,25 @@
         <ul class="footer-contacts">
             <li class="left-column"></li>
             <li class="right-column">
+                <h3 class="footer-label small-label"><?php _e('APERTURA', 'portofranco'); ?></h3>
+            </li>
+
+            <li class="left-column small-label"><?php _e('PERIODO', 'portofranco'); ?></li>
+            <li class="right-column big-label">
+                <p>
+                  <?php _e('dal 15 novembre 2025 al 14 febbraio 2026', 'portofranco'); ?>
+                </p>
+            </li>
+            <li class="left-column small-label"><?php _e('ORARI', 'portofranco'); ?></li>
+            <li class="right-column big-label">
+                <p>
+                  <?php _e('lunedì-martedì-mercoledì: chiuso<br>', 'portofranco'); ?>
+                  <?php _e('giovedì - venerdì - sabato - domenica: 10:00-19:00', 'portofranco'); ?>
+                </p>
+            </li>
+
+            <li class="left-column"></li>
+            <li class="right-column">
                 <h3 class="footer-label small-label"><?php _e('CONTATTI', 'portofranco'); ?></h3>
             </li>
             <li class="left-column small-label">mail</li>
