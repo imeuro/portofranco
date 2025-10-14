@@ -20,7 +20,7 @@
             <li class="left-column small-label"><?php _e('ORARI', 'portofranco'); ?></li>
             <li class="right-column big-label">
                 <p>
-                  <?php _e('lunedì-martedì-mercoledì: chiuso<br>', 'portofranco'); ?>
+                  <?php _e('Lunedì - Martedì - Mercoledì: chiuso<br>', 'portofranco'); ?>
                   <?php _e('giovedì - venerdì - sabato - domenica: 10:00-19:00', 'portofranco'); ?>
                 </p>
             </li>

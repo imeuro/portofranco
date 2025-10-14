@@ -167,8 +167,8 @@ msgid "ORARI"
 msgstr "HOURS"
 
 #: footer.php:23
-msgid "lunedì-martedì-mercoledì: chiuso"
-msgstr "Monday-Tuesday-Wednesday: closed"
+msgid "Lunedì - Martedì - Mercoledì: chiuso"
+msgstr "Monday - Tuesday - Wednesday: closed"
 
 #: footer.php:24
 msgid "giovedì - venerdì - sabato - domenica: 10:00-19:00"

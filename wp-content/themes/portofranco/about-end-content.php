@@ -4,11 +4,11 @@
         <li class="right-column mid-label">
             <?php if (is_page('about')) : ?>
             <p>dal 15 novembre 2025 al 14 febbraio 2026<br>
-            <p>lunedì-martedì-mercoledì: chiuso<br>
+            <p>Lunedì - Martedì - Mercoledì: chiuso<br>
             giovedì - venerdì - sabato - domenica: 10:00-19:00</p>
             <?php else : ?>
             <p>from November 15, 2025 to February 14, 2026<br>
-            <p>Monday-Tuesday-Wednesday: closed<br>
+            <p>Monday - Tuesday - Wednesday: closed<br>
             Thursday - Friday - Saturday - Sunday: 10:00-19:00</p>
             <?php endif; ?>
         </li>
