@@ -16,15 +16,15 @@ msgstr ""
 
 #: 404.php:7
 msgid "Pagina non trovata"
-msgstr ""
+msgstr "Pagina non trovata"
 
 #: 404.php:8
 msgid "Spiacenti, la pagina che cerchi non esiste."
-msgstr ""
+msgstr "Spiacenti, la pagina che cerchi non esiste."
 
 #: 404.php:9
 msgid "Torna alla home"
-msgstr ""
+msgstr "Torna alla home"
 
 #: about-end-content.php:3 footer.php:11 header.php:63
 msgid "CONTATTI"
@@ -60,31 +60,31 @@ msgstr "Head of administration of Museo Casa Giorgione"
 
 #: archive-agenda.php:88 archive-agenda.php:133
 msgid "Agenda"
-msgstr ""
+msgstr "Agenda"
 
 #: archive-agenda.php:101
 msgid "Eventi di %s %d"
-msgstr ""
+msgstr "Eventi di %s %d"
 
 #: archive-agenda.php:135
 msgid "Nessun evento trovato."
-msgstr ""
+msgstr "Nessun evento trovato."
 
 #: archive-artisti.php:75 archive-artisti.php:82 index-artisti.php:7
 msgid "Artisti"
-msgstr ""
+msgstr "Artisti"
 
 #: archive-artisti.php:89 index-artisti.php:50
 msgid "Nessun artista trovato."
-msgstr ""
+msgstr "Nessun artista trovato."
 
 #: archive-artisti.php:105
 msgid "Nessuno special project trovato."
-msgstr ""
+msgstr "Nessuno special project trovato."
 
 #: archive.php:23 search.php:20
 msgid "Nessun contenuto trovato."
-msgstr ""
+msgstr "Nessun contenuto trovato."
 
 #: footer.php:24 about-end-content.php:140
 msgid "iscriviti alla newsletter"
@@ -112,15 +112,15 @@ msgstr "ACCOMODATION"
 
 #: footer.php:28
 msgid "Termini & Condizioni"
-msgstr ""
+msgstr "Termini & Condizioni"
 
 #: functions.php:12
 msgid "Menu Principale"
-msgstr ""
+msgstr "Menu Principale"
 
 #: header.php:12
 msgid "Salta al contenuto"
-msgstr ""
+msgstr "Salta al contenuto"
 
 #: header.php:71
 #, fuzzy
@@ -129,23 +129,23 @@ msgstr "iscriviti alla newsletter"
 
 #: index-artisti.php:35
 msgid "Leggi di più su"
-msgstr ""
+msgstr "Leggi di più su"
 
 #: index-artisti.php:36
 msgid "Leggi di più"
-msgstr ""
+msgstr "Leggi di più"
 
 #: index-artisti.php:45
 msgid "Vedi tutti gli artisti"
-msgstr ""
+msgstr "Vedi tutti gli artisti"
 
 #: search.php:7
 msgid "Risultati per: %s"
-msgstr ""
+msgstr "Risultati per: %s"
 
 #: single-agenda.php:23 single-artisti.php:22
 msgid "Pubblicato il"
-msgstr ""
+msgstr "Pubblicato il"
 
 #: single.php:14
 msgid "di"
@@ -160,7 +160,7 @@ msgid "PERIODO"
 msgstr "PERIODO"
 
 #: footer.php:17
-msgid "dal 15 novembre 2025 al 14 febbraio 2026"
+msgid "dettaglio periodo"
 msgstr "dal 15 novembre 2025 al 14 febbraio 2026"
 
 #: footer.php:20
@@ -168,9 +168,5 @@ msgid "ORARI"
 msgstr "ORARI"
 
 #: footer.php:23
-msgid "Lunedì - Martedì - Mercoledì: chiuso"
-msgstr "Lunedì - Martedì - Mercoledì: chiuso"
-
-#: footer.php:24
-msgid "giovedì - venerdì - sabato - domenica: 10:00-19:00"
-msgstr "giovedì - venerdì - sabato - domenica: 10:00-19:00"
+msgid "dettaglio orari"
+msgstr "Lunedì - Martedì - Mercoledì: chiuso<br>Giovedì - Venerdì - Sabato - Domenica: 10:00-19:00"

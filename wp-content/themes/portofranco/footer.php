@@ -14,15 +14,13 @@
             <li class="left-column small-label"><?php _e('PERIODO', 'portofranco'); ?></li>
             <li class="right-column big-label">
                 <p>
-                  <?php _e('dal 15 novembre 2025 al 14 febbraio 2026', 'portofranco'); ?>
+                  <?php _e('dettaglio periodo', 'portofranco'); ?>
                 </p>
             </li>
             <li class="left-column small-label"><?php _e('ORARI', 'portofranco'); ?></li>
             <li class="right-column big-label">
                 <p>
-                  <?php _e('Lunedì - Martedì - Mercoledì: chiuso<br>', 'portofranco'); ?>
-                  <?php _e('giovedì - venerdì - sabato - domenica: 10:00-19:00', 'portofranco'); ?>
-                </p>
+                  <?php _e('dettaglio orari', 'portofranco'); ?></p>
             </li>
 
             <li class="left-column"></li>

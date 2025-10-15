@@ -137,15 +137,21 @@ function portofranco_force_textdomain() {
     }
   }
   
-  // Se siamo in inglese, forza il caricamento delle traduzioni inglesi
+  // Rimuovi sempre il textdomain esistente per ricaricarlo
+  if (isset($l10n['portofranco'])) {
+    unset($l10n['portofranco']);
+  }
+  
+  // Carica il file .mo appropriato
   if ($is_english) {
-    // Rimuovi il textdomain esistente
-    if (isset($l10n['portofranco'])) {
-      unset($l10n['portofranco']);
-    }
-    
     // Carica direttamente il file .mo inglese
     $mofile = get_template_directory() . '/languages/portofranco-en_GB.mo';
+    if (file_exists($mofile)) {
+      load_textdomain('portofranco', $mofile);
+    }
+  } else {
+    // Carica direttamente il file .mo italiano
+    $mofile = get_template_directory() . '/languages/portofranco-it_IT.mo';
     if (file_exists($mofile)) {
       load_textdomain('portofranco', $mofile);
     }
@@ -153,6 +159,7 @@ function portofranco_force_textdomain() {
 }
 add_action('init', 'portofranco_force_textdomain');
 add_action('wp', 'portofranco_force_textdomain');
+add_action('template_redirect', 'portofranco_force_textdomain');
 
 // Riga 90: Funzione helper per i link multilingua
 function portofranco_get_page_link($page_slug_it, $page_slug_en = null) {

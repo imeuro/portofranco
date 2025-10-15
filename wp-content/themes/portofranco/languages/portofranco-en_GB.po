@@ -159,7 +159,7 @@ msgid "PERIODO"
 msgstr "PERIOD"
 
 #: footer.php:17
-msgid "dal 15 novembre 2025 al 14 febbraio 2026"
+msgid "dettaglio periodo"
 msgstr "from November 15, 2025 to February 14, 2026"
 
 #: footer.php:20
@@ -167,9 +167,5 @@ msgid "ORARI"
 msgstr "HOURS"
 
 #: footer.php:23
-msgid "Lunedì - Martedì - Mercoledì: chiuso"
-msgstr "Monday - Tuesday - Wednesday: closed"
-
-#: footer.php:24
-msgid "giovedì - venerdì - sabato - domenica: 10:00-19:00"
-msgstr "Thursday - Friday - Saturday - Sunday: 10:00-19:00"
+msgid "dettaglio orari"
+msgstr "Monday - Tuesday - Wednesday: closed<br>Thursday - Friday - Saturday - Sunday: 10:00-19:00"
