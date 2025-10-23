@@ -13,14 +13,11 @@
 
             <li class="left-column small-label"><?php _e('PERIODO', 'portofranco'); ?></li>
             <li class="right-column big-label">
-                <p>
                   <?php _e('dettaglio periodo', 'portofranco'); ?>
-                </p>
             </li>
             <li class="left-column small-label"><?php _e('ORARI', 'portofranco'); ?></li>
             <li class="right-column big-label">
-                <p>
-                  <?php _e('dettaglio orari', 'portofranco'); ?></p>
+                <?php _e('dettaglio orari', 'portofranco'); ?><br><br>
             </li>
 
             <li class="left-column"></li>

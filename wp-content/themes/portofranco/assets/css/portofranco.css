@@ -235,8 +235,7 @@ body.home {
 }
 .accordion-list {
     margin-left: 12px;
-    margin-top: 5px;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     max-height: 0;
     opacity: 0;
     overflow: hidden;
@@ -244,6 +243,7 @@ body.home {
 }
 
 .accordion-list.expanded {
+    margin-bottom: 12px;
     max-height: none;
     opacity: 1;
 }
@@ -361,7 +361,7 @@ body.home {
   align-items: center;
   gap: 0;
   padding: 3px 12px;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 500;
   color: #6F6F6F;
   transition: all 0.3s ease;
