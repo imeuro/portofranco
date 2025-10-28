@@ -39,6 +39,12 @@ function portofranco_enqueue_scripts() {
   // Carica il JavaScript per il caricamento dinamico del contenuto degli archivi
   wp_enqueue_script( 'portofranco-archive-content-loader', get_template_directory_uri() . '/assets/js/archive-content-loader.js', array(), filemtime(get_stylesheet_directory() . '/assets/js/archive-content-loader.js'), true );
   
+  // Carica il JavaScript per la pagina Exhibition
+  if ( is_page_template( 'page-exhibition.php' ) ) {
+    wp_enqueue_style( 'portofranco-exhibition', get_template_directory_uri() . '/assets/css/exhibition.css', array('portofranco-custom'), filemtime(get_stylesheet_directory() . '/assets/css/exhibition.css') );
+    wp_enqueue_script( 'portofranco-exhibition', get_template_directory_uri() . '/assets/js/exhibition-map.js', array(), filemtime(get_stylesheet_directory() . '/assets/js/exhibition-map.js'), true );
+  }
+  
   // Aggiungi variabile globale per l'URL base dell'API
   wp_localize_script( 'portofranco-archive-content-loader', 'portofrancoAjax', array(
     'apiBase' => get_rest_url( null, 'pf/v1/' ),

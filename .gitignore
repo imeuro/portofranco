@@ -2,6 +2,7 @@
 *.sql
 *.zip
 *.sh
+*.md
 php_errorlog
 .DS_Store
 .cursor.json

@@ -99,6 +99,9 @@ class PF_Plugin {
         
         // Load Newsletter module
         $this->load_module('newsletter');
+        
+        // Load Exhibition module
+        $this->load_module('exhibition');
     }
     
     /**
@@ -154,6 +157,11 @@ class PF_Plugin {
             // Correzione per il modulo Newsletter
             if ($module_name === 'newsletter') {
                 $class_name = 'PF_Newsletter_Manager';
+            }
+            
+            // Correzione per il modulo Exhibition
+            if ($module_name === 'exhibition') {
+                $class_name = 'PF_Exhibition_Manager';
             }
             
             if (class_exists($class_name)) {
