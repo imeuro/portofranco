@@ -183,7 +183,7 @@ class PF_CPT_Manager {
             'uploaded_to_this_item' => _x('Caricato in questo evento', 'Overrides the "Uploaded to this post" phrase (used when viewing media attached to a post).', 'pf'),
             'filter_items_list'     => _x('Filtra lista eventi', 'Screen reader text for the filter links.', 'pf'),
             'items_list_navigation' => _x('Navigazione lista eventi', 'Screen reader text for the pagination.', 'pf'),
-            'items_list'            => _x('Lista eventi', 'Screen reader text for the items list.', 'pf'),
+            'items_list'            => _x('Lista eventi Agenda', 'Screen reader text for the items list.', 'pf'),
         );
         
         $args = array(
