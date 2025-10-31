@@ -7,6 +7,12 @@
                 <?php _e('dettaglio orari', 'portofranco'); ?>
             </p>
         </li>
+        <li class="left-column small-label"><?php _e('BIGLIETTO DI INGRESSO', 'portofranco'); ?></li>
+        <li class="right-column mid-label">
+            <p>
+                <?php echo nl2br(esc_html(__('dettaglio biglietto', 'portofranco'))); ?>
+            </p>
+        </li>
         <li class="left-column small-label"></li>
         <li class="right-column mid-label"></li>
         <li class="left-column"><h3 class="footer-label small-label"><?php _e('CONTATTI', 'portofranco'); ?></h3></li>

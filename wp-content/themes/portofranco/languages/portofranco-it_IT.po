@@ -163,6 +163,10 @@ msgstr "PERIODO"
 msgid "dettaglio periodo"
 msgstr "dal 15 novembre 2025 al 14 febbraio 2026"
 
+#: footer.php:17
+msgid "dettaglio biglietto"
+msgstr "INTERO - € 10\nCastelfranco Card: chiunque acquisti il biglietto intero ha diritto anche alla visita degli altri siti presenti all'interno della città di Castelfranco Veneto (Museo Casa Giorgione, Torre, Camminamento delle mura, Studiolo Vicolo dei Vetri, Teatro Accademico) con validità di un anno.\n\nRIDOTTO - € 5\nResidenti nel comune di Castelfranco Veneto, Under 25, Over 65, gruppi con più di 15 partecipanti.\n\nSCUOLE/UNDER 18 - € 1\n\nGRATUITO\nBambini fino ai 6 anni, portatori di handicap, guide turistiche autorizzate, capogruppo o guida propria per gruppi, giornalisti accreditati"
+
 #: footer.php:20
 msgid "ORARI"
 msgstr "ORARI"
