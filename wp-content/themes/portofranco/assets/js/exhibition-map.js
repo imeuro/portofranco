@@ -196,7 +196,7 @@ const ExhibitionMap = (() => {
 
     // Aggiorna indicatore piano
     if (elements.currentFloorNumber) {
-      elements.currentFloorNumber.textContent = currentFloor;
+      elements.currentFloorNumber.textContent = currentFloor === 0 ? 'terra' : currentFloor;
     }
 
     // Aggiorna pulsanti navigazione

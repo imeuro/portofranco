@@ -24,7 +24,7 @@ get_header();
         
         <div class="floor-indicator" aria-live="polite" aria-atomic="true">
           <span class="current-floor-label"><?php _e('Piano', 'portofranco'); ?></span>
-          <span class="current-floor-number">0</span>
+          <span class="current-floor-number"><?php _e('terra', 'portofranco'); ?></span>
           <span class="floor-separator"><?php _e('di', 'portofranco'); ?></span>
           <span class="total-floors">3</span>
         </div>
@@ -44,7 +44,8 @@ get_header();
             
             // Check if map exists
             if (!file_exists($map_path)) {
-              $map_url = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1200" height="900"%3E%3Crect fill="%23f5f5f5" width="1200" height="900"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="24" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa Piano ' . $floor . '%3C/text%3E%3C/svg%3E';
+              $floor_name = ($floor == 0) ? __('Piano terra', 'portofranco') : sprintf(__('Piano %s', 'portofranco'), $floor);
+              $map_url = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1200" height="900"%3E%3Crect fill="%23f5f5f5" width="1200" height="900"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="24" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa ' . esc_attr($floor_name) . '%3C/text%3E%3C/svg%3E';
             }
           ?>
           
@@ -54,7 +55,7 @@ get_header();
                aria-hidden="<?php echo $floor === 0 ? 'false' : 'true'; ?>">
             
             <img src="<?php echo esc_url($map_url); ?>" 
-                 alt="<?php echo sprintf(__('Mappa Piano %s', 'portofranco'), $floor); ?>"
+                 alt="<?php echo ($floor == 0) ? __('Mappa Piano terra', 'portofranco') : sprintf(__('Mappa Piano %s', 'portofranco'), $floor); ?>"
                  loading="<?php echo $floor === 0 ? 'eager' : 'lazy'; ?>">
             
             <div class="artwork-markers" data-floor="<?php echo $floor; ?>">
@@ -81,9 +82,9 @@ get_header();
                     data-floor="<?php echo $i; ?>"
                     role="tab"
                     aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>"
-                    aria-label="<?php echo sprintf(__('Piano %s', 'portofranco'), $i); ?>"
+                    aria-label="<?php echo ($i == 0) ? __('Piano terra', 'portofranco') : sprintf(__('Piano %s', 'portofranco'), $i); ?>"
                     <?php echo $i === 0 ? 'aria-current="true"' : ''; ?>>
-              <span class="sr-only"><?php echo sprintf(__('Piano %s', 'portofranco'), $i); ?></span>
+              <span class="sr-only"><?php echo ($i == 0) ? __('Piano terra', 'portofranco') : sprintf(__('Piano %s', 'portofranco'), $i); ?></span>
             </button>
           <?php endfor; ?>
         </div>

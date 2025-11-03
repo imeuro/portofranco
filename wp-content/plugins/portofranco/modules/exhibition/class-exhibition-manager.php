@@ -110,7 +110,7 @@ class PF_Exhibition_Manager {
                         <?php _e('Piano', 'pf'); ?>
                         <select name="pf_artworks[<?php echo esc_attr($index); ?>][floor]" class="pf-floor-select" required>
                             <option value=""><?php _e('Seleziona piano...', 'pf'); ?></option>
-                            <option value="0" <?php selected($floor, '0'); ?>><?php _e('Piano 0', 'pf'); ?></option>
+                            <option value="0" <?php selected($floor, '0'); ?>><?php _e('Piano terra', 'pf'); ?></option>
                             <option value="1" <?php selected($floor, '1'); ?>><?php _e('Piano 1', 'pf'); ?></option>
                             <option value="2" <?php selected($floor, '2'); ?>><?php _e('Piano 2', 'pf'); ?></option>
                             <option value="3" <?php selected($floor, '3'); ?>><?php _e('Piano 3', 'pf'); ?></option>
@@ -144,7 +144,7 @@ class PF_Exhibition_Manager {
                     <div class="pf-map-container">
                         <div class="pf-map-preview" data-floor="<?php echo esc_attr($floor); ?>">
                             <?php if ($floor): ?>
-                                <img src="<?php echo $this->get_floor_map_url($floor); ?>" alt="<?php echo sprintf(__('Mappa Piano %s', 'pf'), $floor); ?>">
+                                <img src="<?php echo $this->get_floor_map_url($floor); ?>" alt="<?php echo sprintf(__('Mappa %s', 'pf'), $this->get_floor_name($floor)); ?>">
                                 <?php if ($position_x && $position_y): ?>
                                     <div class="pf-marker" style="left: <?php echo esc_attr($position_x); ?>%; top: <?php echo esc_attr($position_y); ?>%;"></div>
                                 <?php endif; ?>
@@ -192,6 +192,16 @@ class PF_Exhibition_Manager {
     }
     
     /**
+     * Get floor display name
+     */
+    private function get_floor_name($floor) {
+        if ($floor === '0' || $floor === 0) {
+            return __('Piano terra', 'pf');
+        }
+        return sprintf(__('Piano %s', 'pf'), $floor);
+    }
+    
+    /**
      * Get floor map URL
      */
     private function get_floor_map_url($floor) {
@@ -201,7 +211,8 @@ class PF_Exhibition_Manager {
         // Fallback to placeholder if map doesn't exist
         $map_path = $upload_dir['basedir'] . '/exhibition-maps/piano-' . $floor . '.jpg';
         if (!file_exists($map_path)) {
-            return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23f0f0f0" width="800" height="600"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="20" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa Piano ' . $floor . ' non trovata%3C/text%3E%3C/svg%3E';
+            $floor_name = $this->get_floor_name($floor);
+            return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23f0f0f0" width="800" height="600"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="20" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa ' . $floor_name . ' non trovata%3C/text%3E%3C/svg%3E';
         }
         
         return $map_url;
@@ -232,7 +243,9 @@ class PF_Exhibition_Manager {
             
             foreach ($_POST['pf_artworks'] as $artwork) {
                 // Validate and sanitize
-                if (empty($artwork['floor']) || empty($artwork['title'])) {
+                // Check floor explicitly (can be '0', so we can't use empty())
+                $floor = isset($artwork['floor']) ? trim($artwork['floor']) : '';
+                if ($floor === '' || empty($artwork['title'])) {
                     continue;
                 }
                 

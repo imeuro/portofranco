@@ -83,7 +83,8 @@
         // Check if image exists
         const img = new Image();
         img.onload = function() {
-            $mapPreview.html('<img src="' + mapUrl + '" alt="Mappa Piano ' + floor + '">');
+            const floorName = (floor === '0' || floor === 0) ? 'Piano terra' : 'Piano ' + floor;
+            $mapPreview.html('<img src="' + mapUrl + '" alt="Mappa ' + floorName + '">');
             
             // Restore marker if exists
             const $container = $mapPreview.closest('.pf-artwork-item');
@@ -95,7 +96,8 @@
             }
         };
         img.onerror = function() {
-            $mapPreview.html('<div class="pf-map-placeholder">Mappa Piano ' + floor + ' non trovata. Carica l\'immagine in /wp-content/uploads/exhibition-maps/piano-' + floor + '.jpg</div>');
+            const floorName = (floor === '0' || floor === 0) ? 'Piano terra' : 'Piano ' + floor;
+            $mapPreview.html('<div class="pf-map-placeholder">Mappa ' + floorName + ' non trovata. Carica l\'immagine in /wp-content/uploads/exhibition-maps/piano-' + floor + '.jpg</div>');
         };
         img.src = mapUrl;
     };
