@@ -83,7 +83,7 @@ class PF_Plugin {
      */
     public function allow_editors_acf_fields($field_groups, $options = array()) {
         // Se ACF non è attivo, non fare nulla
-        if (!function_exists('acf_get_field_groups')) {
+        if (!function_exists('acf_get_location_rule_types')) {
             return $field_groups;
         }
         
@@ -117,54 +117,31 @@ class PF_Plugin {
             return $field_groups;
         }
         
-        // Se l'utente è editor, forza la visualizzazione di tutti i field groups per agenda
-        // Carica tutti i field groups per agenda e aggiungili se non sono già presenti
-        $agenda_field_groups = acf_get_field_groups(array(
-            'post_type' => 'agenda'
-        ));
-        
-        // Assicurati che tutti i field groups per agenda siano inclusi
-        foreach ($agenda_field_groups as $agenda_group) {
-            $already_included = false;
-            $group_index = -1;
-            
-            // Cerca se il field group è già presente
-            foreach ($field_groups as $index => $existing_group) {
-                if (isset($existing_group['ID']) && isset($agenda_group['ID']) && 
-                    $existing_group['ID'] == $agenda_group['ID']) {
-                    $already_included = true;
-                    $group_index = $index;
-                    break;
-                }
+        // Rimuovi le restrizioni di ruolo dai field groups esistenti
+        foreach ($field_groups as &$field_group) {
+            if (!isset($field_group['location']) || !is_array($field_group['location'])) {
+                continue;
             }
             
-            // Se il field group è già incluso, rimuovi le restrizioni di ruolo
-            if ($already_included && $group_index >= 0) {
-                if (isset($field_groups[$group_index]['location'])) {
-                    foreach ($field_groups[$group_index]['location'] as &$location_group) {
-                        $location_group = array_filter($location_group, function($rule) {
-                            return !(isset($rule['param']) && $rule['param'] === 'user_role' && 
-                                    isset($rule['operator']) && $rule['operator'] === '==' && 
-                                    isset($rule['value']) && $rule['value'] === 'administrator');
-                        });
-                        // Rimuovi le chiavi vuote
-                        $location_group = array_values($location_group);
-                    }
+            // Itera attraverso i gruppi di location
+            foreach ($field_group['location'] as &$location_group) {
+                if (!is_array($location_group)) {
+                    continue;
                 }
-            } else {
-                // Se il field group non è già incluso, aggiungilo dopo aver rimosso le restrizioni
-                if (isset($agenda_group['location'])) {
-                    foreach ($agenda_group['location'] as &$location_group) {
-                        $location_group = array_filter($location_group, function($rule) {
-                            return !(isset($rule['param']) && $rule['param'] === 'user_role' && 
-                                    isset($rule['operator']) && $rule['operator'] === '==' && 
-                                    isset($rule['value']) && $rule['value'] === 'administrator');
-                        });
-                        // Rimuovi le chiavi vuote
-                        $location_group = array_values($location_group);
+                
+                // Rimuovi le regole che filtrano per user_role == administrator
+                $location_group = array_filter($location_group, function($rule) {
+                    if (!is_array($rule)) {
+                        return true;
                     }
-                }
-                $field_groups[] = $agenda_group;
+                    // Rimuovi solo le regole che limitano agli administrator
+                    return !(isset($rule['param']) && $rule['param'] === 'user_role' && 
+                            isset($rule['operator']) && $rule['operator'] === '==' && 
+                            isset($rule['value']) && $rule['value'] === 'administrator');
+                });
+                
+                // Reindirizza l'array per rimuovere le chiavi vuote
+                $location_group = array_values($location_group);
             }
         }
         
