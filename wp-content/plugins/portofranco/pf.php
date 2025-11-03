@@ -62,6 +62,9 @@ class PF_Plugin {
     private function init_hooks() {
         add_action('init', array($this, 'init'));
         add_action('plugins_loaded', array($this, 'load_textdomain'));
+        
+        // Abilita i campi ACF per agenda agli editor
+        add_filter('acf/get_field_groups', array($this, 'allow_editors_acf_fields'), 10, 2);
     }
     
     /**
@@ -69,6 +72,103 @@ class PF_Plugin {
      */
     public function init() {
         // Plugin initialization code here
+    }
+    
+    /**
+     * Permetti agli editor di visualizzare i campi ACF per il post type agenda
+     * 
+     * @param array $field_groups Array di field groups
+     * @param array $options Opzioni di contesto (potrebbe includere post_type)
+     * @return array Field groups modificati
+     */
+    public function allow_editors_acf_fields($field_groups, $options = array()) {
+        // Se ACF non è attivo, non fare nulla
+        if (!function_exists('acf_get_field_groups')) {
+            return $field_groups;
+        }
+        
+        // Verifica se siamo nella pagina di modifica di un post agenda
+        $screen = get_current_screen();
+        $post_type = '';
+        
+        if ($screen && isset($screen->post_type)) {
+            $post_type = $screen->post_type;
+        } elseif (isset($options['post_type'])) {
+            $post_type = $options['post_type'];
+        } elseif (isset($_GET['post_type'])) {
+            $post_type = sanitize_text_field($_GET['post_type']);
+        } elseif (isset($_POST['post_type'])) {
+            $post_type = sanitize_text_field($_POST['post_type']);
+        } elseif (isset($_GET['post'])) {
+            $post_id = intval($_GET['post']);
+            $post = get_post($post_id);
+            if ($post) {
+                $post_type = $post->post_type;
+            }
+        }
+        
+        // Se non siamo sul post type agenda, non fare nulla
+        if ($post_type !== 'agenda') {
+            return $field_groups;
+        }
+        
+        // Verifica se l'utente è admin o editor
+        if (!current_user_can('edit_others_posts')) {
+            return $field_groups;
+        }
+        
+        // Se l'utente è editor, forza la visualizzazione di tutti i field groups per agenda
+        // Carica tutti i field groups per agenda e aggiungili se non sono già presenti
+        $agenda_field_groups = acf_get_field_groups(array(
+            'post_type' => 'agenda'
+        ));
+        
+        // Assicurati che tutti i field groups per agenda siano inclusi
+        foreach ($agenda_field_groups as $agenda_group) {
+            $already_included = false;
+            $group_index = -1;
+            
+            // Cerca se il field group è già presente
+            foreach ($field_groups as $index => $existing_group) {
+                if (isset($existing_group['ID']) && isset($agenda_group['ID']) && 
+                    $existing_group['ID'] == $agenda_group['ID']) {
+                    $already_included = true;
+                    $group_index = $index;
+                    break;
+                }
+            }
+            
+            // Se il field group è già incluso, rimuovi le restrizioni di ruolo
+            if ($already_included && $group_index >= 0) {
+                if (isset($field_groups[$group_index]['location'])) {
+                    foreach ($field_groups[$group_index]['location'] as &$location_group) {
+                        $location_group = array_filter($location_group, function($rule) {
+                            return !(isset($rule['param']) && $rule['param'] === 'user_role' && 
+                                    isset($rule['operator']) && $rule['operator'] === '==' && 
+                                    isset($rule['value']) && $rule['value'] === 'administrator');
+                        });
+                        // Rimuovi le chiavi vuote
+                        $location_group = array_values($location_group);
+                    }
+                }
+            } else {
+                // Se il field group non è già incluso, aggiungilo dopo aver rimosso le restrizioni
+                if (isset($agenda_group['location'])) {
+                    foreach ($agenda_group['location'] as &$location_group) {
+                        $location_group = array_filter($location_group, function($rule) {
+                            return !(isset($rule['param']) && $rule['param'] === 'user_role' && 
+                                    isset($rule['operator']) && $rule['operator'] === '==' && 
+                                    isset($rule['value']) && $rule['value'] === 'administrator');
+                        });
+                        // Rimuovi le chiavi vuote
+                        $location_group = array_values($location_group);
+                    }
+                }
+                $field_groups[] = $agenda_group;
+            }
+        }
+        
+        return $field_groups;
     }
     
     /**
