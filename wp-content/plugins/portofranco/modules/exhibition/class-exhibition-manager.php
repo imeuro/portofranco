@@ -89,7 +89,8 @@ class PF_Exhibition_Manager {
      * Render single artwork item
      */
     private function render_artwork_item($index, $artwork = array()) {
-        $floor = isset($artwork['floor']) ? $artwork['floor'] : '';
+        // Normalize floor value (can be 0, '0', or empty)
+        $floor = isset($artwork['floor']) ? (string)$artwork['floor'] : '';
         $title = isset($artwork['title']) ? $artwork['title'] : '';
         $description = isset($artwork['description']) ? $artwork['description'] : '';
         $position_x = isset($artwork['position_x']) ? $artwork['position_x'] : '';
@@ -143,9 +144,9 @@ class PF_Exhibition_Manager {
                     
                     <div class="pf-map-container">
                         <div class="pf-map-preview" data-floor="<?php echo esc_attr($floor); ?>">
-                            <?php if ($floor): ?>
+                            <?php if ($floor !== ''): ?>
                                 <img src="<?php echo $this->get_floor_map_url($floor); ?>" alt="<?php echo sprintf(__('Mappa %s', 'pf'), $this->get_floor_name($floor)); ?>">
-                                <?php if ($position_x && $position_y): ?>
+                                <?php if ($position_x !== '' && $position_y !== ''): ?>
                                     <div class="pf-marker" style="left: <?php echo esc_attr($position_x); ?>%; top: <?php echo esc_attr($position_y); ?>%;"></div>
                                 <?php endif; ?>
                             <?php else: ?>
@@ -249,8 +250,15 @@ class PF_Exhibition_Manager {
                     continue;
                 }
                 
+                // Ensure floor is always saved as string (including '0')
+                $floor_sanitized = sanitize_text_field($floor);
+                // Force '0' to remain as string '0', not empty or false
+                if ($floor === '0' || $floor === 0) {
+                    $floor_sanitized = '0';
+                }
+                
                 $artworks[] = array(
-                    'floor' => sanitize_text_field($artwork['floor']),
+                    'floor' => $floor_sanitized,
                     'title' => sanitize_text_field($artwork['title']),
                     'description' => sanitize_textarea_field($artwork['description']),
                     'position_x' => floatval($artwork['position_x']),
