@@ -533,6 +533,7 @@ figure.wp-block-image :where(figcaption) {
     #main figure.wp-block-gallery.has-nested-images {
         gap: 5px;
         margin: 10px -20px 10px 0;
+        max-width: 500px;
     }
     #main #item-partners figure.wp-block-gallery.has-nested-images figure.wp-block-image {
         max-height: 200px;

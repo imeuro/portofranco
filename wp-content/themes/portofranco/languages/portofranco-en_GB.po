@@ -163,6 +163,14 @@ msgid "dettaglio periodo"
 msgstr "from November 15, 2025 to February 14, 2026"
 
 #: footer.php:20
+msgid "BIGLIETTO DI INGRESSO"
+msgstr "ADMISSION TICKET"
+
+#: footer.php:17
+msgid "dettaglio biglietto"
+msgstr "FULL PRICE – €10\nCastelfranco Card: grants access not only to the exhibition but also to the other cultural sites within the city of Castelfranco Veneto (Museo Casa Giorgione, Torre, Camminamento delle Mura, Studiolo Vicolo dei Vetri, and Teatro Accademico) valid for one year.\n\nREDUCED – €5\nFor residents of Castelfranco Veneto, visitors under 25 or over 65, and groups of more than 15 participants.\n\nSCHOOLS / UNDER 18 – €1\n\nFREE ADMISSION\nFor children up to 6 years old, visitors with disabilities, licensed tour guides, group leaders or private guides accompanying groups, and accredited journalists."
+
+#: footer.php:20
 msgid "ORARI"
 msgstr "HOURS"
 
