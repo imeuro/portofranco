@@ -25,6 +25,10 @@
         // Manual coordinate input
         $(document).on('input', '.pf-position-x, .pf-position-y', handleManualPosition);
         
+        // Image upload handlers
+        $(document).on('click', '.pf-upload-image', handleImageUpload);
+        $(document).on('click', '.pf-remove-image', handleImageRemove);
+        
         // Initialize existing maps
         $('.pf-map-preview').each(function() {
             const floor = $(this).data('floor');
@@ -211,6 +215,65 @@
         $('.pf-artwork-item').each(function(index) {
             $(this).find('.artwork-number').text(index + 1);
         });
+    };
+    
+    const handleImageUpload = function(e) {
+        e.preventDefault();
+        
+        const $button = $(this);
+        const $container = $button.closest('.pf-artwork-item');
+        const $imageIdInput = $container.find('.pf-image-id');
+        const $uploadContainer = $container.find('.pf-image-upload-container');
+        
+        // Create media frame
+        const mediaFrame = wp.media({
+            title: 'Seleziona immagine opera',
+            button: {
+                text: 'Usa questa immagine'
+            },
+            multiple: false,
+            library: {
+                type: 'image'
+            }
+        });
+        
+        // Handle selection
+        mediaFrame.on('select', function() {
+            const attachment = mediaFrame.state().get('selection').first().toJSON();
+            
+            // Update hidden input
+            $imageIdInput.val(attachment.id);
+            
+            // Show preview
+            const previewHtml = `
+                <div class="pf-image-preview">
+                    <img src="${attachment.sizes && attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url}" alt="${attachment.alt || ''}">
+                    <button type="button" class="button pf-remove-image">
+                        Rimuovi immagine
+                    </button>
+                </div>
+            `;
+            
+            $uploadContainer.html(previewHtml);
+        });
+        
+        // Open media frame
+        mediaFrame.open();
+    };
+    
+    const handleImageRemove = function(e) {
+        e.preventDefault();
+        
+        const $button = $(this);
+        const $container = $button.closest('.pf-artwork-item');
+        const $imageIdInput = $container.find('.pf-image-id');
+        const $uploadContainer = $container.find('.pf-image-upload-container');
+        
+        // Clear image ID
+        $imageIdInput.val(0);
+        
+        // Show upload button
+        $uploadContainer.html('<button type="button" class="button pf-upload-image">Carica immagine</button>');
     };
     
     // Initialize on document ready

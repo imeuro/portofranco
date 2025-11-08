@@ -194,3 +194,6 @@ msgstr  "Piano 2"
 
 msgid "Piano 3"
 msgstr  "Piano 3"
+
+msgid "Chiudi"
+msgstr  "Chiudi"

@@ -9,6 +9,8 @@ const ExhibitionMap = (() => {
   let currentFloor = 0;
   let artworksByFloor = {};
   let isLoading = false;
+  let isClosing = false;
+  let positionTimeout = null;
 
   const elements = {
     floorMaps: null,
@@ -21,6 +23,8 @@ const ExhibitionMap = (() => {
     modalArtistName: null,
     modalArtistLink: null,
     modalDescription: null,
+    modalImage: null,
+    modalImageContainer: null,
   };
 
   const init = () => {
@@ -56,6 +60,8 @@ const ExhibitionMap = (() => {
     elements.modalArtistName = document.querySelector('.modal-artist-name');
     elements.modalArtistLink = document.querySelector('.modal-artist-link');
     elements.modalDescription = document.querySelector('.modal-artwork-description');
+    elements.modalImage = document.querySelector('.modal-artwork-image-img');
+    elements.modalImageContainer = document.querySelector('.modal-artwork-image');
   };
 
   const bindEvents = () => {
@@ -71,11 +77,19 @@ const ExhibitionMap = (() => {
 
     // Modal
     if (elements.modalClose) {
-      elements.modalClose.addEventListener('click', closeModal);
+      elements.modalClose.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeModal();
+      });
     }
 
     if (elements.modalOverlay) {
-      elements.modalOverlay.addEventListener('click', closeModal);
+      elements.modalOverlay.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeModal();
+      });
     }
 
     // Chiudi modal con ESC
@@ -145,7 +159,7 @@ const ExhibitionMap = (() => {
     marker.dataset.artist = `${artwork.artist_name}`;
     marker.setAttribute('tabindex', currentFloor === parseInt(artwork.floor) ? '0' : '-1');
 
-    marker.addEventListener('click', () => openModal(artwork));
+    marker.addEventListener('click', (e) => openModal(artwork, e.currentTarget));
 
     return marker;
   };
@@ -226,6 +240,30 @@ const ExhibitionMap = (() => {
             removeMarkerHighlight();
             artistItem.classList.add('current');
             highlightMarkersByArtist(artistName, floor);
+          });
+
+          artistItem.addEventListener('click', () => {
+            // When an artist item is clicked, highlight relevant markers and animate them with a pulse effect
+            removeMarkerHighlight();
+            artistItem.classList.add('current');
+            highlightMarkersByArtist(artistName, floor);
+
+            // Add pulse animation to all current markers for this artist/floor
+            const markersContainer = document.querySelector(`.artwork-markers[data-floor="${floor}"]`);
+            if (markersContainer) {
+              markersContainer.querySelectorAll(
+                `.artwork-marker.current[data-artist="${CSS.escape(artistName)}"]`
+              ).forEach(marker => {
+                marker.classList.remove('pulse-anim'); // Reset in case
+                // Trigger reflow to restart animation if needed
+                void marker.offsetWidth;
+                marker.classList.add('pulse-anim');
+              });
+            }
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
           });
           
           // artistItem.addEventListener('mouseleave', () => {
@@ -338,8 +376,14 @@ const ExhibitionMap = (() => {
     });
   };
   
-  const openModal = (artwork) => {
+  const openModal = (artwork, markerElement = null) => {
     if (!elements.modal) return;
+    
+    // Previeni l'apertura se la modale è in fase di chiusura
+    if (isClosing) return;
+    
+    // Previeni l'apertura se la modale è già aperta
+    if (elements.modal.getAttribute('aria-hidden') === 'false') return;
 
     // Popola il modal
     if (elements.modalTitle) {
@@ -355,9 +399,87 @@ const ExhibitionMap = (() => {
       elements.modalDescription.textContent = artwork.artwork_description || '';
     }
 
-    // Mostra modal
+    // Mostra modal prima di posizionare (necessario per calcolare dimensioni)
     elements.modal.setAttribute('aria-hidden', 'false');
     elements.modal.classList.add('is-open');
+
+    // Imposta opacity a 0 all'apertura
+    if (elements.modalContent) {
+      elements.modalContent.style.opacity = '0';
+    }
+
+    // Funzione per posizionare la modale
+    const positionModal = () => {
+      // Verifica che la modale sia ancora aperta e non in fase di chiusura
+      if (isClosing || elements.modal.getAttribute('aria-hidden') === 'true') {
+        return;
+      }
+      
+      // Usa doppio requestAnimationFrame per assicurarsi che il rendering sia completo
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // Verifica di nuovo prima di applicare gli stili
+          if (isClosing || elements.modal.getAttribute('aria-hidden') === 'true') {
+            return;
+          }
+          
+          if (markerElement && window.innerWidth >= 1000) {
+            positionModalNearMarker(markerElement);
+          } else {
+            // Reset posizione su mobile
+            resetModalPosition();
+          }
+          
+          // Imposta opacity a 1 dopo il posizionamento solo se la modale è ancora aperta
+          if (!isClosing && elements.modal.getAttribute('aria-hidden') === 'false' && elements.modalContent) {
+            elements.modalContent.style.opacity = '1';
+          }
+        });
+      });
+    };
+
+    // Gestisci immagine
+    if (elements.modalImage && elements.modalImageContainer) {
+      if (artwork.image_url && artwork.image_url !== '') {
+        // Rimuovi eventuali listener precedenti
+        elements.modalImage.onload = null;
+        elements.modalImage.onerror = null;
+        
+        // Aggiungi listener per quando l'immagine è caricata
+        elements.modalImage.onload = () => {
+          // Riposiziona la modale dopo che l'immagine è caricata
+          positionModal();
+        };
+        
+        // Se l'immagine fallisce il caricamento, posiziona comunque
+        elements.modalImage.onerror = () => {
+          positionModal();
+        };
+        
+        elements.modalImage.src = artwork.image_url;
+        elements.modalImage.alt = artwork.artwork_title || '';
+        elements.modalImageContainer.style.display = '';
+        
+        // Se l'immagine è già in cache, onload potrebbe non scattare
+        // Verifica se è già caricata
+        if (elements.modalImage.complete && elements.modalImage.naturalHeight !== 0) {
+          positionModal();
+        }
+      } else {
+        elements.modalImage.src = '';
+        elements.modalImage.alt = '';
+        elements.modalImageContainer.style.display = 'none';
+        // Posiziona dopo un breve delay per assicurarsi che la modale sia renderizzata
+        positionTimeout = setTimeout(() => {
+          positionModal();
+        }, 50);
+      }
+    } else {
+      // Posiziona dopo un breve delay per assicurarsi che la modale sia renderizzata
+      positionTimeout = setTimeout(() => {
+        positionModal();
+      }, 50);
+    }
 
     // Focus sul modal content
     setTimeout(() => {
@@ -370,14 +492,165 @@ const ExhibitionMap = (() => {
     document.body.style.overflow = 'hidden';
   };
 
+  const positionModalNearMarker = (markerElement) => {
+    if (!elements.modalContent || !markerElement) return;
+    
+    // Previeni il posizionamento se la modale è in fase di chiusura o già chiusa
+    if (isClosing || elements.modal.getAttribute('aria-hidden') === 'true') {
+      return;
+    }
+
+    const markerRect = markerElement.getBoundingClientRect();
+    const modalContent = elements.modalContent;
+    
+    // Usa offsetWidth/offsetHeight per ottenere dimensioni anche se la modale è appena stata mostrata
+    const modalWidth = modalContent.offsetWidth || modalContent.getBoundingClientRect().width;
+    const modalHeight = modalContent.offsetHeight || modalContent.getBoundingClientRect().height;
+    
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Calcola posizione del marker (centro del marker)
+    const markerX = markerRect.left + markerRect.width / 2;
+    const markerY = markerRect.top + markerRect.height / 2;
+
+    // Offset per posizionare la modale vicino al marker
+    const offsetX = 20;
+    const offsetY = 20;
+
+    // Calcola spazio disponibile a destra e a sinistra del marker
+    const spaceRight = viewportWidth - markerX - offsetX;
+    const spaceLeft = markerX - offsetX;
+    
+    // Determina posizione orizzontale
+    let left;
+    if (spaceRight >= modalWidth) {
+      // C'è spazio a destra: posiziona a destra del marker
+      left = markerX + offsetX;
+    } else if (spaceLeft >= modalWidth) {
+      // C'è spazio a sinistra: posiziona a sinistra del marker
+      left = markerX - modalWidth - offsetX;
+    } else {
+      // Non c'è spazio sufficiente: posiziona il più vicino possibile al marker
+      // Preferisci destra se c'è più spazio a destra
+      if (spaceRight > spaceLeft) {
+        left = viewportWidth - modalWidth;
+      } else {
+        left = 0;
+      }
+    }
+
+    // Assicura che la modale non esca dal viewport orizzontalmente
+    left = Math.max(0, Math.min(left, viewportWidth - modalWidth));
+
+    // Calcola spazio disponibile sopra e sotto il marker
+    const spaceAbove = markerY - offsetY;
+    const spaceBelow = viewportHeight - markerY - offsetY;
+    
+    // Determina posizione verticale
+    let top;
+    if (spaceBelow >= modalHeight / 2 && spaceAbove >= modalHeight / 2) {
+      // C'è spazio sopra e sotto: allinea il centro della modale con il marker
+      top = markerY - modalHeight / 2;
+    } else if (spaceBelow >= modalHeight) {
+      // C'è spazio sotto: allinea il top della modale con il marker (con offset)
+      top = markerY + offsetY;
+    } else if (spaceAbove >= modalHeight) {
+      // C'è spazio sopra: allinea il bottom della modale con il marker (con offset)
+      top = markerY - modalHeight - offsetY;
+    } else {
+      // Non c'è spazio sufficiente: posiziona il più vicino possibile al marker
+      // Preferisci sotto se c'è più spazio sotto
+      if (spaceBelow > spaceAbove) {
+        top = Math.max(0, viewportHeight - modalHeight);
+      } else {
+        top = 0;
+      }
+    }
+
+    // Assicura che la modale non esca dal viewport verticalmente
+    top = Math.max(0, Math.min(top, viewportHeight - modalHeight));
+
+    // Applica posizione
+    modalContent.style.position = 'absolute';
+    modalContent.style.left = `${left}px`;
+    modalContent.style.top = `${top}px`;
+    modalContent.style.margin = '0';
+    modalContent.style.transform = 'none';
+  };
+
+  const resetModalPosition = () => {
+    if (!elements.modalContent) return;
+
+    elements.modalContent.style.position = '';
+    elements.modalContent.style.left = '';
+    elements.modalContent.style.top = '';
+    elements.modalContent.style.margin = '';
+    elements.modalContent.style.transform = '';
+    elements.modalContent.style.opacity = '';
+  };
+
   const closeModal = () => {
     if (!elements.modal) return;
+    
+    // Previeni chiusure multiple
+    if (isClosing) return;
+    
+    // Previeni la chiusura se la modale è già chiusa
+    if (elements.modal.getAttribute('aria-hidden') === 'true') return;
+    
+    // Imposta flag di chiusura
+    isClosing = true;
 
-    elements.modal.setAttribute('aria-hidden', 'true');
-    elements.modal.classList.remove('is-open');
+    // Cancella eventuali timeout di posizionamento in corso
+    if (positionTimeout) {
+      clearTimeout(positionTimeout);
+      positionTimeout = null;
+    }
 
-    // Ripristina scroll body
-    document.body.style.overflow = '';
+    // Rimuovi listener sull'immagine per prevenire chiamate a positionModal
+    if (elements.modalImage) {
+      elements.modalImage.onload = null;
+      elements.modalImage.onerror = null;
+    }
+
+    // Imposta opacity a 0 come prima cosa
+    if (elements.modalContent) {
+      elements.modalContent.style.opacity = '0';
+    }
+
+    // Aspetta che la transizione di opacity sia completata prima di rimuovere gli attributi
+    setTimeout(() => {
+      // Reset posizione modale e rimuovi tutti gli attributi inline
+      resetModalPosition();
+      
+      elements.modal.setAttribute('aria-hidden', 'true');
+      elements.modal.classList.remove('is-open');
+
+      // Svuota immagine
+      if (elements.modalImage) {
+        elements.modalImage.src = '';
+        elements.modalImage.alt = '';
+      }
+      
+      // Svuota contenuti testuali
+      if (elements.modalTitle) {
+        elements.modalTitle.textContent = '';
+      }
+      if (elements.modalArtistLink) {
+        elements.modalArtistLink.textContent = '';
+        elements.modalArtistLink.href = '#';
+      }
+      if (elements.modalDescription) {
+        elements.modalDescription.textContent = '';
+      }
+      
+      // Ripristina scroll body
+      document.body.style.overflow = '';
+      
+      // Reset flag di chiusura
+      isClosing = false;
+    }, 200); // Tempo della transizione CSS (0.2s)
   };
 
   // Inizializza quando il DOM è pronto

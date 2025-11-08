@@ -105,17 +105,24 @@ get_header();
 <div class="artwork-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
   <div class="modal-overlay" aria-hidden="true"></div>
   <div class="modal-content" role="document" tabindex="0">
-    <button class="modal-close" aria-label="<?php _e('Chiudi', 'portofranco'); ?>">
-      <span aria-hidden="true">×</span>
-    </button>
     
     <div class="modal-body">
-      <h3 class="modal-artist-name">
-        <a href="#" class="modal-artist-link"></a>
-      </h3>
-      <h2 id="modal-title" class="modal-artwork-title"></h2>
-      <div class="modal-artwork-description"></div>
+      <div class="modal-artwork-image">
+        <img src="" alt="" class="modal-artwork-image-img" loading="lazy">
+      </div>
+      <div class="modal-artwork-content">
+        <h3 class="modal-artist-name small-label">
+            <a href="#" class="modal-artist-link"></a>
+        </h3>
+        <h2 id="modal-title" class="modal-artwork-title"></h2>
+        <div class="modal-artwork-description"></div>
+      </div>
     </div>
+
+    <button class="modal-close" aria-label="<?php _e('Chiudi', 'portofranco'); ?>">
+      <span aria-hidden="true"><?php _e('Chiudi', 'portofranco'); ?></span>
+    </button>
+
   </div>
 </div>
 

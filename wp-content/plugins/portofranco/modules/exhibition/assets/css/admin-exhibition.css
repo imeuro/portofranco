@@ -13,7 +13,7 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 50px;
     position: relative;
 }
 
@@ -66,6 +66,7 @@
 .pf-field-group select,
 .pf-field-group textarea {
     margin-top: 5px;
+    font-weight: 400;
 }
 
 .pf-position-fields {
@@ -157,6 +158,7 @@
 
 .pf-field-inline input {
     margin-top: 5px;
+    font-weight: 400;
 }
 
 .pf-coordinates .description {
@@ -167,6 +169,32 @@
 
 #pf-add-artwork {
     margin-top: 10px;
+}
+
+/* Image upload styles */
+.pf-image-upload-container {
+    margin-top: 5px;
+}
+
+.pf-image-preview {
+    margin-bottom: 10px;
+}
+
+.pf-image-preview img {
+    max-width: 300px;
+    height: auto;
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.pf-upload-image.hidden {
+    display: none;
+}
+
+.pf-remove-image {
+    margin-top: 5px;
 }
 
 /* Responsive */

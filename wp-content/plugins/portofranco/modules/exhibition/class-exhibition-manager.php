@@ -93,6 +93,7 @@ class PF_Exhibition_Manager {
         $floor = isset($artwork['floor']) ? (string)$artwork['floor'] : '';
         $title = isset($artwork['title']) ? $artwork['title'] : '';
         $description = isset($artwork['description']) ? $artwork['description'] : '';
+        $image_id = isset($artwork['image_id']) ? intval($artwork['image_id']) : 0;
         $position_x = isset($artwork['position_x']) ? $artwork['position_x'] : '';
         $position_y = isset($artwork['position_y']) ? $artwork['position_y'] : '';
         
@@ -136,6 +137,34 @@ class PF_Exhibition_Manager {
                         <textarea name="pf_artworks[<?php echo esc_attr($index); ?>][description]" 
                                   class="widefat" 
                                   rows="3"><?php echo esc_textarea($description); ?></textarea>
+                    </label>
+                </div>
+                
+                <div class="pf-field-group">
+                    <label>
+                        <?php _e('Foto Opera', 'pf'); ?>
+                        <input type="hidden" 
+                               name="pf_artworks[<?php echo esc_attr($index); ?>][image_id]" 
+                               value="<?php echo esc_attr($image_id); ?>" 
+                               class="pf-image-id">
+                        <div class="pf-image-upload-container">
+                            <?php if ($image_id > 0): 
+                                $image_url = wp_get_attachment_image_url($image_id, 'medium');
+                                if ($image_url):
+                            ?>
+                                <div class="pf-image-preview">
+                                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
+                                    <button type="button" class="button pf-remove-image">
+                                        <?php _e('Rimuovi immagine', 'pf'); ?>
+                                    </button>
+                                </div>
+                            <?php 
+                                endif;
+                            endif; ?>
+                            <button type="button" class="button pf-upload-image <?php echo $image_id > 0 ? 'hidden' : ''; ?>">
+                                <?php _e('Carica immagine', 'pf'); ?>
+                            </button>
+                        </div>
                     </label>
                 </div>
                 
@@ -261,6 +290,7 @@ class PF_Exhibition_Manager {
                     'floor' => $floor_sanitized,
                     'title' => sanitize_text_field($artwork['title']),
                     'description' => sanitize_textarea_field($artwork['description']),
+                    'image_id' => isset($artwork['image_id']) ? intval($artwork['image_id']) : 0,
                     'position_x' => floatval($artwork['position_x']),
                     'position_y' => floatval($artwork['position_y']),
                 );
@@ -292,6 +322,9 @@ class PF_Exhibition_Manager {
             array(),
             PF_PLUGIN_VERSION
         );
+        
+        // Enqueue media uploader
+        wp_enqueue_media();
         
         wp_enqueue_script(
             'pf-exhibition-admin',
@@ -344,12 +377,24 @@ class PF_Exhibition_Manager {
                 if (is_array($artworks)) {
                     foreach ($artworks as $artwork) {
                         if ($artwork['floor'] == $floor) {
+                            $image_id = isset($artwork['image_id']) ? intval($artwork['image_id']) : 0;
+                            $image_url = '';
+                            
+                            if ($image_id > 0) {
+                                $image_url = wp_get_attachment_image_url($image_id, 'medium_large');
+                                if (!$image_url) {
+                                    $image_url = '';
+                                }
+                            }
+                            
                             $result[] = array(
                                 'artist_id' => get_the_ID(),
                                 'artist_name' => get_the_title(),
                                 'artist_url' => get_permalink(),
                                 'artwork_title' => $artwork['title'],
                                 'artwork_description' => $artwork['description'],
+                                'image_id' => $image_id,
+                                'image_url' => $image_url,
                                 'position_x' => $artwork['position_x'],
                                 'position_y' => $artwork['position_y'],
                             );
