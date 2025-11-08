@@ -178,3 +178,19 @@ msgstr "ORARI"
 #: footer.php:23
 msgid "dettaglio orari"
 msgstr "Lunedì - Martedì - Mercoledì: chiuso<br>Giovedì - Venerdì - Sabato - Domenica: 10:00-19:00"
+
+
+######################
+#: page-exhibition.php
+
+msgid "Piano terra"
+msgstr  "Piano terra"
+
+msgid "Piano 1"
+msgstr  "Piano 1"
+
+msgid "Piano 2"
+msgstr  "Piano 2"
+
+msgid "Piano 3"
+msgstr  "Piano 3"

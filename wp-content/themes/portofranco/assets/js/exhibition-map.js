@@ -12,9 +12,6 @@ const ExhibitionMap = (() => {
 
   const elements = {
     floorMaps: null,
-    navPrev: null,
-    navNext: null,
-    floorDots: null,
     currentFloorNumber: null,
     modal: null,
     modalOverlay: null,
@@ -43,13 +40,13 @@ const ExhibitionMap = (() => {
 
     // Inizializza primo piano
     showFloor(0);
+    
+    // Inizializza accordion: espandi solo piano 0
+    initAccordion();
   };
 
   const cacheElements = () => {
     elements.floorMaps = document.querySelectorAll('.floor-map');
-    elements.navPrev = document.querySelector('.nav-prev');
-    elements.navNext = document.querySelector('.nav-next');
-    elements.floorDots = document.querySelectorAll('.floor-dot');
     elements.currentFloorNumber = document.querySelector('.current-floor-number');
     elements.modal = document.querySelector('.artwork-modal');
     elements.modalOverlay = document.querySelector('.modal-overlay');
@@ -62,20 +59,13 @@ const ExhibitionMap = (() => {
   };
 
   const bindEvents = () => {
-    // Navigazione piani
-    if (elements.navPrev) {
-      elements.navPrev.addEventListener('click', () => navigateFloor(-1));
-    }
-
-    if (elements.navNext) {
-      elements.navNext.addEventListener('click', () => navigateFloor(1));
-    }
-
-    // Floor dots
-    elements.floorDots.forEach(dot => {
-      dot.addEventListener('click', (e) => {
-        const floor = parseInt(e.currentTarget.dataset.floor);
-        showFloor(floor);
+    // Accordion floor list
+    const floorToggles = document.querySelectorAll('.floor-toggle');
+    floorToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        const floorItem = e.currentTarget.closest('.exhibition-floor');
+        const floor = parseInt(floorItem.dataset.floor);
+        toggleFloorAccordion(floor);
       });
     });
 
@@ -92,17 +82,6 @@ const ExhibitionMap = (() => {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && elements.modal.getAttribute('aria-hidden') === 'false') {
         closeModal();
-      }
-    });
-
-    // Navigazione con tastiera
-    document.addEventListener('keydown', (e) => {
-      if (elements.modal.getAttribute('aria-hidden') === 'true') {
-        if (e.key === 'ArrowLeft') {
-          navigateFloor(-1);
-        } else if (e.key === 'ArrowRight') {
-          navigateFloor(1);
-        }
       }
     });
   };
@@ -130,6 +109,9 @@ const ExhibitionMap = (() => {
         for (let floor = 0; floor <= 3; floor++) {
           renderFloorMarkers(floor);
         }
+
+        // Aggiorna la lista deigli artisti per ogni piano
+        updateArtistList();
       }
     } catch (error) {
       console.error('Errore caricamento opere:', error);
@@ -160,19 +142,12 @@ const ExhibitionMap = (() => {
     marker.style.left = `${artwork.position_x}%`;
     marker.style.top = `${artwork.position_y}%`;
     marker.setAttribute('aria-label', `${artwork.artwork_title} - ${artwork.artist_name}`);
+    marker.dataset.artist = `${artwork.artist_name}`;
     marker.setAttribute('tabindex', currentFloor === parseInt(artwork.floor) ? '0' : '-1');
 
     marker.addEventListener('click', () => openModal(artwork));
 
     return marker;
-  };
-
-  const navigateFloor = (direction) => {
-    const newFloor = currentFloor + direction;
-
-    if (newFloor < 0 || newFloor > 3) return;
-
-    showFloor(newFloor);
   };
 
   const showFloor = (floor) => {
@@ -199,38 +174,11 @@ const ExhibitionMap = (() => {
       elements.currentFloorNumber.textContent = currentFloor === 0 ? 'terra' : currentFloor;
     }
 
-    // Aggiorna pulsanti navigazione
-    updateNavigationButtons();
-
-    // Aggiorna floor dots
-    updateFloorDots();
-
     // Aggiorna tabindex dei marker
     updateMarkersTabindex();
-  };
 
-  const updateNavigationButtons = () => {
-    if (elements.navPrev) {
-      elements.navPrev.disabled = currentFloor === 0;
-    }
-
-    if (elements.navNext) {
-      elements.navNext.disabled = currentFloor === 3;
-    }
-  };
-
-  const updateFloorDots = () => {
-    elements.floorDots.forEach(dot => {
-      const dotFloor = parseInt(dot.dataset.floor);
-
-      if (dotFloor === currentFloor) {
-        dot.setAttribute('aria-selected', 'true');
-        dot.setAttribute('aria-current', 'true');
-      } else {
-        dot.setAttribute('aria-selected', 'false');
-        dot.removeAttribute('aria-current');
-      }
-    });
+    // Sincronizza accordion con il piano corrente
+    syncAccordionWithFloor(floor);
   };
 
   const updateMarkersTabindex = () => {
@@ -242,6 +190,154 @@ const ExhibitionMap = (() => {
     });
   };
 
+  const updateArtistList = () => {
+    const floorItems = document.querySelectorAll('.exhibition-floor');
+
+    floorItems.forEach(floorItem => {
+      const floor = parseInt(floorItem.dataset.floor);
+      const artworks = artworksByFloor[floor] || [];
+      const floorContent = floorItem.querySelector('.floor-content');
+
+      if (!floorContent) return;
+
+      // Rimuovi lista artisti esistente se presente
+      const existingList = floorContent.querySelector('.artists-list');
+      if (existingList) {
+        existingList.remove();
+      }
+
+      // Estrai artisti unici dal piano corrente
+      const uniqueArtists = [...new Set(artworks.map(artwork => artwork.artist_name))].filter(Boolean);
+
+      // Crea lista artisti solo se ci sono artisti
+      if (uniqueArtists.length > 0) {
+        const artistsList = document.createElement('ul');
+        artistsList.className = 'artists-list';
+
+        uniqueArtists.forEach(artistName => {
+          const artistItem = document.createElement('li');
+          artistItem.className = 'artist-item';
+          artistItem.textContent = artistName;
+          artistItem.dataset.artist = artistName;
+          artistItem.dataset.floor = floor;
+          
+          // Event listeners per evidenziare marker
+          artistItem.addEventListener('mouseenter', () => {
+            removeMarkerHighlight();
+            artistItem.classList.add('current');
+            highlightMarkersByArtist(artistName, floor);
+          });
+          
+          // artistItem.addEventListener('mouseleave', () => {
+          //   removeMarkerHighlight();
+          // });
+          
+          artistsList.appendChild(artistItem);
+        });
+
+        floorContent.appendChild(artistsList);
+      }
+    });
+  };
+
+  const initAccordion = () => {
+    const floorItems = document.querySelectorAll('.exhibition-floor');
+
+    floorItems.forEach(item => {
+      const itemFloor = parseInt(item.dataset.floor);
+      const toggle = item.querySelector('.floor-toggle');
+      const content = item.querySelector('.floor-content');
+      const isExpanded = item.dataset.expanded === 'true';
+
+      if (isExpanded) {
+        item.classList.add('is-expanded');
+        if (toggle) {
+          toggle.setAttribute('aria-expanded', 'true');
+        }
+        if (content) {
+          content.setAttribute('aria-hidden', 'false');
+        }
+      } else {
+        item.classList.remove('is-expanded');
+        if (toggle) {
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+        if (content) {
+          content.setAttribute('aria-hidden', 'true');
+        }
+      }
+    });
+  };
+
+  const syncAccordionWithFloor = (floor) => {
+    const floorItems = document.querySelectorAll('.exhibition-floor');
+
+    floorItems.forEach(item => {
+      const itemFloor = parseInt(item.dataset.floor);
+      const toggle = item.querySelector('.floor-toggle');
+      const content = item.querySelector('.floor-content');
+      const isTargetFloor = itemFloor === floor;
+
+      if (isTargetFloor) {
+        // Apri il piano corrente
+        item.dataset.expanded = 'true';
+        if (toggle) {
+          toggle.setAttribute('aria-expanded', 'true');
+        }
+        if (content) {
+          content.setAttribute('aria-hidden', 'false');
+        }
+        item.classList.add('is-expanded');
+      } else {
+        // Chiudi gli altri piani
+        item.dataset.expanded = 'false';
+        if (toggle) {
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+        if (content) {
+          content.setAttribute('aria-hidden', 'true');
+        }
+        item.classList.remove('is-expanded');
+      }
+    });
+  };
+
+  const toggleFloorAccordion = (floor) => {
+    // Sincronizza accordion
+    syncAccordionWithFloor(floor);
+
+    // Sincronizza con la mappa: mostra il piano selezionato
+    showFloor(floor);
+  };
+
+  const highlightMarkersByArtist = (artistName, floor) => {
+    // Trova tutti i marker del piano corrente con l'artista corrispondente
+    const markers = document.querySelectorAll(`.artwork-marker[data-artist="${CSS.escape(artistName)}"]`);
+    
+    markers.forEach(marker => {
+      // Verifica che il marker appartenga al piano corretto
+      const markerContainer = marker.closest('.artwork-markers');
+      if (markerContainer) {
+        const markerFloor = parseInt(markerContainer.dataset.floor);
+        if (markerFloor === floor) {
+          marker.classList.add('current');
+        }
+      }
+    });
+  };
+
+  const removeMarkerHighlight = () => {
+    // Rimuovi la classe current da tutti i marker
+    const markers = document.querySelectorAll('.artwork-marker.current');
+    markers.forEach(marker => {
+      marker.classList.remove('current');
+    });
+    const artistItems = document.querySelectorAll('.artist-item.current');
+    artistItems.forEach(artistItem => {
+      artistItem.classList.remove('current');
+    });
+  };
+  
   const openModal = (artwork) => {
     if (!elements.modal) return;
 
