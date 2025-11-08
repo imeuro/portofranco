@@ -1,5 +1,8 @@
 <?php
-// Template pagina 'ABOUT'
+/**
+ * Template Name: About
+ * Description: Template pagina per le pagine about.
+ */
 get_header();
 ?>
 <main id="main" tabindex="-1" role="main">

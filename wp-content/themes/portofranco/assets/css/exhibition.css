@@ -366,13 +366,12 @@
   .exhibition-intro {
     font-size: 20px;
     max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0;
   }
 
   .exhibition-map-container {
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 800px;
+    margin: 0;
   }
 
   .modal-content {

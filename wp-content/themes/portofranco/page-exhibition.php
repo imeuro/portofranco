@@ -1,5 +1,8 @@
 <?php
-// Template pagina 'EXHIBITION'
+/**
+ * Template Name: Exhibition
+ * Description: Template pagina per le pagine exhibition.
+ */
 get_header();
 ?>
 <main id="main" tabindex="-1" role="main">
