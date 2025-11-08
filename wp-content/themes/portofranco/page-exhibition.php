@@ -25,14 +25,6 @@ get_header();
 
         <div class="entry-content">
             <?php the_content(); ?>
-
-            <header class="exhibition-header">
-            
-            <div class="floor-indicator" aria-live="polite" aria-atomic="true">
-                <span class="current-floor-label"><?php _e('floor', 'portofranco'); ?></span>
-                <span class="current-floor-number"><?php _e('number', 'portofranco'); ?></span>
-            </div>
-            </header>
             
             <div class="exhibition-map-wrapper">
                 <div class="exhibition-map-container" role="region" aria-label="<?php _e('Mappa interattiva della mostra', 'portofranco'); ?>">
@@ -118,10 +110,10 @@ get_header();
     </button>
     
     <div class="modal-body">
-      <h2 id="modal-title" class="modal-artwork-title"></h2>
       <h3 class="modal-artist-name">
         <a href="#" class="modal-artist-link"></a>
       </h3>
+      <h2 id="modal-title" class="modal-artwork-title"></h2>
       <div class="modal-artwork-description"></div>
     </div>
   </div>
