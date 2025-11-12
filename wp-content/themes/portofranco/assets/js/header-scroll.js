@@ -13,9 +13,8 @@ const headerScrollManager = (() => {
     // Configurazione
     const config = {
         minDistance: 100, // Distanza minima tra header e elemento di riferimento in px
-        scrollThreshold: 50, // Soglia per iniziare lo scroll
         animationDuration: 500, // Durata animazione in ms
-        mobileScrollThreshold: 250 // Pixel di scroll per spostare l'header su mobile
+        scrollThreshold: 50 // Pixel di scroll per spostare l'header su mobile
     };
     
     // Stato corrente
@@ -27,7 +26,7 @@ const headerScrollManager = (() => {
      * Verifica se il dispositivo è mobile
      */
     const isMobile = () => {
-        return window.innerWidth <= 768;
+        return window.innerWidth <= 1000;
     };
     
     /**
@@ -74,51 +73,24 @@ const headerScrollManager = (() => {
         }
         
         // Logica diversa per mobile e desktop
-        if (isMobile()) {
-            // Comportamento mobile: sposta l'header fuori campo dopo 250px di scroll
-            const scrollTop = window.pageYOffset;
-            const maxOffset = header.offsetHeight + 20; // Altezza header + margine
-            
-            if (scrollTop > config.mobileScrollThreshold) {
-                // Sposta l'header fuori campo
-                if (currentOffset === 0) {
-                    header.style.transition = `transform ${config.animationDuration}ms ease-out`;
-                    applyHeaderTransform(-maxOffset);
-                    isHeaderMoving = true;
-                }
-            } else {
-                // Riporta l'header alla posizione originale
-                if (currentOffset !== 0) {
-                    header.style.transition = `transform ${config.animationDuration}ms ease-out`;
-                    applyHeaderTransform(0);
-                    isHeaderMoving = false;
-                }
+
+        // sposta l'header fuori campo dopo 250px di scroll
+        const scrollTop = window.pageYOffset;
+        const maxOffset = isMobile() ? 250 : 400; // Altezza header + margine
+        
+        if (scrollTop > config.scrollThreshold) {
+            // Sposta l'header fuori campo
+            if (currentOffset === 0) {
+                header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+                applyHeaderTransform(-maxOffset);
+                isHeaderMoving = true;
             }
         } else {
-            // Comportamento desktop: logica originale basata sulla distanza
-            const distance = calculateDistance();
-            
-            // Se l'elemento di riferimento è troppo vicino
-            if (distance < config.minDistance) {
-                const neededOffset = config.minDistance - distance;
-                const maxOffset = header.offsetHeight + 20; // Altezza header + margine
-                
-                // Calcola l'offset necessario
-                const targetOffset = Math.min(neededOffset, maxOffset);
-                
-                // Applica la trasformazione con animazione
-                if (Math.abs(targetOffset - currentOffset) > config.scrollThreshold) {
-                    header.style.transition = `transform ${config.animationDuration}ms ease-out`;
-                    applyHeaderTransform(-targetOffset);
-                    isHeaderMoving = true;
-                }
-            } else {
-                // Riporta l'header alla posizione originale
-                if (currentOffset !== 0) {
-                    header.style.transition = `transform ${config.animationDuration}ms ease-out`;
-                    applyHeaderTransform(0);
-                    isHeaderMoving = false;
-                }
+            // Riporta l'header alla posizione originale
+            if (currentOffset !== 0) {
+                header.style.transition = `transform ${config.animationDuration}ms ease-out`;
+                applyHeaderTransform(0);
+                isHeaderMoving = false;
             }
         }
     };

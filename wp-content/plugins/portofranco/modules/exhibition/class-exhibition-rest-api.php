@@ -75,10 +75,72 @@ class PF_Exhibition_REST_API {
             return new WP_Error('class_not_found', __('Exhibition Manager class not found', 'pf'), array('status' => 500));
         }
         
+        $args = array(
+            'post_type' => 'artisti',
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+            'meta_query' => array(
+                array(
+                    'key' => '_pf_artworks',
+                    'compare' => 'EXISTS',
+                ),
+            ),
+        );
+        
+        // Add language filter if Polylang is active
+        if (function_exists('pll_current_language')) {
+            $current_lang = pll_current_language();
+            if ($current_lang) {
+                $args['lang'] = $current_lang;
+            }
+        }
+        
+        $query = new WP_Query($args);
         $all_artworks = array();
         
-        for ($floor = 0; $floor <= 3; $floor++) {
-            $all_artworks[$floor] = PF_Exhibition_Manager::get_artworks_by_floor($floor);
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                $artworks = get_post_meta(get_the_ID(), '_pf_artworks', true);
+                
+                if (is_array($artworks)) {
+                    foreach ($artworks as $artwork) {
+                        $floor = isset($artwork['floor']) ? $artwork['floor'] : '';
+                        
+                        if ($floor === '') {
+                            continue;
+                        }
+                        
+                        // Initialize floor array if it doesn't exist
+                        if (!isset($all_artworks[$floor])) {
+                            $all_artworks[$floor] = array();
+                        }
+                        
+                        $image_id = isset($artwork['image_id']) ? intval($artwork['image_id']) : 0;
+                        $image_url = '';
+                        
+                        if ($image_id > 0) {
+                            $image_url = wp_get_attachment_image_url($image_id, 'medium_large');
+                            if (!$image_url) {
+                                $image_url = '';
+                            }
+                        }
+                        
+                        $all_artworks[$floor][] = array(
+                            'artist_id' => get_the_ID(),
+                            'artist_name' => get_the_title(),
+                            'artist_url' => get_permalink(),
+                            'artwork_title' => $artwork['title'],
+                            'artwork_description' => $artwork['description'],
+                            'image_id' => $image_id,
+                            'image_url' => $image_url,
+                            'position_x' => $artwork['position_x'],
+                            'position_y' => $artwork['position_y'],
+                        );
+                    }
+                }
+            }
+            wp_reset_postdata();
         }
         
         return rest_ensure_response(array(

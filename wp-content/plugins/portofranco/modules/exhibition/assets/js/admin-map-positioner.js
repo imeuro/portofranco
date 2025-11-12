@@ -82,7 +82,7 @@
     };
     
     const loadFloorMap = ($mapPreview, floor) => {
-        const mapUrl = pfExhibition.mapBaseUrl + 'piano-' + floor + '.jpg';
+        const mapUrl = pfExhibition.mapBaseUrl + floor + '.jpg';
         
         // Check if image exists
         const img = new Image();
@@ -101,7 +101,7 @@
         };
         img.onerror = function() {
             const floorName = (floor === '0' || floor === 0) ? 'Piano terra' : 'Piano ' + floor;
-            $mapPreview.html('<div class="pf-map-placeholder">Mappa ' + floorName + ' non trovata. Carica l\'immagine in /wp-content/uploads/exhibition-maps/piano-' + floor + '.jpg</div>');
+            $mapPreview.html('<div class="pf-map-placeholder">Mappa ' + floorName + ' non trovata. Carica l\'immagine in /wp-content/plugins/portofranco/modules/exhibition/exhibition-maps/' + floor + '.jpg</div>');
         };
         img.src = mapUrl;
     };

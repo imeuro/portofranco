@@ -107,18 +107,6 @@ class PF_Exhibition_Manager {
             </div>
             
             <div class="pf-artwork-fields">
-                <div class="pf-field-group">
-                    <label>
-                        <?php _e('Piano', 'pf'); ?>
-                        <select name="pf_artworks[<?php echo esc_attr($index); ?>][floor]" class="pf-floor-select" required>
-                            <option value=""><?php _e('Seleziona piano...', 'pf'); ?></option>
-                            <option value="0" <?php selected($floor, '0'); ?>><?php _e('Piano terra', 'pf'); ?></option>
-                            <option value="1" <?php selected($floor, '1'); ?>><?php _e('Piano 1', 'pf'); ?></option>
-                            <option value="2" <?php selected($floor, '2'); ?>><?php _e('Piano 2', 'pf'); ?></option>
-                            <option value="3" <?php selected($floor, '3'); ?>><?php _e('Piano 3', 'pf'); ?></option>
-                        </select>
-                    </label>
-                </div>
                 
                 <div class="pf-field-group">
                     <label>
@@ -167,8 +155,31 @@ class PF_Exhibition_Manager {
                         </div>
                     </label>
                 </div>
+
                 
                 <div class="pf-position-fields">
+                    <h5><?php _e('Seleziona piano', 'pf'); ?></h5>
+                    <div class="pf-field-group">
+                        <label>
+                            <?php _e('Piano', 'pf'); ?>
+                            <select name="pf_artworks[<?php echo esc_attr($index); ?>][floor]" class="pf-floor-select" required>
+                                <option value=""><?php _e('Seleziona piano...', 'pf'); ?></option>
+                                <option value="anni70-0" <?php selected($floor, 'anni70-0'); ?>><?php _e('Anni Settanta - Piano terra', 'pf'); ?></option>
+                                <option value="anni70-1" <?php selected($floor, 'anni70-1'); ?>><?php _e('Anni Settanta - Piano 1', 'pf'); ?></option>
+                                <option value="anni70-2" <?php selected($floor, 'anni70-2'); ?>><?php _e('Anni Settanta - Piano 2', 'pf'); ?></option>
+                                <option value="anni70-3" <?php selected($floor, 'anni70-3'); ?>><?php _e('Anni Settanta - Piano 3', 'pf'); ?></option>
+                                <option value="settecento-0" <?php selected($floor, 'settecento-0'); ?>><?php _e('Settecento - Piano rialzato', 'pf'); ?></option>
+                                <option value="settecento-1-so" <?php selected($floor, 'settecento-1-so'); ?>><?php _e('Settecento - Piano 1 - SO', 'pf'); ?></option>
+                                <option value="settecento-1-se" <?php selected($floor, 'settecento-1-se'); ?>><?php _e('Settecento - Piano 1 - SE', 'pf'); ?></option>
+                                <option value="settecento-2" <?php selected($floor, 'settecento-2'); ?>><?php _e('Settecento - Piano 2', 'pf'); ?></option>
+                                <option value="settecento-3" <?php selected($floor, 'settecento-3'); ?>><?php _e('Settecento - Piano 3', 'pf'); ?></option>
+                                <option value="cortile" <?php selected($floor, 'cortile'); ?>><?php _e('Cortile', 'pf'); ?></option>
+                                <option value="museo" <?php selected($floor, 'museo'); ?>><?php _e('Museo', 'pf'); ?></option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <br><br>
                     <h5><?php _e('Posiziona sulla mappa', 'pf'); ?></h5>
                     
                     <div class="pf-map-container">
@@ -235,11 +246,11 @@ class PF_Exhibition_Manager {
      * Get floor map URL
      */
     private function get_floor_map_url($floor) {
-        $upload_dir = wp_upload_dir();
-        $map_url = $upload_dir['baseurl'] . '/exhibition-maps/piano-' . $floor . '.jpg';
+        $plugin_url = plugins_url('modules/exhibition/exhibition-maps/', 'portofranco');
+        $map_url = $plugin_url . $floor . '.jpg';
         
         // Fallback to placeholder if map doesn't exist
-        $map_path = $upload_dir['basedir'] . '/exhibition-maps/piano-' . $floor . '.jpg';
+        $map_path = PF_PLUGIN_URL . 'modules/exhibition/assets/exhibition-maps/' . $floor . '.jpg';
         if (!file_exists($map_path)) {
             $floor_name = $this->get_floor_name($floor);
             return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23f0f0f0" width="800" height="600"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="20" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa ' . $floor_name . ' non trovata%3C/text%3E%3C/svg%3E';
@@ -335,9 +346,8 @@ class PF_Exhibition_Manager {
         );
         
         // Pass data to JavaScript
-        $upload_dir = wp_upload_dir();
         wp_localize_script('pf-exhibition-admin', 'pfExhibition', array(
-            'mapBaseUrl' => $upload_dir['baseurl'] . '/exhibition-maps/',
+            'mapBaseUrl' => PF_PLUGIN_URL . 'modules/exhibition/assets/exhibition-maps/',
             'placeholderSvg' => 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23f0f0f0" width="800" height="600"/%3E%3C/svg%3E',
         ));
     }

@@ -199,6 +199,23 @@ a:hover {
     }
 } */
 
+
+.mobile-only {
+    display: flex!important;
+}
+.desktop-only {
+    display: none!important;
+}
+
+@media (min-width: 1000px) {
+    .desktop-only {
+        display: flex!important;
+    }
+    .mobile-only {
+        display: none!important;
+    }
+}
+
 /*
 ---------------------------------------------
   HEADER

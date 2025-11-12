@@ -4,6 +4,21 @@
  * Description: Template pagina per le pagine exhibition.
  */
 get_header();
+
+// Definizione di tutti i possibili floor con i loro nomi
+$floors = array(
+    'anni70-0' => __('Anni Settanta - Piano terra', 'portofranco'),
+    'anni70-1' => __('Anni Settanta - Piano 1', 'portofranco'),
+    'anni70-2' => __('Anni Settanta - Piano 2', 'portofranco'),
+    'anni70-3' => __('Anni Settanta - Piano 3', 'portofranco'),
+    'settecento-0' => __('Settecento - Piano rialzato', 'portofranco'),
+    'settecento-1-so' => __('Settecento - Piano 1 - SO', 'portofranco'),
+    'settecento-1-se' => __('Settecento - Piano 1 - SE', 'portofranco'),
+    'settecento-2' => __('Settecento - Piano 2', 'portofranco'),
+    'settecento-3' => __('Settecento - Piano 3', 'portofranco'),
+    'cortile' => __('Cortile', 'portofranco'),
+    'museo' => __('Museo', 'portofranco'),
+);
 ?>
 <main id="main" tabindex="-1" role="main">
   <?php if ( have_posts() ) : while ( have_posts() ) : the_post();  ?>
@@ -29,37 +44,39 @@ get_header();
             <div class="exhibition-map-wrapper">
                 <div class="exhibition-map-container" role="region" aria-label="<?php _e('Mappa interattiva della mostra', 'portofranco'); ?>">
                 
-                <!-- Mappe dei 4 piani -->
+                <!-- Mappe dei vari piani disponibili -->
                 <?php
-                $upload_dir = wp_upload_dir();
-                $map_base_url = $upload_dir['baseurl'] . '/exhibition-maps/';
-                
-                for ($floor = 0; $floor <= 3; $floor++):
-                    $map_url = $map_base_url . 'piano-' . $floor . '.jpg';
-                    $map_path = $upload_dir['basedir'] . '/exhibition-maps/piano-' . $floor . '.jpg';
+                $map_base_url = PF_PLUGIN_URL . 'modules/exhibition/assets/exhibition-maps/';
+                $map_base_path = PF_PLUGIN_DIR . 'modules/exhibition/assets/exhibition-maps/';
+                                
+                $first_floor = true;
+                foreach ($floors as $floor_key => $floor_name):
+                    $map_url = $map_base_url . $floor_key . '.jpg';
+                    $map_path = $map_base_path . $floor_key . '.jpg';
                     
                     // Check if map exists
                     if (!file_exists($map_path)) {
-                    $floor_name = ($floor == 0) ? __('Piano terra', 'portofranco') : sprintf(__('Piano %s', 'portofranco'), $floor);
-                    $map_url = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1200" height="900"%3E%3Crect fill="%23f5f5f5" width="1200" height="900"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="24" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa ' . esc_attr($floor_name) . '%3C/text%3E%3C/svg%3E';
+                        $map_url = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1200" height="900"%3E%3Crect fill="%23f5f5f5" width="1200" height="900"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="24" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa ' . esc_attr($floor_name) . '%3C/text%3E%3C/svg%3E';
                     }
                 ?>
                 
                 <div class="floor-map" 
-                    data-floor="<?php echo $floor; ?>" 
-                    <?php echo $floor === 0 ? 'data-active="true"' : 'data-active="false"'; ?>
-                    aria-hidden="<?php echo $floor === 0 ? 'false' : 'true'; ?>">
+                    data-floor="<?php echo esc_attr($floor_key); ?>" 
+                    <?php echo $first_floor ? 'data-active="true"' : 'data-active="false"'; ?>
+                    aria-hidden="<?php echo $first_floor ? 'false' : 'true'; ?>">
                     
                     <img src="<?php echo esc_url($map_url); ?>" 
-                        alt="<?php echo ($floor == 0) ? __('Mappa Piano terra', 'portofranco') : sprintf(__('Mappa Piano %s', 'portofranco'), $floor); ?>"
-                        loading="<?php echo $floor === 0 ? 'eager' : 'lazy'; ?>">
+                        alt="<?php echo esc_attr(sprintf(__('Mappa %s', 'portofranco'), $floor_name)); ?>"
+                        loading="<?php echo $first_floor ? 'eager' : 'lazy'; ?>">
                     
-                    <div class="artwork-markers" data-floor="<?php echo $floor; ?>">
+                    <div class="artwork-markers" data-floor="<?php echo esc_attr($floor_key); ?>">
                     <!-- I marker verranno aggiunti dinamicamente via JavaScript -->
                     </div>
                 </div>
                 
-                <?php endfor; ?>
+                <?php 
+                    $first_floor = false;
+                endforeach; ?>
                 
                 </div>
             </div>
@@ -73,30 +90,20 @@ get_header();
 <!-- Lista dei piani e relativi artisti -->
 <div id="exhibition-list" class="exhibition-list">
     <ul>
-        <li class="exhibition-floor" data-floor="0" data-expanded="true">
-            <button class="floor-toggle" type="button" aria-expanded="true" aria-controls="floor-content-0">
-                <h3><?php _e('Piano terra', 'portofranco'); ?></h3>
+        <?php
+        $first_floor_list = true;
+        foreach ($floors as $floor_key => $floor_name):
+            $floor_id = 'floor-content-' . esc_attr($floor_key);
+        ?>
+        <li class="exhibition-floor" data-floor="<?php echo esc_attr($floor_key); ?>" data-expanded="<?php echo $first_floor_list ? 'true' : 'false'; ?>">
+            <button class="floor-toggle" type="button" aria-expanded="<?php echo $first_floor_list ? 'true' : 'false'; ?>" aria-controls="<?php echo esc_attr($floor_id); ?>">
+                <h3><?php echo esc_html($floor_name); ?></h3>
             </button>
-            <div class="floor-content" id="floor-content-0" aria-hidden="false"></div>
+            <div class="floor-content" id="<?php echo esc_attr($floor_id); ?>" aria-hidden="<?php echo $first_floor_list ? 'false' : 'true'; ?>"></div>
         </li>
-        <li class="exhibition-floor" data-floor="1" data-expanded="false">
-            <button class="floor-toggle" type="button" aria-expanded="false" aria-controls="floor-content-1">
-                <h3><?php _e('Piano 1', 'portofranco'); ?></h3>
-            </button>
-            <div class="floor-content" id="floor-content-1" aria-hidden="true"></div>
-        </li>
-        <li class="exhibition-floor" data-floor="2" data-expanded="false">
-            <button class="floor-toggle" type="button" aria-expanded="false" aria-controls="floor-content-2">
-                <h3><?php _e('Piano 2', 'portofranco'); ?></h3>
-            </button>
-            <div class="floor-content" id="floor-content-2" aria-hidden="true"></div>
-        </li>
-        <li class="exhibition-floor" data-floor="3" data-expanded="false">
-            <button class="floor-toggle" type="button" aria-expanded="false" aria-controls="floor-content-3">
-                <h3><?php _e('Piano 3', 'portofranco'); ?></h3>
-            </button>
-            <div class="floor-content" id="floor-content-3" aria-hidden="true"></div>
-        </li>
+        <?php 
+            $first_floor_list = false;
+        endforeach; ?>
     </ul>
 </div>
 

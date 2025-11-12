@@ -183,17 +183,38 @@ msgstr "Lunedì - Martedì - Mercoledì: chiuso<br>Giovedì - Venerdì - Sabato 
 ######################
 #: page-exhibition.php
 
-msgid "Piano terra"
-msgstr  "Piano terra"
+msgid "Anni 70 - Piano terra"
+msgstr  "Anni Settanta - Piano terra, ingresso e salone"
 
-msgid "Piano 1"
-msgstr  "Piano 1"
+msgid "Anni 70 - Piano 1"
+msgstr  "Anni Settanta - Piano 1"
 
-msgid "Piano 2"
-msgstr  "Piano 2"
+msgid "Anni 70 - Piano 2"
+msgstr  "Anni Settanta - Piano 2"
 
-msgid "Piano 3"
-msgstr  "Piano 3"
+msgid "Anni 70 - Piano 3"
+msgstr  "Anni Settanta - Piano 3"
+
+msgid "Settecento - Piano rialzato"
+msgstr  "Settecento - Piano rialzato"
+
+msgid "Settecento - Piano 1 - SO"
+msgstr  "Settecento - Piano 1, ala sud-ovest"
+
+msgid "Settecento - Piano 1 - SE"
+msgstr  "Settecento - Piano 1, ala sud-est"
+
+msgid "Settecento - Piano 2"
+msgstr  "Settecento - Piano 2"
+
+msgid "Settecento - Piano 3"
+msgstr  "Settecento - Piano 3"
+
+msgid "Cortile"
+msgstr  "Cortile - corte esterna"
+
+msgid "Museo"
+msgstr  "Museo Casa Giorgione"
 
 msgid "Chiudi"
 msgstr  "Chiudi"

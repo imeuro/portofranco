@@ -6,7 +6,7 @@
 const ExhibitionMap = (() => {
   'use strict';
 
-  let currentFloor = 0;
+  let currentFloor = 'anni70-0'; // Default al primo floor disponibile
   let artworksByFloor = {};
   let isLoading = false;
   let isClosing = false;
@@ -42,10 +42,15 @@ const ExhibitionMap = (() => {
     // Event listeners
     bindEvents();
 
-    // Inizializza primo piano
-    showFloor(0);
+    // Inizializza primo piano (primo floor disponibile)
+    const firstFloorMap = elements.floorMaps[0];
+    if (firstFloorMap) {
+      const firstFloor = firstFloorMap.dataset.floor;
+      currentFloor = firstFloor || 'anni70-0';
+      showFloor(currentFloor);
+    }
     
-    // Inizializza accordion: espandi solo piano 0
+    // Inizializza accordion: espandi solo primo piano
     initAccordion();
   };
 
@@ -70,8 +75,10 @@ const ExhibitionMap = (() => {
     floorToggles.forEach(toggle => {
       toggle.addEventListener('click', (e) => {
         const floorItem = e.currentTarget.closest('.exhibition-floor');
-        const floor = parseInt(floorItem.dataset.floor);
-        toggleFloorAccordion(floor);
+        const floor = floorItem ? floorItem.dataset.floor : null;
+        if (floor) {
+          toggleFloorAccordion(floor);
+        }
       });
     });
 
@@ -119,12 +126,12 @@ const ExhibitionMap = (() => {
       if (data.success && data.artworks_by_floor) {
         artworksByFloor = data.artworks_by_floor;
 
-        // Renderizza marker per tutti i piani
-        for (let floor = 0; floor <= 3; floor++) {
+        // Renderizza marker per tutti i piani disponibili
+        Object.keys(artworksByFloor).forEach(floor => {
           renderFloorMarkers(floor);
-        }
+        });
 
-        // Aggiorna la lista deigli artisti per ogni piano
+        // Aggiorna la lista degli artisti per ogni piano
         updateArtistList();
       }
     } catch (error) {
@@ -135,7 +142,7 @@ const ExhibitionMap = (() => {
   };
 
   const renderFloorMarkers = (floor) => {
-    const container = document.querySelector(`.artwork-markers[data-floor="${floor}"]`);
+    const container = document.querySelector(`.artwork-markers[data-floor="${CSS.escape(floor)}"]`);
 
     if (!container) return;
 
@@ -145,19 +152,19 @@ const ExhibitionMap = (() => {
     container.innerHTML = '';
 
     artworks.forEach((artwork, index) => {
-      const marker = createMarker(artwork, index);
+      const marker = createMarker(artwork, index, floor);
       container.appendChild(marker);
     });
   };
 
-  const createMarker = (artwork, index) => {
+  const createMarker = (artwork, index, floor) => {
     const marker = document.createElement('button');
     marker.className = 'artwork-marker';
     marker.style.left = `${artwork.position_x}%`;
     marker.style.top = `${artwork.position_y}%`;
     marker.setAttribute('aria-label', `${artwork.artwork_title} - ${artwork.artist_name}`);
     marker.dataset.artist = `${artwork.artist_name}`;
-    marker.setAttribute('tabindex', currentFloor === parseInt(artwork.floor) ? '0' : '-1');
+    marker.setAttribute('tabindex', currentFloor === floor ? '0' : '-1');
 
     marker.addEventListener('click', (e) => openModal(artwork, e.currentTarget));
 
@@ -172,7 +179,7 @@ const ExhibitionMap = (() => {
 
     // Nascondi piano precedente
     elements.floorMaps.forEach(map => {
-      const mapFloor = parseInt(map.dataset.floor);
+      const mapFloor = map.dataset.floor;
 
       if (mapFloor === prevFloor) {
         map.dataset.active = 'false';
@@ -183,9 +190,16 @@ const ExhibitionMap = (() => {
       }
     });
 
-    // Aggiorna indicatore piano
+    // Aggiorna indicatore piano (se presente)
     if (elements.currentFloorNumber) {
-      elements.currentFloorNumber.textContent = currentFloor === 0 ? 'terra' : currentFloor;
+      // Trova il nome del floor dalla lista
+      const floorItem = document.querySelector(`.exhibition-floor[data-floor="${CSS.escape(floor)}"]`);
+      if (floorItem) {
+        const floorTitle = floorItem.querySelector('h3');
+        if (floorTitle) {
+          elements.currentFloorNumber.textContent = floorTitle.textContent;
+        }
+      }
     }
 
     // Aggiorna tabindex dei marker
@@ -198,7 +212,7 @@ const ExhibitionMap = (() => {
   const updateMarkersTabindex = () => {
     document.querySelectorAll('.artwork-marker').forEach(marker => {
       const markerContainer = marker.closest('.artwork-markers');
-      const markerFloor = parseInt(markerContainer.dataset.floor);
+      const markerFloor = markerContainer ? markerContainer.dataset.floor : null;
 
       marker.setAttribute('tabindex', markerFloor === currentFloor ? '0' : '-1');
     });
@@ -208,7 +222,7 @@ const ExhibitionMap = (() => {
     const floorItems = document.querySelectorAll('.exhibition-floor');
 
     floorItems.forEach(floorItem => {
-      const floor = parseInt(floorItem.dataset.floor);
+      const floor = floorItem.dataset.floor;
       const artworks = artworksByFloor[floor] || [];
       const floorContent = floorItem.querySelector('.floor-content');
 
@@ -249,7 +263,7 @@ const ExhibitionMap = (() => {
             highlightMarkersByArtist(artistName, floor);
 
             // Add pulse animation to all current markers for this artist/floor
-            const markersContainer = document.querySelector(`.artwork-markers[data-floor="${floor}"]`);
+            const markersContainer = document.querySelector(`.artwork-markers[data-floor="${CSS.escape(floor)}"]`);
             if (markersContainer) {
               markersContainer.querySelectorAll(
                 `.artwork-marker.current[data-artist="${CSS.escape(artistName)}"]`
@@ -282,7 +296,6 @@ const ExhibitionMap = (() => {
     const floorItems = document.querySelectorAll('.exhibition-floor');
 
     floorItems.forEach(item => {
-      const itemFloor = parseInt(item.dataset.floor);
       const toggle = item.querySelector('.floor-toggle');
       const content = item.querySelector('.floor-content');
       const isExpanded = item.dataset.expanded === 'true';
@@ -311,7 +324,7 @@ const ExhibitionMap = (() => {
     const floorItems = document.querySelectorAll('.exhibition-floor');
 
     floorItems.forEach(item => {
-      const itemFloor = parseInt(item.dataset.floor);
+      const itemFloor = item.dataset.floor;
       const toggle = item.querySelector('.floor-toggle');
       const content = item.querySelector('.floor-content');
       const isTargetFloor = itemFloor === floor;
@@ -356,7 +369,7 @@ const ExhibitionMap = (() => {
       // Verifica che il marker appartenga al piano corretto
       const markerContainer = marker.closest('.artwork-markers');
       if (markerContainer) {
-        const markerFloor = parseInt(markerContainer.dataset.floor);
+        const markerFloor = markerContainer.dataset.floor;
         if (markerFloor === floor) {
           marker.classList.add('current');
         }

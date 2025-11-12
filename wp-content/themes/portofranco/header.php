@@ -19,7 +19,8 @@
       </svg>
     </button>
     <div class="site-branding">
-      <h1 class="site-title">
+      <?php $heading_tag = is_front_page() ? 'h1' : 'h2'; ?>
+      <<?php echo $heading_tag; ?> class="site-title">
         <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
             <?php if(is_front_page()): ?>
               <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo-portofranco.svg" width="360" height="352" alt="Portofranco">
@@ -27,7 +28,7 @@
             <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo-portofranco-blk.svg" width="360" height="352" alt="Portofranco">
             <?php endif; ?>
         </a>
-      </h1>
+      </<?php echo $heading_tag; ?>>
     </div>
     
     <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="Menu principale">
@@ -42,23 +43,22 @@
           'menu_id'        => 'primary-menu',
         ) );
       ?>
-
-            <!-- Selettore lingua -->
-    <?php if (function_exists('pll_the_languages')): ?>
-    <div class="language-switcher">
-      <?php
-        pll_the_languages(array(
-          'dropdown' => 0,
-          'show_flags' => 0,
-          'show_names' => 1,
-          'hide_if_empty' => 0,
-          'force_home' => 0,
-          'hide_if_no_translation' => 0,
-          'raw' => 0
-        ));
-      ?>
-    </div>
-    <?php endif; ?>
+      <!-- Selettore lingua mobile -->
+      <?php if (function_exists('pll_the_languages')): ?>
+      <div class="language-switcher mobile-only">
+        <?php
+          pll_the_languages(array(
+            'dropdown' => 0,
+            'show_flags' => 0,
+            'show_names' => 1,
+            'hide_if_empty' => 0,
+            'force_home' => 0,
+            'hide_if_no_translation' => 0,
+            'raw' => 0
+          ));
+        ?>
+      </div>
+      <?php endif; ?>
       <div class="menu-post-mobile">
           <h3 class="footer-label small-label"><?php _e('CONTATTI', 'portofranco'); ?></h3>
           <p>
@@ -72,3 +72,20 @@
     </nav>
 
   </header>
+
+  <!-- Selettore lingua desktop -->
+  <?php if (function_exists('pll_the_languages')): ?>
+  <div class="language-switcher desktop-only">
+    <?php
+      pll_the_languages(array(
+        'dropdown' => 0,
+        'show_flags' => 0,
+        'show_names' => 1,
+        'hide_if_empty' => 0,
+        'force_home' => 0,
+        'hide_if_no_translation' => 0,
+        'raw' => 0
+      ));
+    ?>
+  </div>
+  <?php endif; ?>
