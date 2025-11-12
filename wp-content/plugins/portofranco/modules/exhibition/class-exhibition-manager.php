@@ -247,10 +247,10 @@ class PF_Exhibition_Manager {
      */
     private function get_floor_map_url($floor) {
         $plugin_url = plugins_url('modules/exhibition/exhibition-maps/', 'portofranco');
-        $map_url = $plugin_url . $floor . '.jpg';
+        $map_url = $plugin_url . $floor . '.svg';
         
         // Fallback to placeholder if map doesn't exist
-        $map_path = PF_PLUGIN_URL . 'modules/exhibition/assets/exhibition-maps/' . $floor . '.jpg';
+        $map_path = PF_PLUGIN_URL . 'modules/exhibition/assets/exhibition-maps/' . $floor . '.svg';
         if (!file_exists($map_path)) {
             $floor_name = $this->get_floor_name($floor);
             return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Crect fill="%23f0f0f0" width="800" height="600"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="20" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa ' . $floor_name . ' non trovata%3C/text%3E%3C/svg%3E';

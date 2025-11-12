@@ -51,8 +51,8 @@ $floors = array(
                                 
                 $first_floor = true;
                 foreach ($floors as $floor_key => $floor_name):
-                    $map_url = $map_base_url . $floor_key . '.jpg';
-                    $map_path = $map_base_path . $floor_key . '.jpg';
+                    $map_url = $map_base_url . $floor_key . '.svg';
+                    $map_path = $map_base_path . $floor_key . '.svg';
                     
                     // Check if map exists
                     if (!file_exists($map_path)) {
@@ -70,7 +70,7 @@ $floors = array(
                         loading="<?php echo $first_floor ? 'eager' : 'lazy'; ?>">
                     
                     <div class="artwork-markers" data-floor="<?php echo esc_attr($floor_key); ?>">
-                    <!-- I marker verranno aggiunti dinamicamente via JavaScript -->
+                        <!-- I marker verranno aggiunti dinamicamente via JavaScript -->
                     </div>
                 </div>
                 
