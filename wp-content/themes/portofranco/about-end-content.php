@@ -86,7 +86,7 @@
         <li class="left-column small-label"><h3 class="footer-label small-label"><?php _e('ACCOMODATION', 'portofranco'); ?></h3></li>
         <li class="right-column mid-label">
             <p>
-                <a href="<?php echo wp_get_attachment_url(473); ?>" target="_blank" rel="noopener noreferrer">Hotel Castelfranco Veneto (PDF)</a>
+                <a href="<?php echo wp_get_attachment_url(473); ?>?cb=<?php echo time(); ?>" target="_blank" rel="noopener noreferrer">Hotel Castelfranco Veneto (PDF)</a>
             </p>
         </li>
     </ul>
