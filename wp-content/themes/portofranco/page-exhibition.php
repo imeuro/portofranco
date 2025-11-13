@@ -19,6 +19,51 @@ $floors = array(
     'cortile' => __('Cortile', 'portofranco'),
     'museo' => __('Museo', 'portofranco'),
 );
+
+// Funzione per convertire markdown semplice in HTML
+function convertMarkdownToHtml($text) {
+    // Prima converti **bold** in <strong> (usa non-greedy per evitare problemi)
+    $text = preg_replace('/\*\*([^*]+?)\*\*/', '<strong>$1</strong>', $text);
+    // Poi converti *italic* in <em> (solo se non è già dentro **)
+    // Usa lookbehind e lookahead negativi per evitare di matchare dentro i bold
+    $text = preg_replace('/(?<!\*)\*([^*\n]+?)\*(?!\*)/', '<em>$1</em>', $text);
+    // Converti <br> in <br /> per validità HTML
+    $text = str_replace('<br>', '<br />', $text);
+    return $text;
+}
+
+// Rileva la lingua corrente
+$current_lang = 'it'; // Default italiano
+if (function_exists('portofranco_get_current_language')) {
+    $current_lang = portofranco_get_current_language();
+} elseif (function_exists('pll_current_language')) {
+    $current_lang = pll_current_language();
+} elseif (strpos($_SERVER['REQUEST_URI'], '/en/') !== false) {
+    $current_lang = 'en';
+}
+
+// Carica i testi descrittivi dal file JSON appropriato in base alla lingua
+$floor_descriptions = array();
+$json_filename = ($current_lang === 'en') ? 'floor-descriptions-en.json' : 'floor-descriptions.json';
+$json_file_path = get_template_directory() . '/data/' . $json_filename;
+
+if (file_exists($json_file_path)) {
+    $json_content = file_get_contents($json_file_path);
+    $floor_descriptions = json_decode($json_content, true);
+    
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        // Se c'è un errore nel parsing JSON, usa array vuoto
+        $floor_descriptions = array();
+        error_log('Errore nel parsing del file JSON ' . $json_filename . ': ' . json_last_error_msg());
+    }
+} else {
+    error_log('File ' . $json_filename . ' non trovato in: ' . $json_file_path);
+}
+
+// Fallback: se il file non esiste o è vuoto, usa array vuoto
+if (!is_array($floor_descriptions)) {
+    $floor_descriptions = array();
+}
 ?>
 <main id="main" tabindex="-1" role="main">
   <?php if ( have_posts() ) : while ( have_posts() ) : the_post();  ?>
@@ -79,6 +124,20 @@ $floors = array(
                 endforeach; ?>
                 
                 </div>
+                
+                <!-- Descrizione del piano corrente -->
+                <div class="floor-map-description">
+                    <?php 
+                    $first_floor_key = array_key_first($floors);
+                    $first_description = isset($floor_descriptions[$first_floor_key]) ? $floor_descriptions[$first_floor_key] : null;
+                    if ($first_description): 
+                        $title_html = convertMarkdownToHtml($first_description['title']);
+                        $content_html = convertMarkdownToHtml($first_description['content']);
+                    ?>
+                        <h3><?php echo wp_kses_post($title_html); ?></h3>
+                        <div class="floor-map-description-content"><?php echo wp_kses_post($content_html); ?></div>
+                    <?php endif; ?>
+                </div>
             </div>
           
         </div>
@@ -86,6 +145,20 @@ $floors = array(
     </article>
   <?php endwhile; endif; ?>
 </main>
+
+<script type="text/javascript">
+// Passa i testi descrittivi al JavaScript (convertiti in HTML)
+window.portofrancoFloorDescriptions = <?php 
+$descriptions_html = array();
+foreach ($floor_descriptions as $key => $desc) {
+    $descriptions_html[$key] = array(
+        'title' => convertMarkdownToHtml($desc['title']),
+        'content' => convertMarkdownToHtml($desc['content'])
+    );
+}
+echo json_encode($descriptions_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); 
+?>;
+</script>
 
 <!-- Lista dei piani e relativi artisti -->
 <div id="exhibition-list" class="exhibition-list">

@@ -15,6 +15,8 @@ const ExhibitionMap = (() => {
   const elements = {
     floorMaps: null,
     currentFloorNumber: null,
+    floorMapDescription: null,
+    floorMapDescriptionContent: null,
     modal: null,
     modalOverlay: null,
     modalClose: null,
@@ -48,6 +50,8 @@ const ExhibitionMap = (() => {
       const firstFloor = firstFloorMap.dataset.floor;
       currentFloor = firstFloor || 'anni70-0';
       showFloor(currentFloor);
+      // Aggiorna anche la descrizione del primo piano
+      updateFloorDescription(currentFloor);
     }
     
     // Inizializza accordion: espandi solo primo piano
@@ -57,6 +61,8 @@ const ExhibitionMap = (() => {
   const cacheElements = () => {
     elements.floorMaps = document.querySelectorAll('.floor-map');
     elements.currentFloorNumber = document.querySelector('.current-floor-number');
+    elements.floorMapDescription = document.querySelector('.floor-map-description');
+    elements.floorMapDescriptionContent = document.querySelector('.floor-map-description-content');
     elements.modal = document.querySelector('.artwork-modal');
     elements.modalOverlay = document.querySelector('.modal-overlay');
     elements.modalClose = document.querySelector('.modal-close');
@@ -202,11 +208,38 @@ const ExhibitionMap = (() => {
       }
     }
 
+    // Aggiorna descrizione del piano
+    updateFloorDescription(floor);
+
     // Aggiorna tabindex dei marker
     updateMarkersTabindex();
 
     // Sincronizza accordion con il piano corrente
     syncAccordionWithFloor(floor);
+  };
+
+  const updateFloorDescription = (floor) => {
+    if (!elements.floorMapDescription) return;
+
+    // Verifica se esistono i testi descrittivi
+    const descriptions = window.portofrancoFloorDescriptions;
+    if (!descriptions || !descriptions[floor]) {
+      return;
+    }
+
+    const description = descriptions[floor];
+    const titleElement = elements.floorMapDescription.querySelector('h3');
+    const contentElement = elements.floorMapDescription.querySelector('.floor-map-description-content');
+
+    // Aggiorna il titolo
+    if (titleElement && description.title) {
+      titleElement.innerHTML = description.title;
+    }
+
+    // Aggiorna il contenuto
+    if (contentElement && description.content) {
+      contentElement.innerHTML = description.content;
+    }
   };
 
   const updateMarkersTabindex = () => {
