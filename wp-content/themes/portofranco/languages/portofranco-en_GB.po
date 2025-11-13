@@ -212,7 +212,7 @@ msgstr  "18th century - Third floor"
 msgid "Cortile"
 msgstr  "Courtyard – outer court"
 
-msgid "Museo Casa Giorgione"
+msgid "Museo"
 msgstr  "Museo Casa Giorgione"
 
 msgid "Chiudi"

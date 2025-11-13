@@ -7,10 +7,10 @@ get_header();
 
 // Definizione di tutti i possibili floor con i loro nomi
 $floors = array(
-    'anni70-0' => __('Anni Settanta - Piano terra', 'portofranco'),
-    'anni70-1' => __('Anni Settanta - Piano 1', 'portofranco'),
-    'anni70-2' => __('Anni Settanta - Piano 2', 'portofranco'),
-    'anni70-3' => __('Anni Settanta - Piano 3', 'portofranco'),
+    'anni70-0' => __('Anni 70 - Piano terra', 'portofranco'),
+    'anni70-1' => __('Anni 70 - Piano 1', 'portofranco'),
+    'anni70-2' => __('Anni 70 - Piano 2', 'portofranco'),
+    'anni70-3' => __('Anni 70 - Piano 3', 'portofranco'),
     'settecento-0' => __('Settecento - Piano rialzato', 'portofranco'),
     'settecento-1-SO' => __('Settecento - Piano 1 - SO', 'portofranco'),
     'settecento-1-SE' => __('Settecento - Piano 1 - SE', 'portofranco'),
