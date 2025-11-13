@@ -83,7 +83,7 @@ if (!is_array($floor_descriptions)) {
             </div>
         <?php } ?>
 
-        <div class="entry-content">
+        <div class="entry-content mid-text">
             <?php the_content(); ?>
             
             <div class="exhibition-map-wrapper">
