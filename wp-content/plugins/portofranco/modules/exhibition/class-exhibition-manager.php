@@ -21,6 +21,7 @@ class PF_Exhibition_Manager {
     public function __construct() {
         add_action('add_meta_boxes', array($this, 'add_artwork_meta_box'));
         add_action('save_post_artisti', array($this, 'save_artwork_meta'), 10, 2);
+        add_action('save_post_special-projects', array($this, 'save_artwork_meta'), 10, 2);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         
         // Load REST API
@@ -41,14 +42,18 @@ class PF_Exhibition_Manager {
      * Add meta box for artworks
      */
     public function add_artwork_meta_box() {
-        add_meta_box(
-            'pf_artworks_meta_box',
-            __('Opere in Exhibition', 'pf'),
-            array($this, 'render_artwork_meta_box'),
-            'artisti',
-            'normal',
-            'high'
-        );
+        $post_types = array('artisti', 'special-projects');
+        
+        foreach ($post_types as $post_type) {
+            add_meta_box(
+                'pf_artworks_meta_box',
+                __('Opere in Exhibition', 'pf'),
+                array($this, 'render_artwork_meta_box'),
+                $post_type,
+                'normal',
+                'high'
+            );
+        }
     }
     
     /**
@@ -317,13 +322,14 @@ class PF_Exhibition_Manager {
      * Enqueue admin assets
      */
     public function enqueue_admin_assets($hook) {
-        // Only load on artisti edit screen
+        // Only load on post edit screens
         if ('post.php' !== $hook && 'post-new.php' !== $hook) {
             return;
         }
         
         global $post_type;
-        if ('artisti' !== $post_type) {
+        $supported_post_types = array('artisti', 'special-projects');
+        if (!in_array($post_type, $supported_post_types)) {
             return;
         }
         
@@ -357,7 +363,7 @@ class PF_Exhibition_Manager {
      */
     public static function get_artworks_by_floor($floor) {
         $args = array(
-            'post_type' => 'artisti',
+            'post_type' => array('artisti', 'special-projects'),
             'posts_per_page' => -1,
             'post_status' => 'publish',
             'meta_query' => array(
@@ -399,10 +405,10 @@ class PF_Exhibition_Manager {
                             
                             $result[] = array(
                                 'artist_id' => get_the_ID(),
-                                'artist_name' => get_the_title(),
+                                'artist_name' => html_entity_decode(get_the_title(), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
                                 'artist_url' => get_permalink(),
-                                'artwork_title' => $artwork['title'],
-                                'artwork_description' => $artwork['description'],
+                                'artwork_title' => html_entity_decode($artwork['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                                'artwork_description' => html_entity_decode($artwork['description'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
                                 'image_id' => $image_id,
                                 'image_url' => $image_url,
                                 'position_x' => $artwork['position_x'],

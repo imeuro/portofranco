@@ -76,7 +76,7 @@ class PF_Exhibition_REST_API {
         }
         
         $args = array(
-            'post_type' => 'artisti',
+            'post_type' => array('artisti', 'special-projects'),
             'posts_per_page' => -1,
             'post_status' => 'publish',
             'meta_query' => array(
@@ -128,10 +128,10 @@ class PF_Exhibition_REST_API {
                         
                         $all_artworks[$floor][] = array(
                             'artist_id' => get_the_ID(),
-                            'artist_name' => get_the_title(),
+                            'artist_name' => html_entity_decode(get_the_title(), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
                             'artist_url' => get_permalink(),
-                            'artwork_title' => $artwork['title'],
-                            'artwork_description' => $artwork['description'],
+                            'artwork_title' => html_entity_decode($artwork['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                            'artwork_description' => html_entity_decode($artwork['description'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
                             'image_id' => $image_id,
                             'image_url' => $image_url,
                             'position_x' => $artwork['position_x'],
