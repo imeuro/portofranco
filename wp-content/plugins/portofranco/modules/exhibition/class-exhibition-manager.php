@@ -169,8 +169,8 @@ class PF_Exhibition_Manager {
                                 <option value="anni70-2" <?php selected($floor, 'anni70-2'); ?>><?php _e('Anni Settanta - Piano 2', 'pf'); ?></option>
                                 <option value="anni70-3" <?php selected($floor, 'anni70-3'); ?>><?php _e('Anni Settanta - Piano 3', 'pf'); ?></option>
                                 <option value="settecento-0" <?php selected($floor, 'settecento-0'); ?>><?php _e('Settecento - Piano rialzato', 'pf'); ?></option>
-                                <option value="settecento-1-so" <?php selected($floor, 'settecento-1-so'); ?>><?php _e('Settecento - Piano 1 - SO', 'pf'); ?></option>
-                                <option value="settecento-1-se" <?php selected($floor, 'settecento-1-se'); ?>><?php _e('Settecento - Piano 1 - SE', 'pf'); ?></option>
+                                <option value="settecento-1-SO" <?php selected($floor, 'settecento-1-SO'); ?>><?php _e('Settecento - Piano 1 - SO', 'pf'); ?></option>
+                                <option value="settecento-1-SE" <?php selected($floor, 'settecento-1-SE'); ?>><?php _e('Settecento - Piano 1 - SE', 'pf'); ?></option>
                                 <option value="settecento-2" <?php selected($floor, 'settecento-2'); ?>><?php _e('Settecento - Piano 2', 'pf'); ?></option>
                                 <option value="settecento-3" <?php selected($floor, 'settecento-3'); ?>><?php _e('Settecento - Piano 3', 'pf'); ?></option>
                                 <option value="cortile" <?php selected($floor, 'cortile'); ?>><?php _e('Cortile', 'pf'); ?></option>

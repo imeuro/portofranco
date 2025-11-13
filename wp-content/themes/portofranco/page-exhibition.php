@@ -12,8 +12,8 @@ $floors = array(
     'anni70-2' => __('Anni Settanta - Piano 2', 'portofranco'),
     'anni70-3' => __('Anni Settanta - Piano 3', 'portofranco'),
     'settecento-0' => __('Settecento - Piano rialzato', 'portofranco'),
-    'settecento-1-so' => __('Settecento - Piano 1 - SO', 'portofranco'),
-    'settecento-1-se' => __('Settecento - Piano 1 - SE', 'portofranco'),
+    'settecento-1-SO' => __('Settecento - Piano 1 - SO', 'portofranco'),
+    'settecento-1-SE' => __('Settecento - Piano 1 - SE', 'portofranco'),
     'settecento-2' => __('Settecento - Piano 2', 'portofranco'),
     'settecento-3' => __('Settecento - Piano 3', 'portofranco'),
     'cortile' => __('Cortile', 'portofranco'),
@@ -98,7 +98,13 @@ if (!is_array($floor_descriptions)) {
                 foreach ($floors as $floor_key => $floor_name):
                     $map_url = $map_base_url . $floor_key . '.svg';
                     $map_path = $map_base_path . $floor_key . '.svg';
-                    
+
+                    print_r('$map_url: '.$map_url);
+                    print_r('$map_path: '.$map_path);
+                    print_r('$floor_key: '.$floor_key);
+                    print_r('$floor_name: '.$floor_name);
+                    print_r('$first_floor: '.$first_floor);
+
                     // Check if map exists
                     if (!file_exists($map_path)) {
                         $map_url = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1200" height="900"%3E%3Crect fill="%23f5f5f5" width="1200" height="900"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="24" fill="%23999" text-anchor="middle" dominant-baseline="middle"%3EMappa ' . esc_attr($floor_name) . '%3C/text%3E%3C/svg%3E';
