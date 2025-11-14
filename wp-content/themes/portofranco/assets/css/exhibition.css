@@ -269,9 +269,7 @@
 .modal-content[data-floor="museo"] .modal-close:focus {
   color: #eeb9b9 !important;
 }
-.floor-map[data-floor="museo"] .artwork-marker,
-.floor-map[data-floor="museo"] .artwork-marker.current,
-.floor-map[data-floor="museo"] .artwork-marker:hover {
+.floor-map[data-floor="museo"] .artwork-marker {
   background: #eeb9b9 !important;
 }
 
