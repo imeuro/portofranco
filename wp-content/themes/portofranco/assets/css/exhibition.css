@@ -262,11 +262,6 @@
   color: #eeb9b9 !important;
   border-color: #eeb9b9 !important;
 }
-.modal-content[data-floor="museo"] .artwork-marker,
-.modal-content[data-floor="museo"] .artwork-marker.current,
-.modal-content[data-floor="museo"] .artwork-marker:hover {
-  background: #eeb9b9 !important;
-}
 .modal-content[data-floor="museo"] .modal-close {
   color: #eeb9b9 !important;
 }
@@ -274,7 +269,11 @@
 .modal-content[data-floor="museo"] .modal-close:focus {
   color: #eeb9b9 !important;
 }
-
+.floor-map[data-floor="museo"] .artwork-marker,
+.floor-map[data-floor="museo"] .artwork-marker.current,
+.floor-map[data-floor="museo"] .artwork-marker:hover {
+  background: #eeb9b9 !important;
+}
 
 .floor-toggle {
   background: none;
