@@ -29,6 +29,21 @@ const ExhibitionMap = (() => {
     modalImageContainer: null,
   };
 
+  /**
+   * Converte i newline (\r\n, \n) in <br /> preservando gli a capo
+   * @param {string} text - Testo da convertire
+   * @returns {string} - Testo con newline convertiti in <br />
+   */
+  const convertNewlinesToBr = (text) => {
+    if (!text) return '';
+    // Escape HTML per sicurezza
+    const div = document.createElement('div');
+    div.textContent = text;
+    const escaped = div.innerHTML;
+    // Converti \r\n e \n in <br />
+    return escaped.replace(/\r\n/g, '<br />').replace(/\n/g, '<br />');
+  };
+
   const init = () => {
     // Cache elementi DOM
     cacheElements();
@@ -442,7 +457,8 @@ const ExhibitionMap = (() => {
     }
 
     if (elements.modalDescription) {
-      elements.modalDescription.textContent = artwork.artwork_description || '';
+      const description = artwork.artwork_description || '';
+      elements.modalDescription.innerHTML = convertNewlinesToBr(description);
     }
 
     // Mostra modal prima di posizionare (necessario per calcolare dimensioni)
