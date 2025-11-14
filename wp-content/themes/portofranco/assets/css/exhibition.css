@@ -256,31 +256,30 @@
 
 .modal-carousel-prev,
 .modal-carousel-next {
+  fill: #fff8;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0);
+  background: #0000;
   border: none;
   color: #fff;
   width: 25px;
   height: 25px;
+  padding: 5px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  transition: background 0.2s ease, opacity 0.2s ease;
-  opacity: 0.7;
-  padding: 0;
+  transition: background 0.2s ease;
 }
 
 .modal-carousel-prev:hover,
 .modal-carousel-next:hover,
 .modal-carousel-prev:focus,
 .modal-carousel-next:focus {
-  background: rgba(0, 0, 0, 0.2);
-  opacity: 1;
+  background: #0003;
 }
 
 .modal-carousel-prev {
