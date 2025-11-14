@@ -178,6 +178,11 @@
   outline: none;
 }
 
+.modal-artwork-content {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
 .modal-close {
   background: none;
   border: none;
@@ -245,7 +250,8 @@
   height: auto;
   max-height: 350px;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 
 .modal-carousel-prev,
