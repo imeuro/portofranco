@@ -116,13 +116,25 @@ class PF_Exhibition_REST_API {
                             $all_artworks[$floor] = array();
                         }
                         
-                        $image_id = isset($artwork['image_id']) ? intval($artwork['image_id']) : 0;
-                        $image_url = '';
+                        // Gestione retrocompatibilità: converti image_id in array se necessario
+                        $image_ids = array();
+                        if (isset($artwork['image_ids']) && is_array($artwork['image_ids'])) {
+                            $image_ids = array_map('intval', array_filter($artwork['image_ids']));
+                        } elseif (isset($artwork['image_id']) && intval($artwork['image_id']) > 0) {
+                            $image_ids = array(intval($artwork['image_id']));
+                        }
                         
-                        if ($image_id > 0) {
-                            $image_url = wp_get_attachment_image_url($image_id, 'medium_large');
-                            if (!$image_url) {
-                                $image_url = '';
+                        // Costruisci array di immagini con id e url
+                        $images = array();
+                        foreach ($image_ids as $img_id) {
+                            if ($img_id > 0) {
+                                $img_url = wp_get_attachment_image_url($img_id, 'medium_large');
+                                if ($img_url) {
+                                    $images[] = array(
+                                        'image_id' => $img_id,
+                                        'image_url' => $img_url,
+                                    );
+                                }
                             }
                         }
                         
@@ -132,8 +144,7 @@ class PF_Exhibition_REST_API {
                             'artist_url' => get_permalink(),
                             'artwork_title' => html_entity_decode($artwork['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
                             'artwork_description' => html_entity_decode($artwork['description'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-                            'image_id' => $image_id,
-                            'image_url' => $image_url,
+                            'images' => $images,
                             'position_x' => $artwork['position_x'],
                             'position_y' => $artwork['position_y'],
                         );

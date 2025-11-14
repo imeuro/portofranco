@@ -184,11 +184,20 @@ echo json_encode($descriptions_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS
 <!-- Modal per i dettagli dell'opera -->
 <div class="artwork-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
   <div class="modal-overlay" aria-hidden="true"></div>
-  <div class="modal-content" role="document" tabindex="0" data-floor="<?php echo esc_attr($floor_key); ?>">
+  <div class="modal-content" role="document" tabindex="0">
     
     <div class="modal-body">
       <div class="modal-artwork-image">
-        <img src="" alt="" class="modal-artwork-image-img" loading="lazy">
+        <div class="modal-artwork-carousel">
+          <div class="modal-artwork-carousel-track"></div>
+          <button class="modal-carousel-prev" aria-label="<?php _e('Immagine precedente', 'portofranco'); ?>" style="display: none;">
+            <span class="dashicons dashicons-arrow-left-alt2"></span>
+          </button>
+          <button class="modal-carousel-next" aria-label="<?php _e('Immagine successiva', 'portofranco'); ?>" style="display: none;">
+            <span class="dashicons dashicons-arrow-right-alt2"></span>
+          </button>
+          <div class="modal-carousel-indicators" style="display: none;"></div>
+        </div>
       </div>
       <div class="modal-artwork-content">
         <h3 class="modal-artist-name small-label">

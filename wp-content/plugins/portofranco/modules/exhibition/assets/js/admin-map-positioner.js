@@ -27,7 +27,9 @@
         
         // Image upload handlers
         $(document).on('click', '.pf-upload-image', handleImageUpload);
-        $(document).on('click', '.pf-remove-image', handleImageRemove);
+        
+        // Initialize gallery drag & drop
+        initGalleryDragDrop();
         
         // Initialize existing maps
         $('.pf-map-preview').each(function() {
@@ -44,7 +46,16 @@
         const template = $('#pf-artwork-template').html();
         const newItem = template.replace(/\{\{INDEX\}\}/g, artworkIndex);
         
-        $('#pf-artworks-list').append(newItem);
+        const $newItem = $(newItem);
+        $('#pf-artworks-list').append($newItem);
+        
+        // Initialize drag & drop for new gallery
+        const $gallery = $newItem.find('.pf-images-gallery');
+        if ($gallery.length) {
+            $gallery.find('.pf-image-thumbnail').each(function() {
+                initThumbnailDragDrop($(this));
+            });
+        }
         
         // Update artwork number
         updateArtworkNumbers();
@@ -222,16 +233,25 @@
         
         const $button = $(this);
         const $container = $button.closest('.pf-artwork-item');
-        const $imageIdInput = $container.find('.pf-image-id');
-        const $uploadContainer = $container.find('.pf-image-upload-container');
+        const $gallery = $container.find('.pf-images-gallery');
+        const artworkIndex = $container.data('index');
         
-        // Create media frame
+        // Get existing image IDs to avoid duplicates
+        const existingIds = [];
+        $gallery.find('.pf-image-thumbnail').each(function() {
+            const imgId = $(this).data('image-id');
+            if (imgId) {
+                existingIds.push(imgId);
+            }
+        });
+        
+        // Create media frame with multiple selection
         const mediaFrame = wp.media({
-            title: 'Seleziona immagine opera',
+            title: 'Seleziona immagini opera',
             button: {
-                text: 'Usa questa immagine'
+                text: 'Usa queste immagini'
             },
-            multiple: false,
+            multiple: true,
             library: {
                 type: 'image'
             }
@@ -239,41 +259,122 @@
         
         // Handle selection
         mediaFrame.on('select', function() {
-            const attachment = mediaFrame.state().get('selection').first().toJSON();
+            const selection = mediaFrame.state().get('selection');
+            const attachments = selection.toJSON();
             
-            // Update hidden input
-            $imageIdInput.val(attachment.id);
+            attachments.forEach(function(attachment) {
+                // Skip if already exists
+                if (existingIds.indexOf(attachment.id) !== -1) {
+                    return;
+                }
+                
+                // Add to gallery
+                addImageToGallery($gallery, attachment, artworkIndex);
+            });
             
-            // Show preview
-            const previewHtml = `
-                <div class="pf-image-preview">
-                    <img src="${attachment.sizes && attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url}" alt="${attachment.alt || ''}">
-                    <button type="button" class="button pf-remove-image">
-                        Rimuovi immagine
-                    </button>
-                </div>
-            `;
-            
-            $uploadContainer.html(previewHtml);
+            // Update input indices
+            updateImageInputIndices($gallery, artworkIndex);
         });
         
         // Open media frame
         mediaFrame.open();
     };
     
+    const addImageToGallery = function($gallery, attachment, artworkIndex) {
+        const imageUrl = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+        const imageId = attachment.id;
+        
+        const thumbnailHtml = `
+            <div class="pf-image-thumbnail" data-image-id="${imageId}" draggable="true">
+                <input type="hidden" name="pf_artworks[${artworkIndex}][image_ids][]" value="${imageId}">
+                <img src="${imageUrl}" alt="${attachment.alt || ''}">
+                <button type="button" class="button-link pf-remove-single-image" aria-label="Rimuovi immagine">
+                    <span class="dashicons dashicons-no-alt"></span>
+                </button>
+            </div>
+        `;
+        
+        $gallery.append(thumbnailHtml);
+        
+        // Initialize drag & drop for new thumbnail
+        initThumbnailDragDrop($gallery.find('.pf-image-thumbnail').last());
+    };
+    
     const handleImageRemove = function(e) {
         e.preventDefault();
         
         const $button = $(this);
-        const $container = $button.closest('.pf-artwork-item');
-        const $imageIdInput = $container.find('.pf-image-id');
-        const $uploadContainer = $container.find('.pf-image-upload-container');
+        const $thumbnail = $button.closest('.pf-image-thumbnail');
+        const $gallery = $thumbnail.closest('.pf-images-gallery');
+        const $container = $gallery.closest('.pf-artwork-item');
+        const artworkIndex = $container.data('index');
         
-        // Clear image ID
-        $imageIdInput.val(0);
+        // Remove thumbnail
+        $thumbnail.remove();
         
-        // Show upload button
-        $uploadContainer.html('<button type="button" class="button pf-upload-image">Carica immagine</button>');
+        // Update input indices
+        updateImageInputIndices($gallery, artworkIndex);
+    };
+    
+    const updateImageInputIndices = function($gallery, artworkIndex) {
+        $gallery.find('.pf-image-thumbnail').each(function(index) {
+            $(this).find('input[type="hidden"]').attr('name', `pf_artworks[${artworkIndex}][image_ids][${index}]`);
+        });
+    };
+    
+    const initThumbnailDragDrop = function($thumbnail) {
+        $thumbnail.on('dragstart', function(e) {
+            $(this).addClass('dragging');
+            e.originalEvent.dataTransfer.effectAllowed = 'move';
+            e.originalEvent.dataTransfer.setData('text/html', this.outerHTML);
+        });
+        
+        $thumbnail.on('dragend', function() {
+            $(this).removeClass('dragging');
+        });
+        
+        $thumbnail.on('dragover', function(e) {
+            e.preventDefault();
+            e.originalEvent.dataTransfer.dropEffect = 'move';
+            $(this).addClass('drag-over');
+        });
+        
+        $thumbnail.on('dragleave', function() {
+            $(this).removeClass('drag-over');
+        });
+        
+        $thumbnail.on('drop', function(e) {
+            e.preventDefault();
+            $(this).removeClass('drag-over');
+            
+            const $dragged = $('.pf-image-thumbnail.dragging');
+            const $target = $(this);
+            
+            if ($dragged.length && $dragged[0] !== this) {
+                const $gallery = $target.closest('.pf-images-gallery');
+                const $container = $gallery.closest('.pf-artwork-item');
+                const artworkIndex = $container.data('index');
+                
+                // Move element
+                if ($dragged.index() < $target.index()) {
+                    $target.after($dragged);
+                } else {
+                    $target.before($dragged);
+                }
+                
+                // Update input indices
+                updateImageInputIndices($gallery, artworkIndex);
+            }
+        });
+    };
+    
+    const initGalleryDragDrop = function() {
+        $(document).on('click', '.pf-remove-single-image', handleImageRemove);
+        
+        // Initialize drag & drop for existing thumbnails
+        $('.pf-images-gallery .pf-image-thumbnail').each(function() {
+            initThumbnailDragDrop($(this));
+        });
     };
     
     // Initialize on document ready

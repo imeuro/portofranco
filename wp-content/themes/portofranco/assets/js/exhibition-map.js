@@ -11,6 +11,8 @@ const ExhibitionMap = (() => {
   let isLoading = false;
   let isClosing = false;
   let positionTimeout = null;
+  let carouselInterval = null;
+  let currentCarouselIndex = 0;
 
   const elements = {
     floorMaps: null,
@@ -27,6 +29,11 @@ const ExhibitionMap = (() => {
     modalDescription: null,
     modalImage: null,
     modalImageContainer: null,
+    modalCarousel: null,
+    modalCarouselTrack: null,
+    modalCarouselPrev: null,
+    modalCarouselNext: null,
+    modalCarouselIndicators: null,
   };
 
   /**
@@ -88,6 +95,11 @@ const ExhibitionMap = (() => {
     elements.modalDescription = document.querySelector('.modal-artwork-description');
     elements.modalImage = document.querySelector('.modal-artwork-image-img');
     elements.modalImageContainer = document.querySelector('.modal-artwork-image');
+    elements.modalCarousel = document.querySelector('.modal-artwork-carousel');
+    elements.modalCarouselTrack = document.querySelector('.modal-artwork-carousel-track');
+    elements.modalCarouselPrev = document.querySelector('.modal-carousel-prev');
+    elements.modalCarouselNext = document.querySelector('.modal-carousel-next');
+    elements.modalCarouselIndicators = document.querySelector('.modal-carousel-indicators');
   };
 
   const bindEvents = () => {
@@ -117,6 +129,23 @@ const ExhibitionMap = (() => {
         e.preventDefault();
         e.stopPropagation();
         closeModal();
+      });
+    }
+
+    // Carousel navigation
+    if (elements.modalCarouselPrev) {
+      elements.modalCarouselPrev.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateCarousel(-1);
+      });
+    }
+
+    if (elements.modalCarouselNext) {
+      elements.modalCarouselNext.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateCarousel(1);
       });
     }
 
@@ -186,8 +215,11 @@ const ExhibitionMap = (() => {
     marker.setAttribute('aria-label', `${artwork.artwork_title} - ${artwork.artist_name}`);
     marker.dataset.artist = `${artwork.artist_name}`;
     marker.setAttribute('tabindex', currentFloor === floor ? '0' : '-1');
+    console.debug('artwork', artwork);
+    console.debug('currentFloor', currentFloor);
+    console.debug('floor', floor);
 
-    marker.addEventListener('click', (e) => openModal(artwork, e.currentTarget));
+    marker.addEventListener('click', (e) => openModal(artwork, currentFloor, e.currentTarget));
 
     return marker;
   };
@@ -437,7 +469,7 @@ const ExhibitionMap = (() => {
     });
   };
   
-  const openModal = (artwork, markerElement = null) => {
+  const openModal = (artwork, currentFloor, markerElement = null) => {
     if (!elements.modal) return;
     
     // Previeni l'apertura se la modale è in fase di chiusura
@@ -447,6 +479,7 @@ const ExhibitionMap = (() => {
     if (elements.modal.getAttribute('aria-hidden') === 'false') return;
 
     // Popola il modal
+    elements.modalContent.dataset.floor = currentFloor;
     if (elements.modalTitle) {
       elements.modalTitle.textContent = artwork.artwork_title;
     }
@@ -500,44 +533,99 @@ const ExhibitionMap = (() => {
       });
     };
 
-    // Gestisci immagine
-    if (elements.modalImage && elements.modalImageContainer) {
-      if (artwork.image_url && artwork.image_url !== '') {
-        // Rimuovi eventuali listener precedenti
-        elements.modalImage.onload = null;
-        elements.modalImage.onerror = null;
+    // Gestisci immagini - carousel se multiple, singola se una sola
+    if (elements.modalCarouselTrack && elements.modalCarousel) {
+      // Ferma eventuale carousel precedente
+      stopCarousel();
+      
+      // Gestione retrocompatibilità: supporta sia array images che image_url singolo
+      let images = [];
+      if (artwork.images && Array.isArray(artwork.images) && artwork.images.length > 0) {
+        images = artwork.images;
+      } else if (artwork.image_url) {
+        // Retrocompatibilità: supporta image_url singolo
+        images = [{ image_url: artwork.image_url }];
+      }
+      
+      // Pulisci il carousel
+      elements.modalCarouselTrack.innerHTML = '';
+      
+      if (images.length > 0) {
+        // Crea gli elementi del carousel
+        images.forEach((img, index) => {
+          if (img.image_url) {
+            const carouselItem = document.createElement('div');
+            carouselItem.className = 'modal-artwork-carousel-item' + (index === 0 ? ' active' : '');
+            const imgElement = document.createElement('img');
+            imgElement.src = img.image_url;
+            imgElement.alt = artwork.artwork_title || '';
+            imgElement.loading = 'lazy';
+            
+            // Listener per quando l'immagine è caricata (solo per la prima)
+            if (index === 0) {
+              imgElement.onload = () => {
+                positionModal();
+              };
+              imgElement.onerror = () => {
+                positionModal();
+              };
+              // Se l'immagine è già in cache
+              if (imgElement.complete && imgElement.naturalHeight !== 0) {
+                positionModal();
+              }
+            }
+            
+            carouselItem.appendChild(imgElement);
+            elements.modalCarouselTrack.appendChild(carouselItem);
+          }
+        });
         
-        // Aggiungi listener per quando l'immagine è caricata
-        elements.modalImage.onload = () => {
-          // Riposiziona la modale dopo che l'immagine è caricata
-          positionModal();
-        };
-        
-        // Se l'immagine fallisce il caricamento, posiziona comunque
-        elements.modalImage.onerror = () => {
-          positionModal();
-        };
-        
-        elements.modalImage.src = artwork.image_url;
-        elements.modalImage.alt = artwork.artwork_title || '';
-        elements.modalImageContainer.style.display = '';
-        
-        // Se l'immagine è già in cache, onload potrebbe non scattare
-        // Verifica se è già caricata
-        if (elements.modalImage.complete && elements.modalImage.naturalHeight !== 0) {
-          positionModal();
+        // Mostra/nascondi controlli carousel in base al numero di immagini
+        if (images.length > 1) {
+          // Mostra controlli carousel
+          if (elements.modalCarouselPrev) {
+            elements.modalCarouselPrev.style.display = 'flex';
+          }
+          if (elements.modalCarouselNext) {
+            elements.modalCarouselNext.style.display = 'flex';
+          }
+          if (elements.modalCarouselIndicators) {
+            elements.modalCarouselIndicators.style.display = 'flex';
+            createCarouselIndicators(images.length);
+          }
+          
+          // Inizia il carousel automatico
+          currentCarouselIndex = 0;
+          startCarousel();
+        } else {
+          // Nascondi controlli carousel
+          if (elements.modalCarouselPrev) {
+            elements.modalCarouselPrev.style.display = 'none';
+          }
+          if (elements.modalCarouselNext) {
+            elements.modalCarouselNext.style.display = 'none';
+          }
+          if (elements.modalCarouselIndicators) {
+            elements.modalCarouselIndicators.style.display = 'none';
+          }
         }
       } else {
-        elements.modalImage.src = '';
-        elements.modalImage.alt = '';
-        elements.modalImageContainer.style.display = 'none';
-        // Posiziona dopo un breve delay per assicurarsi che la modale sia renderizzata
+        // Nessuna immagine
+        if (elements.modalCarouselPrev) {
+          elements.modalCarouselPrev.style.display = 'none';
+        }
+        if (elements.modalCarouselNext) {
+          elements.modalCarouselNext.style.display = 'none';
+        }
+        if (elements.modalCarouselIndicators) {
+          elements.modalCarouselIndicators.style.display = 'none';
+        }
         positionTimeout = setTimeout(() => {
           positionModal();
         }, 50);
       }
     } else {
-      // Posiziona dopo un breve delay per assicurarsi che la modale sia renderizzata
+      // Fallback se il carousel non è disponibile
       positionTimeout = setTimeout(() => {
         positionModal();
       }, 50);
@@ -652,6 +740,88 @@ const ExhibitionMap = (() => {
     elements.modalContent.style.opacity = '';
   };
 
+  const startCarousel = () => {
+    stopCarousel(); // Assicurati che non ci siano altri interval attivi
+    
+    const items = elements.modalCarouselTrack ? elements.modalCarouselTrack.querySelectorAll('.modal-artwork-carousel-item') : [];
+    if (items.length <= 1) return;
+    
+    // carouselInterval = setInterval(() => {
+    //   navigateCarousel(1);
+    // }, 5000); // Cambia ogni 5 secondi
+  };
+
+  const stopCarousel = () => {
+    if (carouselInterval) {
+      clearInterval(carouselInterval);
+      carouselInterval = null;
+    }
+  };
+
+  const navigateCarousel = (direction) => {
+    const items = elements.modalCarouselTrack ? elements.modalCarouselTrack.querySelectorAll('.modal-artwork-carousel-item') : [];
+    if (items.length <= 1) return;
+    
+    // Rimuovi classe active dall'elemento corrente
+    items[currentCarouselIndex].classList.remove('active');
+    
+    // Calcola nuovo indice
+    currentCarouselIndex += direction;
+    if (currentCarouselIndex < 0) {
+      currentCarouselIndex = items.length - 1;
+    } else if (currentCarouselIndex >= items.length) {
+      currentCarouselIndex = 0;
+    }
+    
+    // Aggiungi classe active al nuovo elemento
+    items[currentCarouselIndex].classList.add('active');
+    
+    // Aggiorna indicatori
+    updateCarouselIndicators();
+    
+    // Riavvia il carousel automatico (resetta il timer)
+    stopCarousel();
+    startCarousel();
+  };
+
+  const createCarouselIndicators = (count) => {
+    if (!elements.modalCarouselIndicators) return;
+    
+    elements.modalCarouselIndicators.innerHTML = '';
+    
+    for (let i = 0; i < count; i++) {
+      const indicator = document.createElement('button');
+      indicator.className = 'modal-carousel-indicator' + (i === 0 ? ' active' : '');
+      indicator.setAttribute('aria-label', `Vai all'immagine ${i + 1}`);
+      indicator.addEventListener('click', () => {
+        const items = elements.modalCarouselTrack ? elements.modalCarouselTrack.querySelectorAll('.modal-artwork-carousel-item') : [];
+        if (items.length > 0 && i !== currentCarouselIndex) {
+          // Rimuovi classe active dall'elemento corrente
+          items[currentCarouselIndex].classList.remove('active');
+          currentCarouselIndex = i;
+          items[currentCarouselIndex].classList.add('active');
+          updateCarouselIndicators();
+          stopCarousel();
+          startCarousel();
+        }
+      });
+      elements.modalCarouselIndicators.appendChild(indicator);
+    }
+  };
+
+  const updateCarouselIndicators = () => {
+    if (!elements.modalCarouselIndicators) return;
+    
+    const indicators = elements.modalCarouselIndicators.querySelectorAll('.modal-carousel-indicator');
+    indicators.forEach((indicator, index) => {
+      if (index === currentCarouselIndex) {
+        indicator.classList.add('active');
+      } else {
+        indicator.classList.remove('active');
+      }
+    });
+  };
+
   const closeModal = () => {
     if (!elements.modal) return;
     
@@ -664,16 +834,13 @@ const ExhibitionMap = (() => {
     // Imposta flag di chiusura
     isClosing = true;
 
+    // Ferma il carousel
+    stopCarousel();
+
     // Cancella eventuali timeout di posizionamento in corso
     if (positionTimeout) {
       clearTimeout(positionTimeout);
       positionTimeout = null;
-    }
-
-    // Rimuovi listener sull'immagine per prevenire chiamate a positionModal
-    if (elements.modalImage) {
-      elements.modalImage.onload = null;
-      elements.modalImage.onerror = null;
     }
 
     // Imposta opacity a 0 come prima cosa
@@ -689,10 +856,12 @@ const ExhibitionMap = (() => {
       elements.modal.setAttribute('aria-hidden', 'true');
       elements.modal.classList.remove('is-open');
 
-      // Svuota immagine
-      if (elements.modalImage) {
-        elements.modalImage.src = '';
-        elements.modalImage.alt = '';
+      // Svuota carousel
+      if (elements.modalCarouselTrack) {
+        elements.modalCarouselTrack.innerHTML = '';
+      }
+      if (elements.modalCarouselIndicators) {
+        elements.modalCarouselIndicators.innerHTML = '';
       }
       
       // Svuota contenuti testuali
@@ -712,6 +881,7 @@ const ExhibitionMap = (() => {
       
       // Reset flag di chiusura
       isClosing = false;
+      currentCarouselIndex = 0;
     }, 200); // Tempo della transizione CSS (0.2s)
   };
 

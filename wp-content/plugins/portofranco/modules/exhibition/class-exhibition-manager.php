@@ -98,9 +98,17 @@ class PF_Exhibition_Manager {
         $floor = isset($artwork['floor']) ? (string)$artwork['floor'] : '';
         $title = isset($artwork['title']) ? $artwork['title'] : '';
         $description = isset($artwork['description']) ? $artwork['description'] : '';
-        $image_id = isset($artwork['image_id']) ? intval($artwork['image_id']) : 0;
         $position_x = isset($artwork['position_x']) ? $artwork['position_x'] : '';
         $position_y = isset($artwork['position_y']) ? $artwork['position_y'] : '';
+        
+        // Gestione retrocompatibilità: se esiste image_id ma non image_ids, convertirlo in array
+        $image_ids = array();
+        if (isset($artwork['image_ids']) && is_array($artwork['image_ids'])) {
+            $image_ids = array_map('intval', array_filter($artwork['image_ids']));
+        } elseif (isset($artwork['image_id']) && intval($artwork['image_id']) > 0) {
+            // Retrocompatibilità: converti image_id singolo in array
+            $image_ids = array(intval($artwork['image_id']));
+        }
         
         ?>
         <div class="pf-artwork-item" data-index="<?php echo esc_attr($index); ?>">
@@ -136,27 +144,37 @@ class PF_Exhibition_Manager {
                 <div class="pf-field-group">
                     <label>
                         <?php _e('Foto Opera', 'pf'); ?>
-                        <input type="hidden" 
-                               name="pf_artworks[<?php echo esc_attr($index); ?>][image_id]" 
-                               value="<?php echo esc_attr($image_id); ?>" 
-                               class="pf-image-id">
                         <div class="pf-image-upload-container">
-                            <?php if ($image_id > 0): 
-                                $image_url = wp_get_attachment_image_url($image_id, 'medium');
-                                if ($image_url):
-                            ?>
-                                <div class="pf-image-preview">
-                                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
-                                    <button type="button" class="button pf-remove-image">
-                                        <?php _e('Rimuovi immagine', 'pf'); ?>
-                                    </button>
-                                </div>
-                            <?php 
-                                endif;
-                            endif; ?>
-                            <button type="button" class="button pf-upload-image <?php echo $image_id > 0 ? 'hidden' : ''; ?>">
-                                <?php _e('Carica immagine', 'pf'); ?>
+                            <div class="pf-images-gallery" data-index="<?php echo esc_attr($index); ?>">
+                                <?php 
+                                if (!empty($image_ids)): 
+                                    foreach ($image_ids as $img_index => $img_id): 
+                                        if ($img_id > 0):
+                                            $image_url = wp_get_attachment_image_url($img_id, 'thumbnail');
+                                            if ($image_url):
+                                ?>
+                                    <div class="pf-image-thumbnail" data-image-id="<?php echo esc_attr($img_id); ?>" draggable="true">
+                                        <input type="hidden" 
+                                               name="pf_artworks[<?php echo esc_attr($index); ?>][image_ids][<?php echo esc_attr($img_index); ?>]" 
+                                               value="<?php echo esc_attr($img_id); ?>">
+                                        <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($title); ?>">
+                                        <button type="button" class="button-link pf-remove-single-image" aria-label="<?php _e('Rimuovi immagine', 'pf'); ?>">
+                                            <span class="dashicons dashicons-no-alt"></span>
+                                        </button>
+                                    </div>
+                                <?php 
+                                            endif;
+                                        endif;
+                                    endforeach;
+                                endif; 
+                                ?>
+                            </div>
+                            <button type="button" class="button pf-upload-image">
+                                <?php _e('Carica immagini', 'pf'); ?>
                             </button>
+                            <p class="description">
+                                <?php _e('Puoi selezionare più immagini. Trascina le immagini per riordinarle.', 'pf'); ?>
+                            </p>
                         </div>
                     </label>
                 </div>
@@ -302,11 +320,23 @@ class PF_Exhibition_Manager {
                     $floor_sanitized = '0';
                 }
                 
+                // Gestione array di immagini
+                $image_ids = array();
+                if (isset($artwork['image_ids']) && is_array($artwork['image_ids'])) {
+                    // Filtra e sanitizza gli ID delle immagini
+                    $image_ids = array_map('intval', array_filter($artwork['image_ids']));
+                    // Rimuovi duplicati e riordina
+                    $image_ids = array_values(array_unique($image_ids));
+                } elseif (isset($artwork['image_id']) && intval($artwork['image_id']) > 0) {
+                    // Retrocompatibilità: se esiste image_id singolo, convertilo in array
+                    $image_ids = array(intval($artwork['image_id']));
+                }
+                
                 $artworks[] = array(
                     'floor' => $floor_sanitized,
                     'title' => sanitize_text_field($artwork['title']),
                     'description' => sanitize_textarea_field($artwork['description']),
-                    'image_id' => isset($artwork['image_id']) ? intval($artwork['image_id']) : 0,
+                    'image_ids' => $image_ids,
                     'position_x' => floatval($artwork['position_x']),
                     'position_y' => floatval($artwork['position_y']),
                 );
@@ -393,13 +423,25 @@ class PF_Exhibition_Manager {
                 if (is_array($artworks)) {
                     foreach ($artworks as $artwork) {
                         if ($artwork['floor'] == $floor) {
-                            $image_id = isset($artwork['image_id']) ? intval($artwork['image_id']) : 0;
-                            $image_url = '';
+                            // Gestione retrocompatibilità: converti image_id in array se necessario
+                            $image_ids = array();
+                            if (isset($artwork['image_ids']) && is_array($artwork['image_ids'])) {
+                                $image_ids = array_map('intval', array_filter($artwork['image_ids']));
+                            } elseif (isset($artwork['image_id']) && intval($artwork['image_id']) > 0) {
+                                $image_ids = array(intval($artwork['image_id']));
+                            }
                             
-                            if ($image_id > 0) {
-                                $image_url = wp_get_attachment_image_url($image_id, 'medium_large');
-                                if (!$image_url) {
-                                    $image_url = '';
+                            // Costruisci array di immagini con id e url
+                            $images = array();
+                            foreach ($image_ids as $img_id) {
+                                if ($img_id > 0) {
+                                    $img_url = wp_get_attachment_image_url($img_id, 'medium_large');
+                                    if ($img_url) {
+                                        $images[] = array(
+                                            'image_id' => $img_id,
+                                            'image_url' => $img_url,
+                                        );
+                                    }
                                 }
                             }
                             
@@ -409,8 +451,7 @@ class PF_Exhibition_Manager {
                                 'artist_url' => get_permalink(),
                                 'artwork_title' => html_entity_decode($artwork['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
                                 'artwork_description' => html_entity_decode($artwork['description'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-                                'image_id' => $image_id,
-                                'image_url' => $image_url,
+                                'images' => $images,
                                 'position_x' => $artwork['position_x'],
                                 'position_y' => $artwork['position_y'],
                             );

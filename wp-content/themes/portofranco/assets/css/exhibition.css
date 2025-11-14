@@ -113,10 +113,12 @@
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
+
   50% {
     transform: translate(-50%, -50%) scale(1.1);
     opacity: 0.5;
   }
+
   100% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
@@ -185,7 +187,7 @@
   cursor: pointer;
   padding: 0;
   margin-top: 30px;
-  transition: color 0.2s ease;  
+  transition: color 0.2s ease;
 }
 
 .modal-close:hover,
@@ -207,6 +209,122 @@
   height: auto;
   display: block;
   object-fit: contain;
+}
+
+/* Carousel */
+.modal-artwork-carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.modal-artwork-carousel-track {
+  position: relative;
+  width: 100%;
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.modal-artwork-carousel-item {
+  min-width: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.modal-artwork-carousel-item.active {
+  opacity: 1;
+  position: relative;
+}
+
+.modal-artwork-carousel-item img {
+  width: 100%;
+  height: auto;
+  max-height: 350px;
+  display: block;
+  object-fit: contain;
+}
+
+.modal-carousel-prev,
+.modal-carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0);
+  border: none;
+  color: #fff;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  opacity: 0.7;
+  padding: 0;
+}
+
+.modal-carousel-prev:hover,
+.modal-carousel-next:hover,
+.modal-carousel-prev:focus,
+.modal-carousel-next:focus {
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 1;
+}
+
+.modal-carousel-prev {
+  left: 10px;
+}
+
+.modal-carousel-next {
+  right: 10px;
+}
+
+.modal-carousel-prev .dashicons,
+.modal-carousel-next .dashicons {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.modal-carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 0 10px;
+  position: relative;
+  z-index: 10;
+  opacity: 1;
+}
+
+.modal-carousel-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0003;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.modal-carousel-indicator:hover,
+.modal-carousel-indicator:focus {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(1.2);
+  outline: none;
+}
+
+.modal-carousel-indicator.active {
+  background: #000;
+  transform: scale(1.3);
 }
 
 .modal-artwork-title {
@@ -262,13 +380,16 @@
   color: #eeb9b9 !important;
   border-color: #eeb9b9 !important;
 }
+
 .modal-content[data-floor="museo"] .modal-close {
   color: #eeb9b9 !important;
 }
+
 .modal-content[data-floor="museo"] .modal-close:hover,
 .modal-content[data-floor="museo"] .modal-close:focus {
   color: #eeb9b9 !important;
 }
+
 .floor-map[data-floor="museo"] .artwork-marker {
   background: #eeb9b9 !important;
 }
