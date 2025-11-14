@@ -184,18 +184,12 @@
   cursor: pointer;
   padding: 0;
   margin-top: 30px;
-  color: #000;
   transition: color 0.2s ease;  
 }
 
 .modal-close:hover,
 .modal-close:focus {
   color: #0003;
-}
-
-.modal-close:focus {
-  outline: 2px solid #000;
-  outline-offset: 2px;
 }
 
 .modal-body {
@@ -234,7 +228,6 @@
 .modal-artwork-description {
   font-size: 14px;
   line-height: 1.2;
-  color: #333;
 }
 
 .modal-artwork-description:empty {
@@ -263,7 +256,8 @@
   margin-bottom: 10px;
 }
 
-.exhibition-floor[data-floor="museo"] * {
+.exhibition-floor[data-floor="museo"] *,
+.modal-content[data-floor="museo"] {
   color: #eeb9b9 !important;
   border-color: #eeb9b9 !important;
 }

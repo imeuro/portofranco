@@ -13,9 +13,9 @@ $floors = array(
     'anni70-3' => __('Anni 70 - Piano 3', 'portofranco'),
     'settecento-3' => __('Settecento - Piano 3', 'portofranco'),
     'settecento-2' => __('Settecento - Piano 2', 'portofranco'),
-    'settecento-0' => __('Settecento - Piano rialzato', 'portofranco'),
     'settecento-1-SE' => __('Settecento - Piano 1 - SE', 'portofranco'),
     'settecento-1-SO' => __('Settecento - Piano 1 - SO', 'portofranco'),
+    'settecento-0' => __('Settecento - Piano rialzato', 'portofranco'),
     'cortile' => __('Cortile', 'portofranco'),
     'museo' => __('Museo', 'portofranco'),
 );
@@ -184,7 +184,7 @@ echo json_encode($descriptions_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS
 <!-- Modal per i dettagli dell'opera -->
 <div class="artwork-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
   <div class="modal-overlay" aria-hidden="true"></div>
-  <div class="modal-content" role="document" tabindex="0">
+  <div class="modal-content" role="document" tabindex="0" data-floor="<?php echo esc_attr($floor_key); ?>">
     
     <div class="modal-body">
       <div class="modal-artwork-image">
