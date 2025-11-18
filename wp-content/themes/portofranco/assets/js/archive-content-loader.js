@@ -93,9 +93,10 @@ const archiveContentLoader = (() => {
             // Per altri post types, usa endpoint per post singoli
             endpoint = `post-content/${params.postId}`;
         }
-        // Aggiungi querystring lingua
+        // Aggiungi querystring lingua e cachebuster
         const lang = getCurrentLanguage();
-        const query = `?lang=${encodeURIComponent(lang)}`;
+        const cacheBuster = Date.now();
+        const query = `?lang=${encodeURIComponent(lang)}&t=${cacheBuster}`;
 
         // Se l'URL base è relativo, costruisci l'URL completo
         if (baseUrl.startsWith('/')) {

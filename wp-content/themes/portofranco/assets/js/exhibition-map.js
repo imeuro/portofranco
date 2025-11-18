@@ -165,7 +165,8 @@ const ExhibitionMap = (() => {
     try {
       // Usa l'endpoint global definito in functions.php
       const apiBase = window.portofrancoAjax?.apiBase || '/wp-json/pf/v1/';
-      const response = await fetch(apiBase + 'exhibition/all');
+      const cacheBuster = Date.now();
+      const response = await fetch(apiBase + 'exhibition/all?t=' + cacheBuster);
 
       if (!response.ok) {
         throw new Error('Errore nel caricamento delle opere');
@@ -557,7 +558,10 @@ const ExhibitionMap = (() => {
             const carouselItem = document.createElement('div');
             carouselItem.className = 'modal-artwork-carousel-item' + (index === 0 ? ' active' : '');
             const imgElement = document.createElement('img');
-            imgElement.src = img.image_url;
+            // Aggiungi cachebuster per assicurare immagini sempre aggiornate
+            const imageUrl = new URL(img.image_url, window.location.origin);
+            imageUrl.searchParams.set('t', Date.now());
+            imgElement.src = imageUrl.toString();
             imgElement.alt = artwork.artwork_title || '';
             imgElement.loading = 'lazy';
             

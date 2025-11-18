@@ -2,6 +2,21 @@
 // Template archivio artisti
 get_header();
 
+// Aggiungi filtro per lingua se Polylang è attivo
+if (function_exists('pll_current_language')) {
+    $current_lang = pll_current_language();
+    if ($current_lang) {
+        $query_artisti['lang'] = $current_lang;
+        $query_special_proj['lang'] = $current_lang;
+    }
+}
+
+// Fallback: rileva la lingua dall'URL se Polylang non la rileva
+if (empty($query_args['lang']) && preg_match('/^\/(en)\//', $_SERVER['REQUEST_URI'], $matches)) {
+    $query_artisti['lang'] = $matches[1];
+    $query_special_proj['lang'] = $matches[1];
+}
+
 // Query personalizzata per ottenere tutti gli artisti con ordine personalizzato
 $query_artisti = array(
     'post_type' => 'artisti',
@@ -46,21 +61,6 @@ $query_special_proj = array(
         )
     )
 );
-
-// Aggiungi filtro per lingua se Polylang è attivo
-if (function_exists('pll_current_language')) {
-    $current_lang = pll_current_language();
-    if ($current_lang) {
-        $query_artisti['lang'] = $current_lang;
-        $query_special_proj['lang'] = $current_lang;
-    }
-}
-
-// Fallback: rileva la lingua dall'URL se Polylang non la rileva
-if (empty($query_args['lang']) && preg_match('/^\/(en)\//', $_SERVER['REQUEST_URI'], $matches)) {
-    $query_artisti['lang'] = $matches[1];
-    $query_special_proj['lang'] = $matches[1];
-}
 
 $artisti_query = new WP_Query($query_artisti);
 $special_proj_query = new WP_Query($query_special_proj);
