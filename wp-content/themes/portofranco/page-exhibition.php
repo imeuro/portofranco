@@ -65,6 +65,27 @@ if (!is_array($floor_descriptions)) {
     $floor_descriptions = array();
 }
 ?>
+
+<!-- Lista dei piani e relativi artisti -->
+<div id="exhibition-list" class="exhibition-list">
+    <ul>
+        <?php
+        $first_floor_list = true;
+        foreach ($floors as $floor_key => $floor_name):
+            $floor_id = 'floor-content-' . esc_attr($floor_key);
+        ?>
+        <li class="exhibition-floor" data-floor="<?php echo esc_attr($floor_key); ?>" data-expanded="<?php echo $first_floor_list ? 'true' : 'false'; ?>">
+            <button class="floor-toggle" type="button" aria-expanded="<?php echo $first_floor_list ? 'true' : 'false'; ?>" aria-controls="<?php echo esc_attr($floor_id); ?>">
+                <h3><?php echo esc_html($floor_name); ?></h3>
+            </button>
+            <div class="floor-content" id="<?php echo esc_attr($floor_id); ?>" aria-hidden="<?php echo $first_floor_list ? 'false' : 'true'; ?>"></div>
+        </li>
+        <?php 
+            $first_floor_list = false;
+        endforeach; ?>
+    </ul>
+</div>
+
 <main id="main" tabindex="-1" role="main">
   <?php if ( have_posts() ) : while ( have_posts() ) : the_post();  ?>
 
@@ -159,26 +180,6 @@ foreach ($floor_descriptions as $key => $desc) {
 echo json_encode($descriptions_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); 
 ?>;
 </script>
-
-<!-- Lista dei piani e relativi artisti -->
-<div id="exhibition-list" class="exhibition-list">
-    <ul>
-        <?php
-        $first_floor_list = true;
-        foreach ($floors as $floor_key => $floor_name):
-            $floor_id = 'floor-content-' . esc_attr($floor_key);
-        ?>
-        <li class="exhibition-floor" data-floor="<?php echo esc_attr($floor_key); ?>" data-expanded="<?php echo $first_floor_list ? 'true' : 'false'; ?>">
-            <button class="floor-toggle" type="button" aria-expanded="<?php echo $first_floor_list ? 'true' : 'false'; ?>" aria-controls="<?php echo esc_attr($floor_id); ?>">
-                <h3><?php echo esc_html($floor_name); ?></h3>
-            </button>
-            <div class="floor-content" id="<?php echo esc_attr($floor_id); ?>" aria-hidden="<?php echo $first_floor_list ? 'false' : 'true'; ?>"></div>
-        </li>
-        <?php 
-            $first_floor_list = false;
-        endforeach; ?>
-    </ul>
-</div>
 
 
 <!-- Modal per i dettagli dell'opera -->

@@ -355,10 +355,10 @@ const ExhibitionMap = (() => {
                 marker.classList.add('pulse-anim');
               });
             }
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
+            const main = document.querySelector('#main');
+            if (main && window.innerWidth < 1000) {
+              main.scrollIntoView({ behavior: 'smooth' });
+            }
           });
           
           // artistItem.addEventListener('mouseleave', () => {

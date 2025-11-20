@@ -34,6 +34,14 @@
   margin: 0 5px;
 }
 
+#main article.exhibition-page {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 25px 20px 60px 20px;
+}
+
+
+
 /* Map Container */
 .exhibition-map-wrapper {
   margin-bottom: 30px;
@@ -360,7 +368,7 @@
 
 
 #exhibition-list {
-  margin: -75px 0 50px 0;
+  margin: 225px 0 50px 0;
   width: 100%;
   display: flex;
 }
@@ -469,6 +477,19 @@
   color: #333;
 }
 
+
+.floor-map-description {
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 10px;
+}
+.floor-map-description h3 {
+  font-size: 20px;
+  line-height: 24px;
+  margin-bottom: 24px;
+}
+
+
 /* Tablet */
 @media (min-width: 768px) {
   .exhibition-container {
@@ -487,6 +508,10 @@
 
 /* Desktop */
 @media (min-width: 1000px) {
+  #main article.exhibition-page {
+    margin: 100px 20px 60px 0;
+    gap: 0 10px;
+  }
   .exhibition-intro {
     font-size: 20px;
     max-width: 800px;
@@ -495,6 +520,7 @@
 
   .exhibition-map-container {
     max-width: 800px;
+    margin: 0 auto 50px auto;
   }
 
   div#exhibition-list {
@@ -505,5 +531,11 @@
     width: 350px;
     margin-top: 0;
     background-color: #fff;
+  }
+}
+@media (min-width: 1400px) {
+  #main article.exhibition-page {
+    margin: 100px 20px 60px 0;
+    gap: 0 20px;
   }
 }
