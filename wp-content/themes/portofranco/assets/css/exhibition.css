@@ -248,9 +248,9 @@
 .modal-artwork-carousel-item img {
   width: 100%;
   height: auto;
-  max-height: 350px;
+  /* max-height: 350px; */
   display: block;
-  object-fit: cover;
+  /* object-fit: cover; */
   object-position: center;
 }
 
