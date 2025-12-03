@@ -5,8 +5,44 @@
             <p>
                 <?php _e('dettaglio periodo', 'portofranco'); ?><br>
                 <?php _e('dettaglio orari', 'portofranco'); ?>
+            </p>            
+        </li>
+
+
+        <?php if (is_page('about')) : ?>
+        <li class="left-column small-label">APERTURE STRAORDINARIE</li>
+        <li class="right-column mid-label">
+            <p>
+                PORTOFRANCO sarà aperto:<br>
+                - Lunedì 8 Dicembre 2025 dalle ore 10.00 alle ore 19.00<br>
+                - 26-27-28 Dicembre 2025 dalle ore 10.00 alle ore 19.00<br>
+                - 2-3-4 Gennaio 2026 dalle ore 10.00 alle ore 19.00<br>
+                - Martedì 6 Gennaio 2026 dalle ore 10.00 alle ore 19.00<br>
+            </p>
+            <p>
+                PORTOFRANCO rimarrà chiuso: <br>
+                - Giovedì 25 Dicembre 2025<br>
+                - Giovedì 1 Gennaio 2026<br>
             </p>
         </li>
+        <?php endif; ?>
+        <?php if (is_page('about-eng')) : ?>
+        <li class="left-column small-label">SPECIAL OPENINGS</li>
+        <li class="right-column mid-label">
+            <p>
+                PORTOFRANCO will be open: <br>
+                - Monday 8 December 2025 from 10.00 to 19.00<br>
+                - 26-27-28 December 2025 from 10.00 to 19.00<br>
+                - 2-3-4 January 2026 from 10.00 to 19.00<br>
+                - Tuesday 6 January 2026 from 10.00 to 19.00<br>
+            </p>
+                PORTOFRANCO will be closed: <br>
+                - Thursday 25 December 2025<br>
+                - Thursday 1 January 2026<br>
+            </p>
+        </li>
+        <?php endif; ?>
+
         <li class="left-column small-label"><?php _e('BIGLIETTO DI INGRESSO', 'portofranco'); ?></li>
         <li class="right-column mid-label">
             <p>
@@ -43,7 +79,8 @@
 
                 Dalla stazione Palazzo Soranzo Novello dista 10 minuti.<br>
                 </p>
-            <?php else : ?>
+            <?php endif; ?>
+                <?php if (is_page('about-eng')) : ?>
                 <p>From Milan<br>
                 •⁠  ⁠Daily connections with Trenitalia and Italo<br>
                 •⁠  ⁠Travel time: 3 hours<br>

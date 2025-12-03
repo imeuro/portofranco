@@ -769,6 +769,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Nascondi tutte le tabelle di default all'avvio
     hideAllTables();
 
+
     labels.forEach((label) => {
         label.addEventListener('click', async function () {
             const targetId = this.getAttribute('aria-controls');
@@ -813,4 +814,24 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+
+    // se hashtag è presente, simula il click della label corrispondente (se esiste)
+    // Funzione per gestire attivazione label in base all'hash
+    function handleHashChange() {
+        const hash = window.location.hash.slice(1);
+        if (!hash) return;
+        Array.from(labels).forEach(label => {
+            if (label.getAttribute('aria-controls') === `item-${hash}`) {
+                label.click();
+                return;
+            }
+        });
+    }
+
+    // Chiama la funzione all'avvio se l'hash è presente
+    handleHashChange();
+
+    // Ascolta i cambi di hash per gestire l'apertura dinamica
+    window.addEventListener('hashchange', handleHashChange);
 });
