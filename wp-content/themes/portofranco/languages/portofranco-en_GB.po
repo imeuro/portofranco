@@ -178,6 +178,9 @@ msgstr "HOURS"
 msgid "dettaglio orari"
 msgstr "Monday - Tuesday - Wednesday: closed<br>Thursday - Friday - Saturday - Sunday: 10:00-19:00"
 
+#: footer.php:21
+msgid "APERTURE STRAORDINARIE"
+msgstr "SPECIAL OPENINGS"
 
 ######################
 #: page-exhibition.php

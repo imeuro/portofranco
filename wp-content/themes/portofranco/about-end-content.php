@@ -8,9 +8,8 @@
             </p>            
         </li>
 
-
+        <li class="left-column small-label"><?php _e('APERTURE STRAORDINARIE', 'portofranco'); ?></li>
         <?php if (is_page('about')) : ?>
-        <li class="left-column small-label">APERTURE STRAORDINARIE</li>
         <li class="right-column mid-label">
             <p>
                 PORTOFRANCO sarà aperto:<br>
@@ -27,7 +26,6 @@
         </li>
         <?php endif; ?>
         <?php if (is_page('about-eng')) : ?>
-        <li class="left-column small-label">SPECIAL OPENINGS</li>
         <li class="right-column mid-label">
             <p>
                 PORTOFRANCO will be open: <br>

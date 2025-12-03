@@ -646,6 +646,13 @@ ul.page-table li.right-column {
     margin-bottom: 10px;
 }
 
+.icon-link-info {
+    transform: translate(0px, 3px) rotate(-45deg);
+    width: 14px;
+    height: 14px;
+    fill: #fff;
+}
+
 ul#newsletter {
     margin-top: 40px;
     scroll-margin-top: 40px;

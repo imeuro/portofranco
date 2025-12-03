@@ -179,6 +179,9 @@ msgstr "ORARI"
 msgid "dettaglio orari"
 msgstr "Lunedì - Martedì - Mercoledì: chiuso<br>Giovedì - Venerdì - Sabato - Domenica: 10:00-19:00"
 
+#: footer.php:21
+msgid "APERTURE STRAORDINARIE"
+msgstr "APERTURE STRAORDINARIE"
 
 ######################
 #: page-exhibition.php
