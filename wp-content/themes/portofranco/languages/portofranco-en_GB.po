@@ -160,7 +160,7 @@ msgstr "PERIOD"
 
 #: footer.php:17
 msgid "dettaglio periodo"
-msgstr "from November 15, 2025 to February 14, 2026"
+msgstr "from November 15, 2025 to February 15, 2026"
 
 #: footer.php:20
 msgid "BIGLIETTO DI INGRESSO"
